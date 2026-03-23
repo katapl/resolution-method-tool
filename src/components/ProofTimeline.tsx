@@ -1,13 +1,26 @@
-import {useMemo, useState} from 'react';
+import {useMemo, useState, useEffect} from 'react';
 import { autoSolve, type ProofStep } from '../engine/resolver';
 import StepCanvas from './canvas/StepCanvas';
 import FormulaInput from './FormulaInput';
 import type {Clause} from "../engine/types.ts";
 
-export default function ProofTimeline() {
+interface ProofTimelineProps {
+    initialClauses: Clause[];
+}
+
+export default function ProofTimeline({ initialClauses }: ProofTimelineProps) {
     const [fullHistory, setFullHistory] = useState<ProofStep[]>([]);
     const [visibleStepCount, setVisibleStepCount] = useState<number>(0);
     const [isCalculated, setIsCalculated] = useState(false);
+
+    useEffect(() => {
+        if (initialClauses.length > 0) {
+            const result = autoSolve(initialClauses);
+            setFullHistory(result.history);
+            setIsCalculated(true);
+            setVisibleStepCount(0);
+        }
+    }, [initialClauses]);
 
     const visibleHistory = useMemo(() => {
         return fullHistory.slice(0, visibleStepCount);
@@ -30,19 +43,12 @@ export default function ProofTimeline() {
         setVisibleStepCount(fullHistory.length);
     };
 
-    const handleReset = () => {
-        setFullHistory([]);
+    const handleRestartSteps = () => {
         setVisibleStepCount(0);
-        setIsCalculated(false);
     };
 
     return (
         <div style={{ maxWidth: '800px', margin: '0 auto', padding: '2rem', display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-
-            <FormulaInput
-                onSolve={handleSolveSubmit}
-                disabled={isCalculated}
-            />
 
             {visibleHistory.map((step) => (
                 <div key={step.stepNumber} style={{ background: '#fff', padding: '1.5rem', borderRadius: '12px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}>
@@ -68,7 +74,7 @@ export default function ProofTimeline() {
                                 fontWeight: 'bold'
                             }}
                         >
-                            {visibleStepCount === fullHistory.length ? "Proof Complete ✓" : "Reveal Next Step ⬇️"}
+                            {visibleStepCount === fullHistory.length ? "Proof Complete" : "Next Step"}
                         </button>
 
                         <button
@@ -79,7 +85,7 @@ export default function ProofTimeline() {
                         </button>
 
                         <button
-                            onClick={handleReset}
+                            onClick={handleRestartSteps}
                             style={{ padding: '0.75rem 1.5rem', background: '#f44336', color: 'white', border: 'none', borderRadius: '8px', fontSize: '1.1rem', cursor: 'pointer' }}
                         >
                             Reset
