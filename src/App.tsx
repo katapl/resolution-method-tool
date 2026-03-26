@@ -1,7 +1,7 @@
 import ProofTimeline from "./components/ProofTimeline.tsx";
-import SandboxCanvas from "./components/SandboxCanvas"
+import SandboxCanvas from "./components/canvas/SandboxCanvas";
 import { useState } from 'react';
-import FormulaInput from "./components/FormulaInput"
+import FormulaInput from "./components/FormulaInput";
 
 type AppMode = 'IDLE' | 'SOLVE' | 'PRACTICE';
 
@@ -29,8 +29,12 @@ function App() {
 
             {mode === 'IDLE' && (
                 <div style={{ textAlign: 'center', color: '#666', marginTop: '10vh' }}>
-                    <h2 style={{ color: 'black'}}>Welcome to the Resolution Prover</h2>
-                    <p>Enter a formula above and choose a mode to begin.</p>
+                    {/*<p>Explanation of the two modes here.</p>*/}
+                    <p>~p v t, a v z, ~z v ~t, p, ~a</p>
+                    <p>p v k, ~p v s, ~p v ~r, ~t v r, ~s v t, ~k</p>
+                    <p> a, ~a v ~b v c, ~a v ~d v f, ~d v b, ~c v g, ~f v g, ~g</p>
+                    <p>A, ~A v B, ~B v C, ~C v D, ~D v E, ~E, F v ~F v G, H v I v ~H, J v K, J v K v L, J v K v ~M, N v O, P v N, Q v R v S, ~Q v T, ~R v U, ~S v V, ~T v ~U v W, X v Y v Z, ~X v W</p>
+                    <p>P v Q v R v S, P v Q v R v ~S, P v Q v ~R v S, P v Q v ~R v ~S, P v ~Q v R v S, P v ~Q v R v ~S, P v ~Q v ~R v S, P v ~Q v ~R v ~S, ~P v Q v R v S, ~P v Q v R v ~S, ~P v Q v ~R v S, ~P v Q v ~R v ~S, ~P v ~Q v R v S, ~P v ~Q v R v ~S, ~P v ~Q v ~R v S, ~P v ~Q v ~R v ~S</p>
                 </div>
             )}
 

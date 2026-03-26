@@ -28,27 +28,31 @@ export default function FormulaInput({ onSolve, onPractice, disabled }: FormulaI
     };
 
     return (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', maxWidth: '1000px', margin: '0 auto' }}>
-
-            <div style={{ fontWeight: 'bold', fontSize: '1.2rem', color: '#1976d2', whiteSpace: 'nowrap' }}>
-                Formula:
+        <div style={{ padding: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', maxWidth: '1000px', margin: '0 auto' }}>
+            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'left', gap: '1rem'}}>
+                <div style={{ fontSize: '1.2rem', whiteSpace: 'nowrap' }}>
+                    Enter formula:
+                </div>
+                    <input
+                        type="text"
+                        value={inputValue}
+                        onChange={(e) => setInputValue(e.target.value)}
+                        placeholder="~p v t, k v s v r"
+                        disabled={disabled}
+                        style={{ flex: 1, padding: '0.75rem', borderRadius: '8px', border: '1px solid #ccc', fontSize: '1rem', color: 'black', backgroundColor: '#FFFFFF' }}
+                    />
             </div>
-                <input
-                    type="text"
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    placeholder="e.g. ~p v t, k v s v r"
-                    disabled={disabled}
-                    style={{ flex: 1, padding: '0.75rem', borderRadius: '8px', border: '1px solid #ccc', fontSize: '1rem', color: 'black', backgroundColor: '#FFFFFF' }}
-                />
+            <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end', gap: '1rem'}}>
                 <button
                     onClick={handleSolve}
                     disabled={disabled || !inputValue.trim()}
                     style={{
-                        padding: '0.75rem 1.5rem',
-                        background: disabled || !inputValue.trim() ? '#ccc' : '#2196f3',
-                        color: 'white', border: 'none', borderRadius: '8px',
-                        fontSize: '1.1rem', fontWeight: 'bold',
+                        padding: '0rem 1rem',
+                        height: '2rem',
+                        background: disabled || !inputValue.trim() ? '#ccc' : '#FFFFFF',
+                        color: 'grey', borderRadius: '8px',
+                        border: '1px solid grey',
+                        fontSize: '1.1rem',
                         cursor: disabled || !inputValue.trim() ? 'not-allowed' : 'pointer'
                     }}
                 >
@@ -59,15 +63,18 @@ export default function FormulaInput({ onSolve, onPractice, disabled }: FormulaI
                     onClick={handlePractice}
                     disabled={disabled || !inputValue.trim()}
                     style={{
-                        padding: '0.75rem 1.5rem',
-                        background: disabled || !inputValue.trim() ? '#ccc' : '#2196f3',
-                        color: 'white', border: 'none', borderRadius: '8px',
-                        fontSize: '1.1rem', fontWeight: 'bold',
+                        padding: '0rem 1rem',
+                        height: '2rem',
+                        background: disabled || !inputValue.trim() ? '#ccc' : '#FFFFFF',
+                        color: 'grey', borderRadius: '8px',
+                        border: '1px solid grey',
+                        fontSize: '1.1rem',
                         cursor: disabled || !inputValue.trim() ? 'not-allowed' : 'pointer'
                     }}
                 >
                     Practice
                 </button>
+            </div>
         </div>
     );
 }

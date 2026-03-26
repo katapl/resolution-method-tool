@@ -13,46 +13,87 @@ interface StepCanvasProps {
 
 export default function StepCanvas({ step }: StepCanvasProps) {
     const nodes: Node[] = []
+    let edges: Edge[] = [];
+
+    const NODES_PER_ROW = 5;
+    const X_SPACING = 200;
+    const Y_SPACING = 100;
+
+    const activeColumns = Math.min(step.poolBefore.length, NODES_PER_ROW);
+    const startX = -((activeColumns - 1) * X_SPACING) / 2;
+
+    if (step.type === 'REDUCTION') {
+        step.poolBefore.forEach((clause, index) => {
+            const row = Math.floor(index / NODES_PER_ROW);
+            const col = index % NODES_PER_ROW;
+
+            const isRemoved = step.removedClauses!.some(r => r.id === clause.id);
+            nodes.push({
+                id: clause.id,
+                type: 'clause',
+                position: { x: col * X_SPACING + 50, y: row * Y_SPACING + 50 },
+                data: {
+                    label: clauseToString(clause),
+                    isHighlighted: false,
+                    isRemoved: isRemoved,
+                    isInteractive: false,
+                    onRemove: () => {}
+                }
+            });
+        });
+    }
+    else {
     let parent1X = 0;
     let parent2X = 0;
+        let maxRow = 0;
 
-    step.poolBefore.forEach((clause, index) => {
-        const xPos = index * 180 + 50;
+        step.poolBefore.forEach((clause, index) => {
+            const row = Math.floor(index / NODES_PER_ROW);
+            const col = index % NODES_PER_ROW;
 
-        const isParent = clause.id === step.parent1.id || clause.id === step.parent2.id;
+            if (row > maxRow) maxRow = row;
 
-        if (clause.id === step.parent1.id) parent1X = xPos;
-        if (clause.id === step.parent2.id) parent2X = xPos;
+            const xPos = startX + col * X_SPACING;
+            const yPos = row * Y_SPACING + 20;
 
-        nodes.push({
-            id: clause.id,
-            type: 'clause',
-            position: { x: xPos, y: 20 },
-            data: {
-                label: clauseToString(clause),
-                isHighlighted: isParent,
-                onRemove: () => {}
-            }
+            const isParent = clause.id === step.parent1!.id || clause.id === step.parent2!.id;
+
+            if (clause.id === step.parent1!.id) parent1X = xPos;
+            if (clause.id === step.parent2!.id) parent2X = xPos;
+
+            nodes.push({
+                id: clause.id,
+                type: 'clause',
+                position: { x: xPos, y: yPos },
+                data: {
+                    label: clauseToString(clause),
+                    isHighlighted: isParent,
+                    isRemoved: false,
+                    isInteractive: false,
+                    onRemove: () => {}
+                }
+            });
         });
-    });
 
-    const resolventX = (parent1X + parent2X) / 2;
+        const resolventX = (parent1X + parent2X) / 2;
+        const resolventY = (maxRow + 1) * Y_SPACING + 60;
+        nodes.push({
+            id: step.resolvent!.id,
+            type: 'clause',
+            position: { x: resolventX, y: 160 },
+            data: {
+                label: clauseToString(step.resolvent!),
+                isHighlighted: true,
+                isRemoved: false,
+                isInteractive: false,
+                onRemove: () => {} }
+        });
 
-    nodes.push({
-        id: step.resolvent.id,
-        type: 'clause',
-        position: { x: resolventX, y: 160 },
-        data: {
-            label: clauseToString(step.resolvent),
-            isHighlighted: true,
-            onRemove: () => {}
-        }
-    });
-
-    const edges: Edge[] = [
-        { id: `e1-${step.stepNumber}`, source: step.parent1.id, target: step.resolvent.id},
-        { id: `e2-${step.stepNumber}`, source: step.parent2.id, target: step.resolvent.id }
-    ];
+        edges = [
+            { id: `e1-${step.stepNumber}`, source: step.parent1!.id, target: step.resolvent!.id, animated: false, style: { stroke: 'grey', strokeWidth: 2 } },
+            { id: `e2-${step.stepNumber}`, source: step.parent2!.id, target: step.resolvent!.id, animated: false, style: { stroke: 'grey', strokeWidth: 2 } }
+        ];
+    }
 
     return (
         // pointer events none to keep flow static
