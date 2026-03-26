@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { parseFormulaToClauses } from '../engine/parser';
 import type {Clause} from "../engine/types.ts";
+import { useLocalStorage } from '../hook/useLocalStorage';
 
 interface FormulaInputProps {
     onSolve: (clauses: Clause[]) => void;
     onPractice: (clauses: Clause[]) => void;
+    onReset: () => void;
     disabled?: boolean;
 }
 
-export default function FormulaInput({ onSolve, onPractice, disabled }: FormulaInputProps) {
-    const [inputValue, setInputValue] = useState("");
+export default function FormulaInput({ onSolve, onPractice, onReset, disabled }: FormulaInputProps) {
+    const [inputValue, setInputValue] = useLocalStorage<string>('prover_input_text', '');
 
     const handleSolve = (e: React.FormEvent) => {
         e.preventDefault();
@@ -26,6 +28,10 @@ export default function FormulaInput({ onSolve, onPractice, disabled }: FormulaI
         const parsedClauses = parseFormulaToClauses(inputValue);
         onPractice(parsedClauses);
     };
+
+    const handleReset = (e: React.FormEvent) => {
+        onReset();
+    }
 
     return (
         <div style={{ padding: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', maxWidth: '1000px', margin: '0 auto' }}>
@@ -73,6 +79,21 @@ export default function FormulaInput({ onSolve, onPractice, disabled }: FormulaI
                     }}
                 >
                     Practice
+                </button>
+                <button
+                    onClick={handleReset}
+                    disabled={disabled || !inputValue.trim()}
+                    style={{
+                        padding: '0rem 1rem',
+                        height: '2rem',
+                        background: disabled || !inputValue.trim() ? '#ccc' : '#FFFFFF',
+                        color: 'grey', borderRadius: '8px',
+                        border: '1px solid grey',
+                        fontSize: '1.1rem',
+                        cursor: disabled || !inputValue.trim() ? 'not-allowed' : 'pointer'
+                    }}
+                >
+                    Reset
                 </button>
             </div>
         </div>

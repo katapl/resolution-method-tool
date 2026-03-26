@@ -38,6 +38,62 @@ function getVariables(pool: Clause[]): string[] {
     return Array.from(vars);
 }
 
+
+function selectNextVariable(pool: Clause[], vars: string[]): string {
+    const sortedVars = [...vars].sort((a, b) => {
+        const aPos = pool.filter(c => c.literals.some(l => l.name === a && l.polarity)).length;
+        const aNeg = pool.filter(c => c.literals.some(l => l.name === a && !l.polarity)).length;
+        const bPos = pool.filter(c => c.literals.some(l => l.name === b && l.polarity)).length;
+        const bNeg = pool.filter(c => c.literals.some(l => l.name === b && !l.polarity)).length;
+
+        return (aPos * aNeg) - (bPos * bNeg);
+    });
+
+    return sortedVars[0];
+}
+
+function generateResolventsPhase(
+    currentPool: Clause[],
+    posClauses: Clause[],
+    negClauses: Clause[],
+    targetVar: string,
+    initialStepCounter: number,
+    history: ProofStep[]
+): { newResolvents: Clause[], emptyClauseFound: boolean, nextStepCounter: number } {
+
+    const newResolvents: Clause[] = [];
+    let emptyClauseFound = false;
+    let stepCounter = initialStepCounter;
+
+    posClauses.some(pos => {
+        return negClauses.some(neg => {
+            const targetLiteral = pos.literals.find(l => l.name === targetVar)!;
+            const newId = `auto-res-${stepCounter}`;
+            const resolvent = resolve(targetLiteral, pos, neg, newId);
+
+            history.push({
+                stepNumber: stepCounter++,
+                type: 'RESOLUTION',
+                message: `Resolved on "${targetVar}".`,
+                poolBefore: [...currentPool, ...newResolvents],
+                parent1: pos,
+                parent2: neg,
+                resolvent: resolvent
+            });
+
+            newResolvents.push(resolvent);
+
+            if (resolvent.literals.length === 0) {
+                emptyClauseFound = true;
+                return true;
+            }
+            return false;
+        });
+    });
+
+    return { newResolvents, emptyClauseFound, nextStepCounter: stepCounter };
+}
+
 export function autoSolve(initialClauses: Clause[]): { finalPool: Clause[], history: ProofStep[] } {
     let pool = [...initialClauses];
     const history: ProofStep[] = [];
@@ -52,56 +108,30 @@ export function autoSolve(initialClauses: Clause[]): { finalPool: Clause[], hist
 
     while (vars.length > 0 && !emptyClauseFound) {
 
-        vars.sort((a, b) => {
-            const aPos = pool.filter(c => c.literals.some(l => l.name === a && l.polarity)).length;
-            const aNeg = pool.filter(c => c.literals.some(l => l.name === a && !l.polarity)).length;
-            const bPos = pool.filter(c => c.literals.some(l => l.name === b && l.polarity)).length;
-            const bNeg = pool.filter(c => c.literals.some(l => l.name === b && !l.polarity)).length;
-            return (aPos * aNeg) - (bPos * bNeg);
-        });
-
-        const targetVar = vars.shift()!;
-
-        const posClauses = pool.filter(c => c.literals.some(l => l.name === targetVar && l.polarity));
-        const negClauses = pool.filter(c => c.literals.some(l => l.name === targetVar && !l.polarity));
+        const targetVar = selectNextVariable(pool, vars);
+        const posClauses = pool.filter(
+            c => c.literals.some(l => l.name === targetVar && l.polarity)
+        );
+        const negClauses = pool.filter(
+            c => c.literals.some(l => l.name === targetVar && !l.polarity)
+        );
 
         if (posClauses.length > 0 && negClauses.length > 0) {
-            const newResolvents: Clause[] = [];
-            const parentsToRemove = [...posClauses, ...negClauses];
 
-            posClauses.some(pos => {
-                return negClauses.some(neg => {
-                    const targetLiteral = pos.literals.find(l => l.name === targetVar)!;
-                    const newId = `auto-res-${stepCounter}`;
-                    const resolvent = resolve(targetLiteral, pos, neg, newId);
-
-                    history.push({
-                        stepNumber: stepCounter++,
-                        type: 'RESOLUTION',
-                        message: `Resolved on "${targetVar}".`,
-                        poolBefore: [...pool, ...newResolvents],
-                        parent1: pos,
-                        parent2: neg,
-                        resolvent: resolvent
-                    });
-
-                    newResolvents.push(resolvent);
-
-                    if (resolvent.literals.length === 0) {
-                        emptyClauseFound = true;
-                        return true;
-                    }
-                    return false;
-                });
-            });
+            const phaseAResult = generateResolventsPhase(pool, posClauses, negClauses, targetVar, stepCounter, history);
+            const newResolvents = phaseAResult.newResolvents;
+            emptyClauseFound = phaseAResult.emptyClauseFound;
+            stepCounter = phaseAResult.nextStepCounter;
 
             pool = [...pool, ...newResolvents];
 
             if (!emptyClauseFound) {
+                const parentsToRemove = [...posClauses, ...negClauses];
+
                 history.push({
                     stepNumber: stepCounter++,
                     type: 'REDUCTION',
-                    message: `Removed parent clauses containing "${targetVar}".`,
+                    message: `removed parent clauses containing "${targetVar}".`,
                     poolBefore: [...pool],
                     removedClauses: parentsToRemove
                 });
@@ -114,6 +144,8 @@ export function autoSolve(initialClauses: Clause[]): { finalPool: Clause[], hist
 
                 vars = getVariables(pool);
             }
+        } else {
+            vars = vars.filter(v => v !== targetVar);
         }
     }
 
