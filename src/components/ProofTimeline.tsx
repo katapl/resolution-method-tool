@@ -125,7 +125,7 @@ export default function ProofTimeline({ initialClauses }: ProofTimelineProps) {
                             fontSize: '1.1rem',
                             cursor: 'pointer'
                         }}>
-                        Reset
+                        Reset steps
                     </button>
                     <div ref={stepEndRef} />
                 </div>

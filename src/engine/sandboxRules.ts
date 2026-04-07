@@ -42,7 +42,8 @@ export function evaluateResolution(
     id1: string,
     id2: string,
     currentPool: Clause[],
-    resolvedPairs: Set<string>
+    resolvedPairs: Set<string>,
+activeTargetLiteral: string | null
 ): ResolutionResult {
     const c1 = currentPool.find(c => c.id === id1);
     const c2 = currentPool.find(c => c.id === id2);
@@ -53,51 +54,68 @@ export function evaluateResolution(
             message: "System Error: Clause not found in memory. Please click Start Over."
         };
     }
+    if (!activeTargetLiteral) return { status: 'INVALID', message: "No target literal selected." };
 
     const pairKey = `${id1}-${id2}`;
     if (resolvedPairs.has(pairKey) || resolvedPairs.has(`${id2}-${id1}`)) {
         return { status: 'DUPLICATE', message: "You have already resolved this exact pair." };
     }
 
-    const targetLiteral = getComplementaryLiteral(c1, c2);
-    if (!targetLiteral) {
-        return { status: 'INVALID', message: "Invalid move! No complementary literal found." };
+    const l1 = c1.literals.find(l => l.name === activeTargetLiteral);
+    const l2 = c2.literals.find(l => l.name === activeTargetLiteral);
+
+    if (!l1 || !l2 || l1.polarity === l2.polarity) {
+        return { status: 'INVALID', message: `Invalid move! These clauses do not resolve on "${activeTargetLiteral}".` };
     }
 
-    const newId = `sandbox-res-${Date.now()}`;
+    const targetLiteral = l1;
+    const newId = `sandbox-res-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
     const resolvent = resolve(targetLiteral, c1, c2, newId);
 
     const newResolvedPairs = new Set(resolvedPairs).add(pairKey).add(`${id2}-${id1}`);
     const tempPool = [...currentPool, resolvent];
 
-    const posClauses = tempPool.filter(c => c.literals.some(l => l.name === targetLiteral.name && l.polarity === true));
-    const negClauses = tempPool.filter(c => c.literals.some(l => l.name === targetLiteral.name && l.polarity === false));
+    const stillHasPairs = checkUnresolvedPairsForLiteral(activeTargetLiteral!, tempPool, newResolvedPairs);
 
-    const hasUnresolvedPairs = posClauses.some(p =>
-        negClauses.some(n => !newResolvedPairs.has(`${p.id}-${n.id}`))
-    );
-
-    if (hasUnresolvedPairs) {
+    if (stillHasPairs) {
         return {
             status: 'RESOLVED',
-            message: `Resolved on "${targetLiteral.name}". Parents kept. You must finish resolving all "${targetLiteral.name}" pairs.`,
+            message: `Resolved on "${activeTargetLiteral}". Continue matching pairs.`,
             resolvent,
             newPool: tempPool,
-            newResolvedPairs,
-            lockedLiteral: targetLiteral.name
+            newResolvedPairs
         };
     } else {
-        const clausesToRemove = tempPool.filter(c => c.literals.some(l => l.name === targetLiteral.name));
-        const finalPool = tempPool.filter(c => !c.literals.some(l => l.name === targetLiteral.name));
+        const clausesToSweep = tempPool.filter(c => c.literals.some(l => l.name === activeTargetLiteral));
 
         return {
-            status: 'REMOVE_PARENTS',
-            message: `All resolvents using "${targetLiteral.name}" are done. Parent clauses removed.`,
+            status: 'SWEEP',
+            message: `All resolutions for "${activeTargetLiteral}" are done. Now you must manually remove all clauses containing "${activeTargetLiteral}".`,
             resolvent,
-            newPool: finalPool,
-            sweptClauseIds: clausesToRemove.map(c => c.id),
-            newResolvedPairs,
-            lockedLiteral: null
+            newPool: tempPool,
+            sweptClauseIds: clausesToSweep.map(c => c.id),
+            newResolvedPairs
         };
     }
+}
+
+export function checkPendingReductions(currentPool: Clause[]): boolean {
+    return currentPool.some(clause =>
+        checkTautology(clause) ||
+        checkSubsumption(clause, currentPool) ||
+        getPureLiteral(clause, currentPool) !== null
+    );
+}
+
+export function checkUnresolvedPairsForLiteral(
+    literalName: string,
+    currentPool: Clause[],
+    resolvedPairs: Set<string>
+): boolean {
+    const posClauses = currentPool.filter(c => c.literals.some(l => l.name === literalName && l.polarity === true));
+    const negClauses = currentPool.filter(c => c.literals.some(l => l.name === literalName && l.polarity === false));
+
+    return posClauses.some(p =>
+        negClauses.some(n => !resolvedPairs.has(`${p.id}-${n.id}`))
+    );
 }

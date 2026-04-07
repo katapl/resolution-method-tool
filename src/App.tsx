@@ -12,6 +12,7 @@ const clearSessionMemory = () => {
     window.localStorage.removeItem('sandbox_nodes_active');
     window.localStorage.removeItem('sandbox_edges_active');
     window.localStorage.removeItem('timeline_step_active');
+    window.localStorage.removeItem('sandbox_target_literal_active');
 };
 
 function App() {

@@ -43,7 +43,7 @@ export default function FormulaInput({ onSolve, onPractice, onReset, disabled }:
                         type="text"
                         value={inputValue}
                         onChange={(e) => setInputValue(e.target.value)}
-                        placeholder="~p v t, k v s v r"
+                        // placeholder="~p v t, k v s v r"
                         disabled={disabled}
                         style={{ flex: 1, padding: '0.75rem', borderRadius: '8px', border: '1px solid #ccc', fontSize: '1rem', color: 'black', backgroundColor: '#FFFFFF' }}
                     />

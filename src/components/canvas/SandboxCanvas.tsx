@@ -20,9 +20,9 @@ interface SandboxCanvasProps {
 export default function SandboxCanvas({ initialClauses }: SandboxCanvasProps) {
 
     const {
-        nodes, edges, feedback,
+        nodes, edges, feedback, currentPhase, targetLiteral, availableVariables,
         setNodes, setEdges,
-        handleRemoveRequest, handleNodeClick
+        handleRemoveRequest, handleNodeClick, handleLiteralSelect
     } = useSandboxEngine(initialClauses);
 
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
@@ -68,6 +68,22 @@ export default function SandboxCanvas({ initialClauses }: SandboxCanvasProps) {
                     {feedback.msg}
                 </strong>
             </div>
+
+            {currentPhase === 'LITERAL_SELECTION' && (
+                <div style={{ padding: '1rem', background: '#fff', borderBottom: '1px solid #ddd', display: 'flex', gap: '1rem', justifyContent: 'center', alignItems: 'center' }}>
+                    <span style={{ fontWeight: 'bold' }}>Select Literal to Resolve:</span>
+                    {availableVariables.map(v => (
+                        <button
+                            key={v}
+                            onClick={() => handleLiteralSelect(v)}
+                            style={{ padding: '0.5rem 1.5rem', background: '#2196F3', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer', fontWeight: 'bold' }}
+                        >
+                            {v}
+                        </button>
+                    ))}
+                </div>
+            )}
+
             <div style={{ flexGrow: 1, background: '#ffffff' }}>
                 <ReactFlow
                     nodes={nodes}
