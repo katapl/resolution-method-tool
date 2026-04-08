@@ -1,8 +1,8 @@
 import { useMemo, useEffect, useRef } from 'react';
-import { autoSolve } from '../engine/resolver';
-import StepCanvas from './canvas/StepCanvas';
-import type { Clause } from "../engine/types.ts";
-import { useLocalStorage } from '../hook/useLocalStorage';
+import { autoSolve } from '../../engine/resolver';
+import StepCanvas from './StepCanvas';
+import type { Clause } from "../../engine/types.ts";
+import { useLocalStorage } from '../../hook/useLocalStorage';
 
 interface ProofTimelineProps {
     initialClauses: Clause[];
@@ -12,9 +12,9 @@ export default function ProofTimeline({ initialClauses }: ProofTimelineProps) {
 
     const stepEndRef = useRef<HTMLDivElement>(null);
 
-    const fullHistory = useMemo(() => {
-        if (initialClauses.length === 0) return [];
-        return autoSolve(initialClauses).history;
+    const { history: fullHistory, finalPool } = useMemo(() => {
+        if (initialClauses.length === 0) return { history: [], finalPool: [] };
+        return autoSolve(initialClauses);
     }, [initialClauses]);
 
     const [visibleStepCount, setVisibleStepCount] = useLocalStorage<number>(
@@ -31,6 +31,28 @@ export default function ProofTimeline({ initialClauses }: ProofTimelineProps) {
     useEffect(() => {
         stepEndRef.current?.scrollIntoView({ behavior: 'smooth' });
     }, [visibleStepCount]);
+
+    const hasEmptyClause = finalPool.some(c => c.literals.length === 0);
+    const isEmptySet = finalPool.length === 0;
+    const hasConclusion = initialClauses.some(c => c.isNegatedConclusion);
+
+    let resultTitle = "";
+    let resultMessage = "";
+    let resultColor = "";
+
+    if (hasEmptyClause) {
+        resultTitle = "Proof Successful: Contradiction Reached";
+        resultColor = "#000000";
+        resultMessage = hasConclusion
+            ? "An empty clause (□) was derived. This proves that the negated conclusion contradicts the premises. Therefore, the original entailment holds true!"
+            : "An empty clause (□) was derived. This means the set of clauses is unsatisfiable (it contains a contradiction).";
+    } else if (isEmptySet) {
+        resultTitle = "Proof Finished: Empty Set Reached";
+        resultColor = "#000000";
+        resultMessage = hasConclusion
+            ? "All clauses were reduced and the set is empty, but no contradiction was found. Therefore, the entailment does NOT hold."
+            : "All clauses were reduced and the set is empty. This means the original set of clauses is satisfiable (consistent).";
+    }
 
     const visibleHistory = fullHistory.slice(0, visibleStepCount);
 
@@ -73,6 +95,21 @@ export default function ProofTimeline({ initialClauses }: ProofTimelineProps) {
                     <StepCanvas step={step} />
                 </div>
             ))}
+
+            {visibleStepCount === fullHistory.length && (
+                <div style={{
+                    background: '#fff',
+                    padding: '2rem',
+                    borderRadius: '12px',
+                    boxShadow: '0 4px 15px rgba(0,0,0,0.05)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '0.5rem'
+                }}>
+                    <h2 style={{ margin: 0, color: resultColor }}>{resultTitle}</h2>
+                    <p style={{ margin: 0, fontSize: '1.1rem', color: '#333' }}>{resultMessage}</p>
+                </div>
+            )}
 
             <div style={{
                 textAlign: 'center',

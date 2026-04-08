@@ -75,6 +75,16 @@ activeTargetLiteral: string | null
     const newResolvedPairs = new Set(resolvedPairs).add(pairKey).add(`${id2}-${id1}`);
     const tempPool = [...currentPool, resolvent];
 
+    if (resolvent.literals.length === 0) {
+        return {
+            status: 'RESOLVED',
+            message: 'Proof Complete! Empty clause found (Contradiction).',
+            resolvent,
+            newPool: tempPool,
+            newResolvedPairs
+        };
+    }
+
     const stillHasPairs = checkUnresolvedPairsForLiteral(activeTargetLiteral!, tempPool, newResolvedPairs);
 
     if (stillHasPairs) {
@@ -86,8 +96,7 @@ activeTargetLiteral: string | null
             newResolvedPairs
         };
     } else {
-        const clausesToSweep = tempPool.filter(c => c.literals.some(l => l.name === activeTargetLiteral));
-
+        const clausesToSweep = tempPool.filter(c => !c.removed && c.literals.some(l => l.name === activeTargetLiteral));
         return {
             status: 'SWEEP',
             message: `All resolutions for "${activeTargetLiteral}" are done. Now you must manually remove all clauses containing "${activeTargetLiteral}".`,
@@ -100,10 +109,11 @@ activeTargetLiteral: string | null
 }
 
 export function checkPendingReductions(currentPool: Clause[]): boolean {
-    return currentPool.some(clause =>
+    const logicalPool = currentPool.filter(c => !c.removed);
+    return logicalPool.some(clause =>
         checkTautology(clause) ||
-        checkSubsumption(clause, currentPool) ||
-        getPureLiteral(clause, currentPool) !== null
+        checkSubsumption(clause, logicalPool) ||
+        getPureLiteral(clause, logicalPool) !== null
     );
 }
 
@@ -112,8 +122,9 @@ export function checkUnresolvedPairsForLiteral(
     currentPool: Clause[],
     resolvedPairs: Set<string>
 ): boolean {
-    const posClauses = currentPool.filter(c => c.literals.some(l => l.name === literalName && l.polarity === true));
-    const negClauses = currentPool.filter(c => c.literals.some(l => l.name === literalName && l.polarity === false));
+    const logicalPool = currentPool.filter(c => !c.removed);
+    const posClauses = logicalPool.filter(c => c.literals.some(l => l.name === literalName && l.polarity === true));
+    const negClauses = logicalPool.filter(c => c.literals.some(l => l.name === literalName && l.polarity === false));
 
     return posClauses.some(p =>
         negClauses.some(n => !resolvedPairs.has(`${p.id}-${n.id}`))

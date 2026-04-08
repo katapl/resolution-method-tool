@@ -2,7 +2,7 @@ import ReactFlow, {type Node, type Edge, Background } from 'reactflow';
 import 'reactflow/dist/style.css';
 import {type ProofStep } from '../../engine/resolver';
 import { clauseToString } from "../../engine/types.ts";
-import ClauseNode from './ClauseNode';
+import ClauseNode from '../sandbox_mode/ClauseNode';
 
 const nodeTypes = { clause: ClauseNode };
 const defaultEdgeOptions = { animated: false };
@@ -22,22 +22,24 @@ export default function StepCanvas({ step }: StepCanvasProps) {
     const activeColumns = Math.min(step.poolBefore.length, NODES_PER_ROW);
     const startX = -((activeColumns - 1) * X_SPACING) / 2;
 
-    if (step.type === 'REDUCTION') {
+    if (step.type === 'REDUCTION' || step.type === 'INIT') {
         step.poolBefore.forEach((clause, index) => {
             const row = Math.floor(index / NODES_PER_ROW);
             const col = index % NODES_PER_ROW;
 
-            const isRemoved = step.removedClauses!.some(r => r.id === clause.id);
+            const isRemoved = step.removedClauses ? step.removedClauses.some(r => r.id === clause.id) : false;
+
+            const isHighlighted = step.type === 'INIT' && clause.isNegatedConclusion === true;
+
             nodes.push({
                 id: clause.id,
                 type: 'clause',
                 position: { x: col * X_SPACING + 50, y: row * Y_SPACING + 50 },
                 data: {
-                    label: clauseToString(clause),
-                    isHighlighted: false,
-                    isRemoved: isRemoved,
-                    isInteractive: false,
-                    onRemove: () => {}
+                    clause: { ...clause, removed: isRemoved },
+                    currentPhase: 'DONE',
+                    isSelected: false,
+                    isHighlighted: isHighlighted
                 }
             });
         });
@@ -66,11 +68,10 @@ export default function StepCanvas({ step }: StepCanvasProps) {
                 type: 'clause',
                 position: { x: xPos, y: yPos },
                 data: {
-                    label: clauseToString(clause),
+                    clause: { ...clause, removed: false },
+                    currentPhase: 'DONE',
+                    isSelected: false,
                     isHighlighted: isParent,
-                    isRemoved: false,
-                    isInteractive: false,
-                    onRemove: () => {}
                 }
             });
         });
@@ -82,11 +83,11 @@ export default function StepCanvas({ step }: StepCanvasProps) {
             type: 'clause',
             position: { x: resolventX, y: 160 },
             data: {
-                label: clauseToString(step.resolvent!),
+                clause: { ...step.resolvent!, removed: false },
+                currentPhase: 'DONE',
+                isSelected: false,
                 isHighlighted: true,
-                isRemoved: false,
-                isInteractive: false,
-                onRemove: () => {} }
+            }
         });
 
         edges = [

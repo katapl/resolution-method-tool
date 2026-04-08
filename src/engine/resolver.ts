@@ -99,6 +99,16 @@ export function autoSolve(initialClauses: Clause[]): { finalPool: Clause[], hist
     const history: ProofStep[] = [];
     let stepCounter = 1;
 
+    const hasNegatedConclusion = pool.some(c => c.isNegatedConclusion);
+    if (hasNegatedConclusion) {
+        history.push({
+            stepNumber: stepCounter++,
+            type: 'INIT',
+            message: 'Negated the conclusion (via De Morgan\'s Laws) and added to the set.',
+            poolBefore: [...pool]
+        });
+    }
+
     let reductionResult = runReductions(pool, history, stepCounter);
     pool = reductionResult.pool;
     stepCounter = reductionResult.stepCounter;

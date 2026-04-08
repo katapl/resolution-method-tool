@@ -1,5 +1,5 @@
-import ProofTimeline from "./components/ProofTimeline.tsx";
-import SandboxCanvas from "./components/canvas/SandboxCanvas";
+import ProofTimeline from "./components/solve_mode/ProofTimeline.tsx";
+import SandboxCanvas from "./components/sandbox_mode/SandboxCanvas";
 import { useState } from 'react';
 import FormulaInput from "./components/FormulaInput";
 import { useLocalStorage } from './hook/useLocalStorage';
@@ -7,12 +7,15 @@ import { useLocalStorage } from './hook/useLocalStorage';
 type AppMode = 'IDLE' | 'SOLVE' | 'PRACTICE';
 
 const clearSessionMemory = () => {
-    window.localStorage.removeItem('sandbox_pool_active');
-    window.localStorage.removeItem('sandbox_pairs_active');
+    window.localStorage.removeItem('sandbox_engine');
+    window.localStorage.removeItem('sandbox_removed_ids');
+
+    // Keys used by SandboxCanvas
     window.localStorage.removeItem('sandbox_nodes_active');
     window.localStorage.removeItem('sandbox_edges_active');
+
+    // Key used by ProofTimeline
     window.localStorage.removeItem('timeline_step_active');
-    window.localStorage.removeItem('sandbox_target_literal_active');
 };
 
 function App() {

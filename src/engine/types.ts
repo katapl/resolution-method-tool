@@ -4,17 +4,20 @@ export interface Literal {
     name: string;
 }
 
+//remove parents?
 export interface Clause {
     id: string;
     literals: Literal[];
     parents?: [string, string];
+    removed?: boolean;
+    isNegatedConclusion?: boolean;
 }
 
-// two different steps? resolution and reduction step? Step parent and reductionStep/resolutionStep children?
-// enum for type resolution/reduction/result
+export type ProofStepType = 'RESOLUTION' | 'REDUCTION' | 'INIT';
+
 export interface ProofStep {
     stepNumber: number;
-    type: 'RESOLUTION' | 'REDUCTION';
+    type: ProofStepType;
     message: string;
     poolBefore: Clause[];
 

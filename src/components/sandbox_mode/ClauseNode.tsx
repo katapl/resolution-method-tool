@@ -1,34 +1,54 @@
 import { Handle, Position, type NodeProps } from 'reactflow';
+import type { Clause } from '../../engine/types';
+import type { SandboxPhase } from '../../hook/useSandboxEngine';
+import { clauseToString } from '../../engine/types';
 
 export type ClauseNodeData = {
-    label: string;
-    isHighlighted: boolean;
-    isSelected: boolean;
-    isRemoved?: boolean;
-    isDisabled?: boolean;
-    isInteractive?: boolean;
-    onRemove: (id: string) => void;
+    clause: Clause;
+    currentPhase?: SandboxPhase;
+    targetLiteral?: string | null;
+    isSelected?: boolean;
+    isHighlighted?: boolean;
+    onRemove?: (id: string) => void;
 };
 
 export default function ClauseNode({ id, data }: NodeProps<ClauseNodeData>) {
+    if (!data || !data.clause) {
+        return null;
+    }
+
+    const { clause, currentPhase, targetLiteral, isSelected, isHighlighted, onRemove } = data;
+
+    const isRemoved = clause.removed === true;
+
+    let isInteractive = false;
+    if (!isRemoved && onRemove && currentPhase) {
+        if (currentPhase === 'MANUAL_SWEEP' && targetLiteral) {
+            isInteractive = clause.literals.some(l => l.name === targetLiteral);
+        } else if (currentPhase === 'REDUCTION') {
+            isInteractive = true;
+        }
+    }
+
+    const isDisabled = isRemoved;
 
     let borderStyle = '2px solid #333';
-    if (data.isRemoved) borderStyle = '2px solid #f44336';
-    else if (data.isSelected) borderStyle = '2px solid #333';
-    else if (data.isHighlighted) borderStyle = '2px solid black';
+    if (isRemoved) borderStyle = '2px solid #f44336';
+    else if (isSelected) borderStyle = '2px solid #333';
+    else if (isHighlighted) borderStyle = '2px solid #4CAF50';
 
     let nodeOpacity = 0.9;
-    if (data.isRemoved) nodeOpacity = 0.3;
-    else if (data.isDisabled) nodeOpacity = 0.4;
-    else if (data.isSelected || data.isHighlighted) nodeOpacity = 1;
+    if (isRemoved) nodeOpacity = 0.3;
+    else if (isDisabled) nodeOpacity = 0.4;
+    else if (isSelected || isHighlighted) nodeOpacity = 1;
 
     return (
         <div style={{
             position: 'relative',
-            background: data.isSelected ? '#d1d1d1' : (data.isRemoved ? '#ffebee' : '#ffffff'),
+            background: isSelected || isHighlighted ? '#f0f8ff' : (isRemoved ? '#ffebee' : '#ffffff'),
             border: borderStyle,
             opacity: nodeOpacity,
-            cursor: data.isDisabled || data.isRemoved ? 'not-allowed' : 'pointer',
+            cursor: isDisabled ? 'not-allowed' : 'pointer',
             borderRadius: '8px',
             padding: '12px',
             transition: 'all 0.2s ease',
@@ -39,15 +59,15 @@ export default function ClauseNode({ id, data }: NodeProps<ClauseNodeData>) {
             <Handle type="target" position={Position.Top} style={{ background: '#555', opacity: 0 }} />
 
             <div style={{ fontWeight: 'bold', fontSize: '1.1rem', color: 'black' }}>
-                {data.label}
+                {clauseToString(clause)}
             </div>
 
-            {data.isInteractive && !data.isRemoved && !data.isDisabled && (
+            {isInteractive && !isDisabled && onRemove && (
                 <button
                     title="Remove Clause"
                     onClick={(e) => {
                         e.stopPropagation();
-                        data.onRemove(id);
+                        onRemove(id);
                     }}
                     style={{
                         position: 'absolute',
