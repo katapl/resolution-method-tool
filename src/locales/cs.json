@@ -1,0 +1,45 @@
+{
+  "input": {
+    "enterFormula": "Vložit formuli:"
+  },
+  "sandbox": {
+    "selectLiteral": "Vyberte literál k rezoluci:",
+    "removeHint": "Nápověda: Musíte odstranit klauzule obsahující vybraný literál.",
+    "proofCompleteContradiction": "Důkaz dokončen! Nalezena prázdná klauzule (Spor).",
+    "proofCompleteSatisfiable": "Důkaz dokončen! Dosaženo prázdné množiny (Splnitelné)."
+  },
+  "solve": {
+    "step": "Krok {{count}}"
+  },
+  "buttons": {
+    "solve": "Vyřešit",
+    "practice": "Procvičit",
+    "reset": "Resetovat",
+    "nextStep": "Další krok",
+    "fullSolution": "Celé řešení"
+  },
+  "results": {
+    "titleContradiction": "Spor nalezen",
+    "titleEmptySet": "Prázdná množina",
+    "msgContradictionEntailment": "Byla nalezena prázdná klauzule. This proves that the negated conclusion contradicts the premises. Therefore, the original entailment holds true!",
+    "msgContradictionSatisfiable": "Byla nalezena prázdná klauzule. This means the set of clauses is unsatisfiable (it contains a contradiction).",
+    "msgEmptySetEntailment": "Všechny klauzule byly zredukovány a množina je prázdná, but no contradiction was found. Therefore, the entailment does NOT hold.",
+    "msgEmptySetSatisfiable": "Všechny klauzule byly zredukovány a množina je prázdná. To znamená, že původní množina předpokladů je splnitelná."
+  },
+  "engine": {
+    "negateConclusion" : "Negated the conclusion and added it to the set.",
+    "removeParents" : "Removed parent clauses containing {{literal}}",
+    "resolvedOn": "Provedena rezoluce na literálu {{literal}}.",
+    "removedTautologies_one": "Odstraněna {{count}} tautologie.",
+    "removedTautologies_few": "Odstraněny {{count}} tautologie.",
+    "removedTautologies_other": "Odstraněno {{count}} tautologií.",
+
+    "removedPureLiterals_one": "Odstraněna {{count}} klauzule obsahující čistý literál: {{names}}.",
+    "removedPureLiterals_few": "Odstraněny {{count}} klauzule obsahující čistý literál: {{names}}.",
+    "removedPureLiterals_other": "Odstraněno {{count}} klauzulí obsahujících čistý literál: {{names}}.",
+
+    "removeSubsumed_one": "Odstraněna {{count}} subsumovaná klauzule.",
+    "removeSubsumed_few": "Odstraněny {{count}} subsumované klauzule.",
+    "removeSubsumed_other": "Odstraněno {{count}} subsumovaných klauzulí."
+  }
+}

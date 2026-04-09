@@ -1,5 +1,6 @@
 import {type Literal, type Clause, type ProofStep, clauseToString} from "./types.ts";
 import { runReductions } from "./reduction.ts"
+import { useTranslation } from "react-i18next"
 
 export function resolve(literal: Literal, c1: Clause, c2: Clause, newId: string): Clause {
     const combined = [...c1.literals, ...c2.literals];
@@ -74,7 +75,10 @@ function generateResolventsPhase(
             history.push({
                 stepNumber: stepCounter++,
                 type: 'RESOLUTION',
-                message: `Resolved on "${targetVar}".`,
+                message: {
+                    key: 'engine.resolvedOn',
+                    params: { literal: targetVar }
+                },
                 poolBefore: [...currentPool, ...newResolvents],
                 parent1: pos,
                 parent2: neg,
@@ -104,7 +108,10 @@ export function autoSolve(initialClauses: Clause[]): { finalPool: Clause[], hist
         history.push({
             stepNumber: stepCounter++,
             type: 'INIT',
-            message: 'Negated the conclusion (via De Morgan\'s Laws) and added to the set.',
+            message: {
+                key: 'engine.negateConclusion',
+                params: {}
+            },
             poolBefore: [...pool]
         });
     }
@@ -141,7 +148,10 @@ export function autoSolve(initialClauses: Clause[]): { finalPool: Clause[], hist
                 history.push({
                     stepNumber: stepCounter++,
                     type: 'REDUCTION',
-                    message: `removed parent clauses containing "${targetVar}".`,
+                    message: {
+                        key: 'engine.negateConclusion',
+                        params: { literal: targetVar}
+                    },
                     poolBefore: [...pool],
                     removedClauses: parentsToRemove
                 });
@@ -178,7 +188,11 @@ export function findFirstResolution(pool: Clause[], stepCounter: number, resolve
                 return {
                     stepNumber: stepCounter,
                     type: 'RESOLUTION',
-                    message: `Resolved on "${targetLiteral.name}".`,
+                    // message: `Resolved on "${targetLiteral.name}".`,
+                    message: {
+                        key: 'engine.resolvedOn',
+                        params: { literal: targetLiteral.name}
+                    },
                     poolBefore: [...pool],
                     parent1: c1,
                     parent2: c2,

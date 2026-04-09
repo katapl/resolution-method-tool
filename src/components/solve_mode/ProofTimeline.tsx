@@ -3,12 +3,15 @@ import { autoSolve } from '../../engine/resolver';
 import StepCanvas from './StepCanvas';
 import type { Clause } from "../../engine/types.ts";
 import { useLocalStorage } from '../../hook/useLocalStorage';
+import { useTranslation } from 'react-i18next';
+import ResultPanel from './ResultPanel';
 
 interface ProofTimelineProps {
     initialClauses: Clause[];
 }
 
 export default function ProofTimeline({ initialClauses }: ProofTimelineProps) {
+    const { t, i18n } = useTranslation();
 
     const stepEndRef = useRef<HTMLDivElement>(null);
 
@@ -35,24 +38,6 @@ export default function ProofTimeline({ initialClauses }: ProofTimelineProps) {
     const hasEmptyClause = finalPool.some(c => c.literals.length === 0);
     const isEmptySet = finalPool.length === 0;
     const hasConclusion = initialClauses.some(c => c.isNegatedConclusion);
-
-    let resultTitle = "";
-    let resultMessage = "";
-    let resultColor = "";
-
-    if (hasEmptyClause) {
-        resultTitle = "Proof Successful: Contradiction Reached";
-        resultColor = "#000000";
-        resultMessage = hasConclusion
-            ? "An empty clause (□) was derived. This proves that the negated conclusion contradicts the premises. Therefore, the original entailment holds true!"
-            : "An empty clause (□) was derived. This means the set of clauses is unsatisfiable (it contains a contradiction).";
-    } else if (isEmptySet) {
-        resultTitle = "Proof Finished: Empty Set Reached";
-        resultColor = "#000000";
-        resultMessage = hasConclusion
-            ? "All clauses were reduced and the set is empty, but no contradiction was found. Therefore, the entailment does NOT hold."
-            : "All clauses were reduced and the set is empty. This means the original set of clauses is satisfiable (consistent).";
-    }
 
     const visibleHistory = fullHistory.slice(0, visibleStepCount);
 
@@ -89,26 +74,23 @@ export default function ProofTimeline({ initialClauses }: ProofTimelineProps) {
                     boxShadow: '0 4px 15px rgba(0,0,0,0.05)'
                 }}>
                     <div style={{ marginBottom: '1rem' }}>
-                        <h3 style={{ margin: '0 0 0.5rem 0', color: 'black' }}>Step {step.stepNumber}</h3>
-                        <p style={{ margin: 0, fontSize: '1.1rem', color: '#333' }}>{step.message}</p>
+                        <h3 style={{ margin: '0 0 0.5rem 0', color: 'black' }}>
+                            {t('solve.step', {count: step.stepNumber})}
+                        </h3>
+                        <p style={{ margin: 0, fontSize: '1.1rem', color: '#333' }}>
+                            {t(step.message.key, step.message.params)}
+                        </p>
                     </div>
                     <StepCanvas step={step} />
                 </div>
             ))}
 
             {visibleStepCount === fullHistory.length && (
-                <div style={{
-                    background: '#fff',
-                    padding: '2rem',
-                    borderRadius: '12px',
-                    boxShadow: '0 4px 15px rgba(0,0,0,0.05)',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '0.5rem'
-                }}>
-                    <h2 style={{ margin: 0, color: resultColor }}>{resultTitle}</h2>
-                    <p style={{ margin: 0, fontSize: '1.1rem', color: '#333' }}>{resultMessage}</p>
-                </div>
+                <ResultPanel
+                    hasEmptyClause={hasEmptyClause}
+                    isEmptySet={isEmptySet}
+                    hasConclusion={hasConclusion}
+                />
             )}
 
             <div style={{
@@ -132,7 +114,8 @@ export default function ProofTimeline({ initialClauses }: ProofTimelineProps) {
                             cursor: visibleStepCount === fullHistory.length ? 'not-allowed' : 'pointer'
                         }}
                     >
-                        {visibleStepCount === fullHistory.length ? "Proof Complete" : "Next Step"}
+                        {/*{visibleStepCount === fullHistory.length ? "Proof Complete" : "Next Step"}*/}
+                        {t('buttons.nextStep')}
                     </button>
 
                     <button
@@ -148,7 +131,7 @@ export default function ProofTimeline({ initialClauses }: ProofTimelineProps) {
                             fontSize: '1.1rem',
                             cursor: visibleStepCount === fullHistory.length ? 'not-allowed' : 'pointer'
                         }}>
-                        Full solution
+                        {t('buttons.fullSolution')}
                     </button>
 
                     <button
@@ -162,7 +145,7 @@ export default function ProofTimeline({ initialClauses }: ProofTimelineProps) {
                             fontSize: '1.1rem',
                             cursor: 'pointer'
                         }}>
-                        Reset steps
+                        {t('buttons.reset')}
                     </button>
                     <div ref={stepEndRef} />
                 </div>

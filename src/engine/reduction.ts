@@ -73,7 +73,10 @@ export function runReductions(
             history.push({
                 stepNumber: stepCounter++,
                 type: 'REDUCTION',
-                message: `Removed ${tautologies.length} Tautology clause(s).`,
+                message: {
+                    key: 'engine.removedTautologies',
+                    params: { count: tautologies.length }
+                },
                 poolBefore: [...pool],
                 removedClauses: tautologies
             });
@@ -86,7 +89,10 @@ export function runReductions(
                 history.push({
                     stepNumber: stepCounter++,
                     type: 'REDUCTION',
-                    message: `Removed ${subsumed.length} Subsumed clause(s).`,
+                    message: {
+                        key: 'engine.removedSubsumed',
+                        params: { count: subsumed.length }
+                    },
                     poolBefore: [...pool],
                     removedClauses: subsumed
                 });
@@ -112,7 +118,10 @@ export function runReductions(
                     history.push({
                         stepNumber: stepCounter++,
                         type: 'REDUCTION',
-                        message: `Removed ${pureClauses.length} clause(s) containing Pure Literal(s):  ${pureNames} .`,
+                        message: {
+                            key: 'engine.removedPureLiterals',
+                            params: { count: pureClauses.length, names: pureNames },
+                        },
                         poolBefore: [...pool],
                         removedClauses: pureClauses
                     });

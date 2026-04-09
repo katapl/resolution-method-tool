@@ -15,10 +15,15 @@ export interface Clause {
 
 export type ProofStepType = 'RESOLUTION' | 'REDUCTION' | 'INIT';
 
+export interface ProofMessage {
+    key: string;
+    params?: Record<string, string | number>;
+}
+
 export interface ProofStep {
     stepNumber: number;
     type: ProofStepType;
-    message: string;
+    message: ProofMessage;
     poolBefore: Clause[];
 
     parent1?: Clause;
@@ -35,4 +40,12 @@ export function literalToString(literal: Literal): string {
 export function clauseToString(clause: Clause): string {
     if (clause.literals.length === 0) return "□ (Empty)";
     return `{ ${clause.literals.map(l => l.polarity ? l.name : `~${l.name}`).join(', ')} }`;
+}
+
+export function clauseToLatex(clause: Clause): string {
+    if (clause.literals.length === 0) return "\\square";
+
+    return clause.literals
+        .map(l => l.polarity ? l.name : `\\neg ${l.name}`)
+        .join(' \\lor ');
 }

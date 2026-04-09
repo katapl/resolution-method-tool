@@ -1,7 +1,9 @@
 import { Handle, Position, type NodeProps } from 'reactflow';
 import type { Clause } from '../../engine/types';
 import type { SandboxPhase } from '../../hook/useSandboxEngine';
-import { clauseToString } from '../../engine/types';
+import { clauseToString, clauseToLatex } from '../../engine/types';
+import 'katex/dist/katex.min.css';
+import { InlineMath } from 'react-katex';
 
 export type ClauseNodeData = {
     clause: Clause;
@@ -58,8 +60,12 @@ export default function ClauseNode({ id, data }: NodeProps<ClauseNodeData>) {
             {/* opacity 0 when canvas static */}
             <Handle type="target" position={Position.Top} style={{ background: '#555', opacity: 0 }} />
 
-            <div style={{ fontWeight: 'bold', fontSize: '1.1rem', color: 'black' }}>
-                {clauseToString(clause)}
+            {/*<div style={{ fontWeight: 'bold', fontSize: '1.1rem', color: 'black' }}>*/}
+            {/*    {clauseToString(clause)}*/}
+            {/*</div>*/}
+
+            <div style={{ fontSize: '1.3rem', color: 'black', padding: '0.2rem' }}>
+                <InlineMath math={clauseToLatex(clause)} />
             </div>
 
             {isInteractive && !isDisabled && onRemove && (

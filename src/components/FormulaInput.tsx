@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { parseFormulaToClauses } from '../engine/parser';
 import type {Clause} from "../engine/types.ts";
 import { useLocalStorage } from '../hook/useLocalStorage';
@@ -11,6 +12,7 @@ interface FormulaInputProps {
 }
 
 export default function FormulaInput({ onSolve, onPractice, onReset, disabled }: FormulaInputProps) {
+    const { t, i18n } = useTranslation();
     const [inputValue, setInputValue] = useLocalStorage<string>('prover_input_text', '');
 
     const handleSolve = (e: React.FormEvent) => {
@@ -33,11 +35,22 @@ export default function FormulaInput({ onSolve, onPractice, onReset, disabled }:
         onReset();
     }
 
+    const toggleLanguage = () => {
+        const newLang = i18n.language === 'en' ? 'cs' : 'en';
+        i18n.changeLanguage(newLang);
+    };
+
     return (
         <div style={{ padding: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', maxWidth: '1000px', margin: '0 auto' }}>
+
+            {/*MOVE*/}
+            <button onClick={toggleLanguage} style={{ alignSelf: 'flex-end' }}>
+                {i18n.language === 'en' ? 'CS' : 'EN'}
+            </button>
+
             <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'left', gap: '1rem'}}>
                 <div style={{ fontSize: '1.2rem', whiteSpace: 'nowrap' }}>
-                    Enter formula:
+                    {t('input.enterFormula')}
                 </div>
                     <input
                         type="text"
@@ -62,7 +75,7 @@ export default function FormulaInput({ onSolve, onPractice, onReset, disabled }:
                         cursor: disabled || !inputValue.trim() ? 'not-allowed' : 'pointer'
                     }}
                 >
-                    Solve
+                    {t('buttons.solve')}
                 </button>
                 <button
                     type="submit" //?
@@ -78,7 +91,7 @@ export default function FormulaInput({ onSolve, onPractice, onReset, disabled }:
                         cursor: disabled || !inputValue.trim() ? 'not-allowed' : 'pointer'
                     }}
                 >
-                    Practice
+                    {t('buttons.practice')}
                 </button>
                 <button
                     onClick={handleReset}
@@ -93,7 +106,7 @@ export default function FormulaInput({ onSolve, onPractice, onReset, disabled }:
                         cursor: disabled || !inputValue.trim() ? 'not-allowed' : 'pointer'
                     }}
                 >
-                    Reset
+                    {t('buttons.reset')}
                 </button>
             </div>
         </div>

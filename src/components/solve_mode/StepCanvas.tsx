@@ -81,7 +81,7 @@ export default function StepCanvas({ step }: StepCanvasProps) {
         nodes.push({
             id: step.resolvent!.id,
             type: 'clause',
-            position: { x: resolventX, y: 160 },
+            position: { x: resolventX, y: resolventY },
             data: {
                 clause: { ...step.resolvent!, removed: false },
                 currentPhase: 'DONE',

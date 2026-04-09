@@ -1,0 +1,40 @@
+{
+  "input": {
+    "enterFormula": "Enter formula:"
+  },
+  "sandbox": {
+    "selectLiteral": "Select Literal to Resolve:",
+    "removeHint": "Hint: You must remove clauses containing the selected literal.",
+    "proofCompleteContradiction": "Proof Complete! Empty clause found (Contradiction).",
+    "proofCompleteSatisfiable": "Proof Complete! Empty set reached (Satisfiable)."
+  },
+  "solve": {
+    "step": "Step {{count}}"
+  },
+  "buttons": {
+    "solve": "Solve",
+    "practice": "Practice",
+    "reset": "Reset",
+    "nextStep": "Next Step",
+    "fullSolution": "Full solution"
+  },
+  "results": {
+    "titleContradiction": "Contradiction Reached",
+    "titleEmptySet": "Empty Set Reached",
+    "msgContradictionEntailment": "An empty clause was derived. This proves that the negated conclusion contradicts the premises. Therefore, the original entailment holds true!",
+    "msgContradictionSatisfiable": "An empty clause was derived. This means the set of clauses is unsatisfiable.",
+    "msgEmptySetEntailment": "All clauses were reduced and the set is empty, but no contradiction was found. Therefore, the entailment does NOT hold.",
+    "msgEmptySetSatisfiable": "All clauses were reduced and the set is empty. This means the original set of clauses is satisfiable (consistent)."
+  },
+  "engine": {
+    "negateConclusion" : "Negated the conclusion and added it to the set.",
+    "removeParents" : "Removed parent clauses containing {{literal}}",
+    "resolvedOn": "Resolved on {{literal}}.",
+    "removedTautologies_one": "Removed {{count}} Tautology clause.",
+    "removedTautologies_other": "Removed {{count}} Tautology clauses.",
+    "removedPureLiterals_one": "Removed {{count}} clause containing Pure Literal(s): {{names}}.",
+    "removedPureLiterals_other": "Removed {{count}} clauses containing Pure Literal(s): {{names}}.",
+    "removeSubsumed_one": "Removed {{count}} Subsumed clause.",
+    "removeSubsumed_other": "Removed {{count}} Subsumed clauses."
+  }
+}
