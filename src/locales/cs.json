@@ -16,7 +16,9 @@
     "practice": "Procvičit",
     "reset": "Resetovat",
     "nextStep": "Další krok",
-    "fullSolution": "Celé řešení"
+    "previousStep": "Předchozí krok",
+    "fullSolution": "Celé řešení",
+    "calculating": "Kalkulace..."
   },
   "results": {
     "titleContradiction": "Spor nalezen",

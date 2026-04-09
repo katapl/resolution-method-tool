@@ -16,7 +16,9 @@
     "practice": "Practice",
     "reset": "Reset",
     "nextStep": "Next Step",
-    "fullSolution": "Full solution"
+    "previousStep": "Previous Step",
+    "fullSolution": "Full solution",
+    "calculating": "Calculating..."
   },
   "results": {
     "titleContradiction": "Contradiction Reached",
@@ -34,7 +36,7 @@
     "removedTautologies_other": "Removed {{count}} Tautology clauses.",
     "removedPureLiterals_one": "Removed {{count}} clause containing Pure Literal(s): {{names}}.",
     "removedPureLiterals_other": "Removed {{count}} clauses containing Pure Literal(s): {{names}}.",
-    "removeSubsumed_one": "Removed {{count}} Subsumed clause.",
-    "removeSubsumed_other": "Removed {{count}} Subsumed clauses."
+    "removedSubsumed_one": "Removed {{count}} Subsumed clause.",
+    "removedSubsumed_other": "Removed {{count}} Subsumed clauses."
   }
 }

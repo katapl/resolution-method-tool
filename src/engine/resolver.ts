@@ -99,6 +99,10 @@ function generateResolventsPhase(
 }
 
 export function autoSolve(initialClauses: Clause[]): { finalPool: Clause[], history: ProofStep[] } {
+    const MAX_STEPS = 2000;
+    const MAX_TIME_MS = 5000; // 5 seconds
+    const startTime = Date.now();
+
     let pool = [...initialClauses];
     const history: ProofStep[] = [];
     let stepCounter = 1;
@@ -124,6 +128,12 @@ export function autoSolve(initialClauses: Clause[]): { finalPool: Clause[], hist
     let emptyClauseFound = false;
 
     while (vars.length > 0 && !emptyClauseFound) {
+        if (stepCounter >= MAX_STEPS) {
+            throw new Error(`Calculation halted: Surpassed the maximum limit of ${MAX_STEPS} steps.`);
+        }
+        if (Date.now() - startTime > MAX_TIME_MS) {
+            throw new Error(`Calculation halted: Execution timed out after ${MAX_TIME_MS / 1000} seconds.`);
+        }
 
         const targetVar = selectNextVariable(pool, vars);
         const posClauses = pool.filter(
@@ -149,8 +159,8 @@ export function autoSolve(initialClauses: Clause[]): { finalPool: Clause[], hist
                     stepNumber: stepCounter++,
                     type: 'REDUCTION',
                     message: {
-                        key: 'engine.negateConclusion',
-                        params: { literal: targetVar}
+                        key: 'engine.removeParents',
+                        params: { literal: targetVar }
                     },
                     poolBefore: [...pool],
                     removedClauses: parentsToRemove
