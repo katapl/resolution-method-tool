@@ -11,7 +11,9 @@ export type ClauseNodeData = {
     targetLiteral?: string | null;
     isSelected?: boolean;
     isHighlighted?: boolean;
+    isReducible?: boolean;
     onRemove?: (id: string) => void;
+    onSelect?: () => void;
 };
 
 export default function ClauseNode({ id, data }: NodeProps<ClauseNodeData>) {
@@ -19,7 +21,7 @@ export default function ClauseNode({ id, data }: NodeProps<ClauseNodeData>) {
         return null;
     }
 
-    const { clause, currentPhase, targetLiteral, isSelected, isHighlighted, onRemove } = data;
+    const { clause, currentPhase, targetLiteral, isSelected, isHighlighted, onRemove, isReducible } = data;
 
     const isRemoved = clause.removed === true;
 
@@ -28,7 +30,7 @@ export default function ClauseNode({ id, data }: NodeProps<ClauseNodeData>) {
         if (currentPhase === 'MANUAL_SWEEP' && targetLiteral) {
             isInteractive = clause.literals.some(l => l.name === targetLiteral);
         } else if (currentPhase === 'REDUCTION') {
-            isInteractive = true;
+            isInteractive = isReducible === true;
         }
     }
 
@@ -45,7 +47,9 @@ export default function ClauseNode({ id, data }: NodeProps<ClauseNodeData>) {
     else if (isSelected || isHighlighted) nodeOpacity = 1;
 
     return (
-        <div style={{
+        <div
+            onClick={data.onSelect}
+            style={{
             position: 'relative',
             background: isSelected || isHighlighted ? '#f0f8ff' : (isRemoved ? '#ffebee' : '#ffffff'),
             border: borderStyle,
@@ -59,10 +63,6 @@ export default function ClauseNode({ id, data }: NodeProps<ClauseNodeData>) {
         }}>
             {/* opacity 0 when canvas static */}
             <Handle type="target" position={Position.Top} style={{ background: '#555', opacity: 0 }} />
-
-            {/*<div style={{ fontWeight: 'bold', fontSize: '1.1rem', color: 'black' }}>*/}
-            {/*    {clauseToString(clause)}*/}
-            {/*</div>*/}
 
             <div style={{ fontSize: '1.3rem', color: 'black', padding: '0.2rem' }}>
                 <InlineMath math={clauseToLatex(clause)} />

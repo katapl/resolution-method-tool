@@ -1,4 +1,4 @@
-import type { Clause } from "./types";
+import type { Clause, ProofMessage } from "./types";
 import type { SandboxPhase } from "../hook/useSandboxEngine";
 import {
     checkPendingReductions,
@@ -16,7 +16,7 @@ export interface SandboxState {
 
 export function getCurrentPhase(state: SandboxState): {
     phase: SandboxPhase;
-    feedback: { type: 'success' | 'error' | 'info'; msg: string };
+    feedback: { type: 'success' | 'error' | 'info'; msg: ProofMessage };
 } {
     const { activePool, targetLiteral, resolvedPairs, lastExhaustedLiteral } = state;
 
@@ -37,21 +37,24 @@ export function getCurrentPhase(state: SandboxState): {
     if (hasEmptyClause) {
         return {
             phase: 'DONE',
-            feedback: { type: 'success', msg: 'Proof Complete! Empty clause found (Contradiction).' }
+            feedback: { type: 'success', msg: { key: 'sandbox.proofContradiction' } }
         };
     }
 
     if (isPoolEmpty) {
         return {
             phase: 'DONE',
-            feedback: { type: 'success', msg: 'Proof Complete! Empty set reached (Satisfiable).' }
+            feedback: { type: 'success', msg: { key: 'sandbox.proofSatisfiable' } }
         };
     }
 
     if (targetLiteral && stillHasPairs) {
         return {
             phase: 'RESOLUTION',
-            feedback: { type: 'info', msg: `Resolving on "${targetLiteral}". Match remaining clauses.` }
+            feedback: {
+                type: 'info',
+                msg: {key: 'sandbox.phaseResolving', params: {literal: targetLiteral}}
+            }
         };
     }
 
@@ -60,7 +63,7 @@ export function getCurrentPhase(state: SandboxState): {
             phase: 'MANUAL_SWEEP',
             feedback: {
                 type: 'info',
-                msg: `All pairs for "${targetLiteral}" resolved. Now remove clauses containing it.`
+                msg: { key: 'sandbox.phaseSweep', params: { literal: targetLiteral } }
             }
         };
     }
@@ -71,8 +74,8 @@ export function getCurrentPhase(state: SandboxState): {
             feedback: {
                 type: 'info',
                 msg: lastExhaustedLiteral
-                    ? `All done resolving on "${lastExhaustedLiteral}". Now perform reduction.`
-                    : 'Perform set reduction.'
+                    ? { key: 'sandbox.phaseReductionAfter', params: { literal: lastExhaustedLiteral } }
+                    : { key: 'sandbox.phaseReductionBasic' }
             }
         };
     }
@@ -80,13 +83,13 @@ export function getCurrentPhase(state: SandboxState): {
     if (!targetLiteral) {
         return {
             phase: 'LITERAL_SELECTION',
-            feedback: { type: 'info', msg: 'Select a literal to resolve on.' }
+            feedback: { type: 'info', msg: { key: 'sandbox.phaseSelectLiteral' } }
         };
     }
 
     return {
         phase: 'LITERAL_SELECTION',
-        feedback: { type: 'success', msg: `Finished with "${targetLiteral}". Select next.` }
+        msg: { key: 'sandbox.phaseFinishedLiteral', params: { literal: targetLiteral } }
     };
 }
 

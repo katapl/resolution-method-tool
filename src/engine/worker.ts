@@ -1,5 +1,10 @@
 import { autoSolve } from './resolver';
-import type { Clause } from './types';
+import type { Clause, ProofStep } from './types';
+
+export type WorkerSuccessPayload = { finalPool: Clause[], history: ProofStep[] };
+export type WorkerMessage =
+    | { type: 'SUCCESS', payload: WorkerSuccessPayload }
+    | { type: 'ERROR', payload: string };
 
 self.addEventListener('message', (event: MessageEvent<Clause[]>) => {
     try {
@@ -7,11 +12,11 @@ self.addEventListener('message', (event: MessageEvent<Clause[]>) => {
 
         const result = autoSolve(initialClauses);
 
-        self.postMessage({ type: 'SUCCESS', payload: result });
+        self.postMessage({ type: 'SUCCESS', payload: result } as WorkerMessage);
     } catch (error) {
         self.postMessage({
             type: 'ERROR',
             payload: error instanceof Error ? error.message : 'An unknown math error occurred.'
-        });
+        } as WorkerMessage);
     }
 });

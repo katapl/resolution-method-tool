@@ -1,8 +1,9 @@
 import { useState, useCallback, useMemo } from 'react';
 import { useLocalStorage } from './useLocalStorage';
-import type { Clause } from '../engine/types';
+import type { Clause, ProofMessage } from '../engine/types';
 import { evaluateResolution } from '../engine/sandboxRules';
 import { getCurrentPhase } from '../engine/sandboxEngine';
+import { checkTautology, checkSubsumption, getPureLiteral } from '../engine/reduction';
 
 export type SandboxPhase =
     | 'REDUCTION'
@@ -13,32 +14,25 @@ export type SandboxPhase =
 
 interface SandboxState {
     activePool: Clause[];
-    resolvedPairs: string[];
+    resolvedPairs: Set<string>;
     targetLiteral: string | null;
     lastExhaustedLiteral: string | null;
 }
 
 export function useSandboxEngine(initialClauses: Clause[]) {
-    const [engineState, setEngineState] = useLocalStorage<SandboxState>(
-        'sandbox_engine',
-        {
-            activePool: initialClauses,
-            resolvedPairs: [],
-            targetLiteral: null,
-            lastExhaustedLiteral: null
-        }
-    );
+    const [engineState, setEngineState] = useState<SandboxState>({
+        activePool: initialClauses,
+        resolvedPairs: new Set(),
+        targetLiteral: null,
+        lastExhaustedLiteral: null
+    });
 
     const [feedbackOverride, setFeedbackOverride] = useState<{
         type: 'success' | 'error' | 'info';
-        msg: string;
+        msg: ProofMessage;
     } | null>(null);
 
-    const { activePool, targetLiteral, lastExhaustedLiteral } = engineState;
-    const resolvedPairs = useMemo(
-        () => new Set(engineState.resolvedPairs),
-        [engineState.resolvedPairs]
-    );
+    const { activePool, targetLiteral, lastExhaustedLiteral, resolvedPairs } = engineState;
 
     const { phase: currentPhase, feedback: dynamicFeedback } = useMemo(
         () =>
@@ -64,7 +58,7 @@ export function useSandboxEngine(initialClauses: Clause[]) {
             if (!hasTarget) {
                 setFeedbackOverride({
                     type: 'error',
-                    msg: 'You must remove clauses containing the selected literal.'
+                    msg: { key: 'sandbox.errMustRemoveTarget' }
                 });
                 return;
             }
@@ -98,11 +92,11 @@ export function useSandboxEngine(initialClauses: Clause[]) {
         setEngineState(prev => ({
             ...prev,
             activePool: result.newPool!,
-            resolvedPairs: Array.from(result.newResolvedPairs!)
+            resolvedPairs: result.newResolvedPairs!
         }));
 
         setFeedbackOverride({
-            type: result.status === 'SWEEP' ? 'success' : 'info',
+            type: result.status === 'REMOVE_PARENTS' ? 'success' : 'info',
             msg: result.message
         });
 
@@ -126,11 +120,23 @@ export function useSandboxEngine(initialClauses: Clause[]) {
         ).sort();
     }, [activePool]);
 
+    const reducibleClauseIds = useMemo(() => {
+        if (currentPhase !== 'REDUCTION') return [];
+
+        const logicalPool = activePool.filter(c => !c.removed);
+        return logicalPool.filter(clause =>
+            checkTautology(clause) ||
+            checkSubsumption(clause, logicalPool) ||
+            getPureLiteral(clause, logicalPool) !== null
+        ).map(c => c.id);
+    }, [currentPhase, activePool]);
+
     return {
         activePool,
         feedback,
         currentPhase,
         targetLiteral,
+        reducibleClauseIds,
         availableVariables,
         handleRemoveRequest,
         handleResolution,

@@ -3,6 +3,7 @@ import 'reactflow/dist/style.css';
 import {type ProofStep } from '../../engine/resolver';
 import { clauseToString } from "../../engine/types.ts";
 import ClauseNode from '../sandbox_mode/ClauseNode';
+import { useMemo } from 'react';
 
 const nodeTypes = { clause: ClauseNode };
 const defaultEdgeOptions = { animated: false };
@@ -12,8 +13,9 @@ interface StepCanvasProps {
 }
 
 export default function StepCanvas({ step }: StepCanvasProps) {
-    const nodes: Node[] = []
-    let edges: Edge[] = [];
+    const { nodes, edges } = useMemo(() => {
+    const generatedNodes: Node[] = []
+    let generatedEdges: Edge[] = [];
 
     const NODES_PER_ROW = 5;
     const X_SPACING = 200;
@@ -31,7 +33,7 @@ export default function StepCanvas({ step }: StepCanvasProps) {
 
             const isHighlighted = step.type === 'INIT' && clause.isNegatedConclusion === true;
 
-            nodes.push({
+            generatedNodes.push({
                 id: clause.id,
                 type: 'clause',
                 position: { x: col * X_SPACING + 50, y: row * Y_SPACING + 50 },
@@ -63,7 +65,7 @@ export default function StepCanvas({ step }: StepCanvasProps) {
             if (clause.id === step.parent1!.id) parent1X = xPos;
             if (clause.id === step.parent2!.id) parent2X = xPos;
 
-            nodes.push({
+            generatedNodes.push({
                 id: clause.id,
                 type: 'clause',
                 position: { x: xPos, y: yPos },
@@ -78,7 +80,7 @@ export default function StepCanvas({ step }: StepCanvasProps) {
 
         const resolventX = (parent1X + parent2X) / 2;
         const resolventY = (maxRow + 1) * Y_SPACING + 60;
-        nodes.push({
+        generatedNodes.push({
             id: step.resolvent!.id,
             type: 'clause',
             position: { x: resolventX, y: resolventY },
@@ -90,14 +92,16 @@ export default function StepCanvas({ step }: StepCanvasProps) {
             }
         });
 
-        edges = [
+        generatedEdges = [
             { id: `e1-${step.stepNumber}`, source: step.parent1!.id, target: step.resolvent!.id, animated: false, style: { stroke: 'grey', strokeWidth: 2 } },
             { id: `e2-${step.stepNumber}`, source: step.parent2!.id, target: step.resolvent!.id, animated: false, style: { stroke: 'grey', strokeWidth: 2 } }
         ];
     }
+        return { nodes: generatedNodes, edges: generatedEdges };
+    }, [step]);
 
     return (
-        // pointer events none to keep flow static
+        // pointer events none to keep flow static, allow resizing if large amount of clauses?
         <div style={{ height: '280px', width: '100%', background: '#fafafa', borderRadius: '8px', border: '1px solid #eee', pointerEvents: 'none' }}>
             <ReactFlow
                 nodes={nodes}

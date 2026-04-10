@@ -1,40 +1,39 @@
-import { type Clause } from './types';
+import { type Clause, type ProofMessage } from './types';
 import { getComplementaryLiteral, resolve } from './resolver';
 import { checkTautology, checkSubsumption, getPureLiteral } from './reduction';
 
 export interface RemovalResult {
     success: boolean;
-    message: string;
+    message: ProofMessage;
 }
 
 export interface ResolutionResult {
     status: 'DUPLICATE' | 'INVALID' | 'RESOLVED' | 'REMOVE_PARENTS';
-    message: string;
+    message: ProofMessage;
     resolvent?: Clause;
     newPool?: Clause[];
     sweptClauseIds?: string[];
     newResolvedPairs?: Set<string>;
-    lockedLiteral?: string | null;
 }
 
 export function evaluateRemoval(clauseId: string, currentPool: Clause[]): RemovalResult {
     const targetClause = currentPool.find(c => c.id === clauseId);
-    if (!targetClause) return { success: false, message: "Clause not found." };
+    if (!targetClause) return { success: false, message: { key: 'sandbox.errClauseNotFound' } };
 
     if (checkTautology(targetClause)) {
-        return { success: true, message: "You removed a Tautology." };
+        return { success: true, message: { key: 'sandbox.removedTautology' } };
     }
     if (checkSubsumption(targetClause, currentPool)) {
-        return { success: true, message: "You removed a subsumed clause." };
+        return { success: true, message: { key: 'sandbox.removedSubsumed' } };
     }
     const pureLit = getPureLiteral(targetClause, currentPool);
     if (pureLit) {
-        return { success: true, message: `Clause removed because "${pureLit.name}" is a pure literal.` };
+        return { success: true, message: { key: 'sandbox.removedPureLiteral', params: { literal: pureLit.name } } };
     }
 
     return {
         success: false,
-        message: "This clause is not a tautology, is not subsumed, and has no pure literals."
+        message: { key: 'sandbox.errInvalidRemoval' }
     };
 }
 
@@ -51,21 +50,21 @@ activeTargetLiteral: string | null
     if (!c1 || !c2) {
         return {
             status: 'INVALID',
-            message: "System Error: Clause not found in memory. Please click Start Over."
+            message: { key: 'sandbox.errSystemMemory' }
         };
     }
-    if (!activeTargetLiteral) return { status: 'INVALID', message: "No target literal selected." };
+    if (!activeTargetLiteral) return { status: 'INVALID', message: { key: 'sandbox.errNoTarget' } };
 
     const pairKey = `${id1}-${id2}`;
     if (resolvedPairs.has(pairKey) || resolvedPairs.has(`${id2}-${id1}`)) {
-        return { status: 'DUPLICATE', message: "You have already resolved this exact pair." };
+        return { status: 'DUPLICATE', message: { key: 'sandbox.errDuplicate' } };
     }
 
     const l1 = c1.literals.find(l => l.name === activeTargetLiteral);
     const l2 = c2.literals.find(l => l.name === activeTargetLiteral);
 
     if (!l1 || !l2 || l1.polarity === l2.polarity) {
-        return { status: 'INVALID', message: `Invalid move! These clauses do not resolve on "${activeTargetLiteral}".` };
+        return { status: 'INVALID', message: { key: 'sandbox.errInvalidMatch', params: { literal: activeTargetLiteral } } };
     }
 
     const targetLiteral = l1;
@@ -78,7 +77,7 @@ activeTargetLiteral: string | null
     if (resolvent.literals.length === 0) {
         return {
             status: 'RESOLVED',
-            message: 'Proof Complete! Empty clause found (Contradiction).',
+            message: { key: 'sandbox.proofContradiction' },
             resolvent,
             newPool: tempPool,
             newResolvedPairs
@@ -90,7 +89,7 @@ activeTargetLiteral: string | null
     if (stillHasPairs) {
         return {
             status: 'RESOLVED',
-            message: `Resolved on "${activeTargetLiteral}". Continue matching pairs.`,
+            message: { key: 'sandbox.resolvedContinue', params: { literal: activeTargetLiteral } },
             resolvent,
             newPool: tempPool,
             newResolvedPairs
@@ -98,8 +97,8 @@ activeTargetLiteral: string | null
     } else {
         const clausesToSweep = tempPool.filter(c => !c.removed && c.literals.some(l => l.name === activeTargetLiteral));
         return {
-            status: 'SWEEP',
-            message: `All resolutions for "${activeTargetLiteral}" are done. Now you must manually remove all clauses containing "${activeTargetLiteral}".`,
+            status: 'REMOVE_PARENTS',
+            message: { key: 'sandbox.resolutionDoneSweep', params: { literal: activeTargetLiteral } },
             resolvent,
             newPool: tempPool,
             sweptClauseIds: clausesToSweep.map(c => c.id),

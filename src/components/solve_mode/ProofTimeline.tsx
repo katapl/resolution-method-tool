@@ -2,9 +2,11 @@ import { useMemo, useEffect, useRef, useState } from 'react';
 import { autoSolve } from '../../engine/resolver';
 import StepCanvas from './StepCanvas';
 import type { Clause } from "../../engine/types.ts";
+import type { WorkerMessage } from "../engine/worker.ts"
 import { useLocalStorage } from '../../hook/useLocalStorage';
 import { useTranslation } from 'react-i18next';
 import ResultPanel from './ResultPanel';
+import Button from "../Button";
 
 interface ProofTimelineProps {
     initialClauses: Clause[];
@@ -13,13 +15,6 @@ interface ProofTimelineProps {
 export default function ProofTimeline({ initialClauses }: ProofTimelineProps) {
     const { t, i18n } = useTranslation();
 
-    // const stepEndRef = useRef<HTMLDivElement>(null);
-
-    // const { history: fullHistory, finalPool } = useMemo(() => {
-    //     if (initialClauses.length === 0) return { history: [], finalPool: [] };
-    //     return autoSolve(initialClauses);
-    // }, [initialClauses]);
-
     const [fullHistory, setFullHistory] = useState<ProofStep[]>([]);
     const [finalPool, setFinalPool] = useState<Clause[]>([]);
     const [isSolving, setIsSolving] = useState<boolean>(true);
@@ -27,13 +22,10 @@ export default function ProofTimeline({ initialClauses }: ProofTimelineProps) {
 
     const [currentIndex, setCurrentIndex] = useState<number>(0);
 
-    const [visibleStepCount, setVisibleStepCount] = useLocalStorage<number>(
-        'timeline_step_active',
-        1
-    );
+    const [visibleStepCount, setVisibleStepCount] = useState<number>(1);
 
     useEffect(() => {
-        if (initialClauses.length === 0) {
+        if (!initialClauses || initialClauses.length === 0) {
             setIsSolving(false);
             return;
         }
@@ -46,7 +38,7 @@ export default function ProofTimeline({ initialClauses }: ProofTimelineProps) {
             type: 'module'
         });
 
-        worker.onmessage = (e) => {
+        worker.onmessage = (e: MessageEvent<WorkerMessage>) => {
             if (e.data.type === 'SUCCESS') {
                 setFullHistory(e.data.payload.history);
                 setFinalPool(e.data.payload.finalPool);
@@ -70,13 +62,11 @@ export default function ProofTimeline({ initialClauses }: ProofTimelineProps) {
         }
     }, [fullHistory.length, setVisibleStepCount]);
 
-    // useEffect(() => {
-    //     stepEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    // }, [visibleStepCount]);
+    const hasEmptyClause = finalPool?.some(c => c.literals.length === 0) ?? false;
 
-    const hasEmptyClause = finalPool.some(c => c.literals.length === 0);
-    const isEmptySet = finalPool.length === 0;
-    const hasConclusion = initialClauses.some(c => c.isNegatedConclusion);
+    const hasConclusion = initialClauses?.some(c => c.isNegatedConclusion) ?? false;
+
+    const isEmptySet = (finalPool || []).length === 0;
 
     const visibleHistory = fullHistory.slice(0, visibleStepCount);
 
@@ -132,7 +122,7 @@ export default function ProofTimeline({ initialClauses }: ProofTimelineProps) {
         );
     }
 
-    if (fullHistory.length === 0) return null;
+    if (!fullHistory || fullHistory.length === 0) return null;
 
     const currentStep = fullHistory[currentIndex];
     const isLastStep = currentIndex === fullHistory.length - 1;
@@ -176,58 +166,26 @@ export default function ProofTimeline({ initialClauses }: ProofTimelineProps) {
             <div style={{ textAlign: 'center', padding: '1.5rem', background: '#fff', borderRadius: '12px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)' }}>
                 <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
 
-                    <button
+                    <Button
                         onClick={() => setCurrentIndex(prev => Math.max(0, prev - 1))}
                         disabled={currentIndex === 0}
-                        // style={{ padding: '0 1rem', height: '2.5rem', borderRadius: '8px', cursor: currentIndex === 0 ? 'not-allowed' : 'pointer', color: '#666' }}
-                        style={{
-                            padding: '0rem 1rem',
-                            height: '2rem',
-                            background:'#FFFFFF',
-                            color: visibleStepCount === fullHistory.length ? '#ccc' : 'grey',
-                            borderRadius: '8px',
-                            border: '1px solid grey',
-                            fontSize: '1.1rem',
-                            cursor: visibleStepCount === fullHistory.length ? 'not-allowed' : 'pointer'
-                        }}
                     >
                         {t('buttons.previousStep')}
-                    </button>
+                    </Button>
 
-                    <button
+                    <Button
                         onClick={() => setCurrentIndex(prev => Math.min(fullHistory.length - 1, prev + 1))}
                         disabled={isLastStep}
-                        // style={{ padding: '0 1rem', height: '2.5rem', borderRadius: '8px', cursor: isLastStep ? 'not-allowed' : 'pointer', color: '#666' }}
-                        style={{
-                            padding: '0rem 1rem',
-                            height: '2rem',
-                            background:'#FFFFFF',
-                            color: visibleStepCount === fullHistory.length ? '#ccc' : 'grey',
-                            borderRadius: '8px',
-                            border: '1px solid grey',
-                            fontSize: '1.1rem',
-                            cursor: visibleStepCount === fullHistory.length ? 'not-allowed' : 'pointer'
-                        }}
                     >
                         {t('buttons.nextStep')}
-                    </button>
+                    </Button>
 
-                        <button
-                            onClick={() => setCurrentIndex(fullHistory.length - 1)}
-                            // style={{ padding: '0 1rem', height: '2.5rem', borderRadius: '8px', cursor: 'pointer', background: '#e3f2fd', color: '#1976d2', border: 'none' }}
-                            style={{
-                                padding: '0rem 1rem',
-                                height: '2rem',
-                                background:'#FFFFFF',
-                                color: visibleStepCount === fullHistory.length ? '#ccc' : 'grey',
-                                borderRadius: '8px',
-                                border: '1px solid grey',
-                                fontSize: '1.1rem',
-                                cursor: visibleStepCount === fullHistory.length ? 'not-allowed' : 'pointer'
-                            }}
-                        >
-                            {t('buttons.fullSolution')}
-                        </button>
+                    <Button
+                        onClick={() => setCurrentIndex(fullHistory.length - 1)}
+                        disabled={isLastStep}
+                    >
+                        {t('buttons.fullSolution')}
+                    </Button>
 
                 </div>
             </div>

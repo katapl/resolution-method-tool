@@ -182,6 +182,7 @@ export function autoSolve(initialClauses: Clause[]): { finalPool: Clause[], hist
     return { finalPool: pool, history };
 }
 
+// currently unused function
 export function findFirstResolution(pool: Clause[], stepCounter: number, resolvedPairs: Set<string>): ProofStep | null {
     for (let i = 0; i < pool.length; i++) {
         for (let j = i + 1; j < pool.length; j++) {

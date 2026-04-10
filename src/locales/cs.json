@@ -29,8 +29,8 @@
     "msgEmptySetSatisfiable": "Všechny klauzule byly zredukovány a množina je prázdná. To znamená, že původní množina předpokladů je splnitelná."
   },
   "engine": {
-    "negateConclusion" : "Negated the conclusion and added it to the set.",
-    "removeParents" : "Removed parent clauses containing {{literal}}",
+    "negateConclusion" : "Důsledek byl negován a přidán do množiny předpokladů",
+    "removeParents" : "Odstraněny klauzule obsahující {{literal}}",
     "resolvedOn": "Provedena rezoluce na literálu {{literal}}.",
     "removedTautologies_one": "Odstraněna {{count}} tautologie.",
     "removedTautologies_few": "Odstraněny {{count}} tautologie.",
@@ -43,5 +43,27 @@
     "removeSubsumed_one": "Odstraněna {{count}} subsumovaná klauzule.",
     "removeSubsumed_few": "Odstraněny {{count}} subsumované klauzule.",
     "removeSubsumed_other": "Odstraněno {{count}} subsumovaných klauzulí."
+  },
+  "sandbox": {
+    "errClauseNotFound": "Klauzule nebyla nalezena.",
+    "removedTautology": "Byla ostraněna tautologie.",
+    "removedSubsumed": "Byla odstraněna subsumovaná klauzule.",
+    "removedPureLiteral": "Klauzule odstraněna jelikož \"{{literal}}\" je čistý literál.",
+    "errInvalidRemoval": "Tato klauzule není tautologie, není subsumovaná a neobsahuje čisté literály.",
+    "errSystemMemory": "Systémová chyba: Klauzule nebyla nalezena v paměti. Prosím resetujte aplikaci.",
+    "errNoTarget": "Nebyl vybrán literál.",
+    "errDuplicate": "Rezolventa pro tuto dvojici již existuje.",
+    "errInvalidMatch": "Neplatný krok! Tyto klauzule netvoří rezolventu podle \"{{literal}}\".",
+    "errMustRemoveTarget": "Je potřeba odstranit klauzule obsahující vybraný literál.",
+    "proofContradiction": "Prázdná klauzule (Spor).",
+    "proofSatisfiable": "Prázdná množina (Splnitelnost).",
+    "resolvedContinue": "Rezoluce vytvořena pomocí \"{{literal}}\". Pokračuj v tvoření rezolvent.",
+    "resolutionDoneSweep": "Všechny rezolventy podle \"{{literal}}\" jsou vytvořeny. Odstraň klauzule obsahující \"{{literal}}\".",
+    "phaseResolving": "Tvorba rezolvent podle \"{{literal}}\". Spárujte zbylé klauzule.",
+    "phaseSweep": "Všechny rezolventy pro \"{{literal}}\" vytvořeny. Odstraň klauzule obsahující \"{{literal}}\".",
+    "phaseReductionAfter": "Všechny rezoleventy podle \"{{literal}}\" vytvořeny. Teď proveď redukci.",
+    "phaseReductionBasic": "Proveď redukci množiny.",
+    "phaseSelectLiteral": "Vyber literál pro rezoluci.",
+    "phaseFinishedLiteral": "Finished with \"{{literal}}\". Vyber další."
   }
 }

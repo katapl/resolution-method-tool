@@ -38,5 +38,27 @@
     "removedPureLiterals_other": "Removed {{count}} clauses containing Pure Literal(s): {{names}}.",
     "removedSubsumed_one": "Removed {{count}} Subsumed clause.",
     "removedSubsumed_other": "Removed {{count}} Subsumed clauses."
+  },
+  "sandbox": {
+    "errClauseNotFound": "Clause not found.",
+    "removedTautology": "You removed a Tautology.",
+    "removedSubsumed": "You removed a subsumed clause.",
+    "removedPureLiteral": "Clause removed because \"{{literal}}\" is a pure literal.",
+    "errInvalidRemoval": "This clause is not a tautology, is not subsumed, and has no pure literals.",
+    "errSystemMemory": "System Error: Clause not found in memory. Please click Start Over.",
+    "errNoTarget": "No target literal selected.",
+    "errDuplicate": "You have already resolved this exact pair.",
+    "errInvalidMatch": "Invalid move! These clauses do not resolve on \"{{literal}}\".",
+    "errMustRemoveTarget": "You must remove clauses containing the selected literal.",
+    "proofContradiction": "Empty clause (Contradiction).",
+    "proofSatisfiable": "Empty set (Satisfiable).",
+    "resolvedContinue": "Resolved on \"{{literal}}\". Continue matching pairs.",
+    "resolutionDoneSweep": "All resolutions for \"{{literal}}\" are done. Now you must manually remove all clauses containing \"{{literal}}\".",
+    "phaseResolving": "Resolving on \"{{literal}}\". Match remaining clauses.",
+    "phaseSweep": "All pairs for \"{{literal}}\" resolved. Now remove clauses containing it.",
+    "phaseReductionAfter": "All done resolving on \"{{literal}}\". Now perform reduction.",
+    "phaseReductionBasic": "Perform set reduction.",
+    "phaseSelectLiteral": "Select a literal to resolve on.",
+    "phaseFinishedLiteral": "Finished with \"{{literal}}\". Select next."
   }
 }

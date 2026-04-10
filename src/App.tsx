@@ -3,39 +3,26 @@ import SandboxCanvas from "./components/sandbox_mode/SandboxCanvas";
 import { useState } from 'react';
 import FormulaInput from "./components/FormulaInput";
 import { useLocalStorage } from './hook/useLocalStorage';
+import type { Clause } from '/engine/types';
 
 type AppMode = 'IDLE' | 'SOLVE' | 'PRACTICE';
 
-const clearSessionMemory = () => {
-    window.localStorage.removeItem('sandbox_engine');
-    window.localStorage.removeItem('sandbox_removed_ids');
-
-    // Keys used by SandboxCanvas
-    window.localStorage.removeItem('sandbox_nodes_active');
-    window.localStorage.removeItem('sandbox_edges_active');
-
-    // Key used by ProofTimeline
-    window.localStorage.removeItem('timeline_step_active');
-};
 
 function App() {
     const [mode, setMode] = useLocalStorage<AppMode>('prover_app_mode', 'IDLE');
     const [startingClauses, setStartingClauses] = useLocalStorage<Clause[]>('prover_starting_clauses', []);
 
     const handleSolve = (clauses: Clause[]) => {
-        clearSessionMemory();
         setStartingClauses(clauses);
         setMode('SOLVE');
     };
 
     const handlePractice = (clauses: Clause[]) => {
-        clearSessionMemory();
         setStartingClauses(clauses);
         setMode('PRACTICE');
     };
 
     const handleResetApp = () => {
-        clearSessionMemory();
         setMode('IDLE');
         setStartingClauses([]);
     };
@@ -90,13 +77,13 @@ function App() {
 
             {mode === 'SOLVE' && (
                 <ProofTimeline
-                    key={`timeline-${JSON.stringify(startingClauses)}`}
+                    key={`timeline-${startingClauses.length > 0 ? startingClauses[0].id : 'empty'}`}
                     initialClauses={startingClauses} />
             )}
 
             {mode === 'PRACTICE' && (
                 <SandboxCanvas
-                    key={`timeline-${JSON.stringify(startingClauses)}`}
+                    key={`sandbox-${startingClauses.length > 0 ? startingClauses[0].id : 'empty'}`}
                     initialClauses={startingClauses} />
             )}
 
