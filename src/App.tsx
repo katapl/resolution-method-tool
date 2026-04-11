@@ -7,7 +7,6 @@ import type { Clause } from '/engine/types';
 
 type AppMode = 'IDLE' | 'SOLVE' | 'PRACTICE';
 
-
 function App() {
     const [mode, setMode] = useLocalStorage<AppMode>('prover_app_mode', 'IDLE');
     const [startingClauses, setStartingClauses] = useLocalStorage<Clause[]>('prover_starting_clauses', []);
@@ -31,7 +30,6 @@ function App() {
         <div style={{
             backgroundColor: '#f0f2f5',
             minHeight: '100vh',
-            padding: '2rem',
         }}>
 
             <div>

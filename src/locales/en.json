@@ -1,6 +1,13 @@
 {
   "input": {
-    "enterFormula": "Enter formula:"
+    "enterFormula": "Enter formula:",
+    "errInvalidChar": "Invalid character: \"{{char}}\". Allowed: letters, ~, ¬, v, ∨, +, ,, ^, ∧, &, |, =, ⊢",
+    "errMultipleEntailment": "Only one entailment symbol (|=, ⊢) is allowed per formula.",
+    "errInvalidEquals": "The '=' character can only be used as part of an entailment operator (|=).",
+    "errNotFormula": "Input must be a formula in CNF.",
+    "errNeedTwoClauses": "Please enter at least two clauses to perform resolution.",
+    "errMaxClauses": "Formula is too large. Maximum {{max}} clauses allowed (You have {{current}}).",
+    "errMaxVariables": "Formula is too complex. Maximum {{max}} unique variables allowed (You have {{current}})."
   },
   "sandbox": {
     "selectLiteral": "Select Literal to Resolve:",
@@ -14,7 +21,7 @@
   "buttons": {
     "solve": "Solve",
     "practice": "Practice",
-    "reset": "Reset",
+    "reset": "Back to Guide",
     "nextStep": "Next Step",
     "previousStep": "Previous Step",
     "fullSolution": "Full solution",

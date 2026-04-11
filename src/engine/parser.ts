@@ -6,14 +6,14 @@ const parseLiteral = (rawLit: string): Literal | null => {
     const noSpaceLit = rawLit.replace(/\s+/g, '');
     if (!noSpaceLit) return null;
 
-    const negationsMatch = noSpaceLit.match(/^[\~!]+/);
+    const negationsMatch = noSpaceLit.match(/^[\~!¬]+/);
     const negationCount = negationsMatch ? negationsMatch[0].length : 0;
     const isNegated = negationCount % 2 !== 0;
 
-    const name = noSpaceLit.replace(/^[\~!]+/, '');
+    const name = noSpaceLit.replace(/^[\~!¬]+/, '');
     if (!name) return null;
 
-    if (!/^[a-zA-Z0-9]+$/.test(name)) {
+    if (!/^[a-zA-Z]+$/.test(name)) {
         throw new Error(`Syntax Error: Invalid literal "${name}". Literals must be alphanumeric.`);
     }
 
@@ -21,8 +21,7 @@ const parseLiteral = (rawLit: string): Literal | null => {
 };
 
 const parsePremiseClause = (rawClause: string): Clause | null => {
-    const rawLiterals = rawClause.trim().split(/\s+v\s+|\s*\|\s*/i);
-
+    const rawLiterals = rawClause.trim().split(/\s+v\s+|\s*\|\s*|\s*∨\s*|\s*\+\s*/i);
     const literals = rawLiterals
         .map(parseLiteral)
         .filter((lit): lit is Literal => lit !== null);
@@ -36,7 +35,7 @@ const parsePremiseClause = (rawClause: string): Clause | null => {
 };
 
 const parseConclusionClause = (rawClause: string): Clause[] => {
-    const rawLiterals = rawClause.trim().split(/\s+v\s+|\s*\|\s*/i);
+    const rawLiterals = rawClause.trim().split(/\s+v\s+|\s*\|\s*|\s*∨\s*|\s*\+\s*/i);
 
     const literals = rawLiterals
         .map(parseLiteral)
@@ -53,14 +52,14 @@ const parseConclusionClause = (rawClause: string): Clause[] => {
 export const parseFormulaToClauses = (input: string): Clause[] => {
     if (!input.trim()) return [];
 
-    const parts = input.split(/\s*\|\=\s*/);
+    const parts = input.split(/\s*\|\=\s*|\s*⊢\s*|\s*\|-\s*/);
     const premisesStr = parts[0];
     const conclusionStr = parts[1] || '';
 
     const allClauses: Clause[] = [];
 
     if (premisesStr.trim()) {
-        const premiseStrs = premisesStr.split(',');
+        const premiseStrs = premisesStr.split(/\s*,\s*|\s*\^\s*|\s*∧\s*|\s*&\s*/);
         premiseStrs.forEach(str => {
             const clause = parsePremiseClause(str);
             if (clause) allClauses.push(clause);
@@ -68,7 +67,7 @@ export const parseFormulaToClauses = (input: string): Clause[] => {
     }
 
     if (conclusionStr.trim()) {
-        const conclusionStrs = conclusionStr.split(',');
+        const conclusionStrs = conclusionStr.split(/\s*,\s*|\s*\^\s*|\s*∧\s*|\s*&\s*/);
         conclusionStrs.forEach(str => {
             const unitClauses = parseConclusionClause(str);
             allClauses.push(...unitClauses);

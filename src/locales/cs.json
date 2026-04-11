@@ -1,6 +1,13 @@
 {
   "input": {
-    "enterFormula": "Vložit formuli:"
+    "enterFormula": "Vložte formuli:",
+    "errInvalidChar": "Neplatný znak: \"{{char}}\". Povoleny: písmena, ~, ¬, v, ∨, +, ,, ^, ∧, &, |, =, ⊢",
+    "errMultipleEntailment": "Povolen je pouze jeden symbol vyplývaní (|=, ⊢)",
+    "errInvalidEquals": "The '=' character can only be used as part of an entailment operator (|=).",
+    "errNotFormula": "Vstup musí být formule v KNF",
+    "errNeedTwoClauses": "Pro provedení rezoluce je potřeba vložit alespoň dvě klauzule.",
+    "errMaxClauses": "Formule je moc dlouhá. Maximum klauzulí je {{max}}, (Ve vaší formuli je {{current}}).",
+    "errMaxVariables": "Formule je moc komplexní. Maximum unikátních literálů je {{max}} (Ve vaší formuli je {{current}})."
   },
   "sandbox": {
     "selectLiteral": "Vyberte literál k rezoluci:",
@@ -14,7 +21,7 @@
   "buttons": {
     "solve": "Vyřešit",
     "practice": "Procvičit",
-    "reset": "Resetovat",
+    "reset": "Zpět k návodu",
     "nextStep": "Další krok",
     "previousStep": "Předchozí krok",
     "fullSolution": "Celé řešení",

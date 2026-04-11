@@ -15,7 +15,10 @@ interface FormulaInputProps {
 export default function FormulaInput({ onSolve, onPractice, onReset, disabled }: FormulaInputProps) {
     const { t, i18n } = useTranslation();
     const [inputValue, setInputValue] = useLocalStorage<string>('prover_input_text', '');
-    const [errorMsg, setErrorMsg] = useState<string | null>(null);
+    const [errorMsg, setErrorMsg] = useState<{
+        key: string;
+        params?: Record<string, string | number>;
+    } | null>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const [savedLang, setSavedLang] = useLocalStorage<string>('prover_language', 'en');
 
@@ -35,26 +38,45 @@ export default function FormulaInput({ onSolve, onPractice, onReset, disabled }:
             return;
         }
 
-        const invalidCharMatch = value.match(/[^a-zA-Z0-9\s~,|=]/);
+        const invalidCharMatch = value.match(/[^a-zA-Z0-9\s~,|=\!¬∨⊢\-\^∧\+&]/);
         if (invalidCharMatch) {
-            setErrorMsg(`Invalid character: "${invalidCharMatch[0]}". Allowed: letters, numbers, ~, v, ,, |, =`);
+            setErrorMsg({ key: 'input.errInvalidChar', params: { char: invalidCharMatch[0] } });
             return;
         }
 
-        if (value.includes('=') && !value.includes('|=')) {
-            setErrorMsg("The '=' character can only be used as part of the entailment operator '|='.");
+        const entailmentMatches = value.match(/\|=|⊢|\|-/g);
+        if (entailmentMatches && entailmentMatches.length > 1) {
+            setErrorMsg({ key: 'input.errMultipleEntailment' });
             return;
         }
 
-        const hasLogicalOperator = /[~,|]/.test(value) || /\s+v\s+/i.test(value);
-        if (!hasLogicalOperator) {
-            setErrorMsg("Input must be a formula.");
+        if (value.includes('=') && (!entailmentMatches || !entailmentMatches.includes('|='))) {
+            setErrorMsg({ key: 'input.errInvalidEquals' });
             return;
         }
 
-        const clauseCount = value.split(/,|\|=/).filter(c => c.trim().length > 0).length;
-        if (clauseCount < 2) {
-            setErrorMsg("Please enter at least two clauses to perform resolution");
+        const hasOperatorSymbol = /[~,!¬∨^∧+&,|⊢=\-]/.test(value);
+        const hasTextOr = /\s+v\s+/i.test(value);
+
+        if (!hasOperatorSymbol && !hasTextOr) {
+            setErrorMsg({ key: 'input.errNotFormula' });
+            return;
+        }
+
+        const clauses = value.split(/\s*,\s*|\s*\^\s*|\s*∧\s*|\s*&\s*|\|=|⊢|\|-/).filter(c => c.trim().length > 0);
+        if (clauses.length < 2) {
+            setErrorMsg({ key: 'input.errNeedTwoClauses' });
+            return;
+        }
+
+        if (clauses.length > 30) {
+            setErrorMsg({ key: 'input.errMaxClauses', params: { current: clauses.length, max: 30 } });
+            return;
+        }
+
+        const uniqueVars = new Set(value.match(/[a-zA-Z0-9]+/g)?.filter(v => v.toLowerCase() !== 'v') || []);
+        if (uniqueVars.size > 15) {
+            setErrorMsg({ key: 'input.errMaxVariables', params: { current: uniqueVars.size, max: 15 } });
             return;
         }
 
@@ -101,82 +123,129 @@ export default function FormulaInput({ onSolve, onPractice, onReset, disabled }:
         onReset();
     }
 
-    const toggleLanguage = () => {
-        const newLang = i18n.language === 'en' ? 'cs' : 'en';
-        i18n.changeLanguage(newLang);
-        setSavedLang(newLang);
+    const handleLanguageSelect = (lang: 'en' | 'cs') => {
+        if (i18n.language !== lang) {
+            i18n.changeLanguage(lang);
+            setSavedLang(lang);
+        }
     };
 
     const isActionDisabled = disabled || !inputValue.trim() || !!errorMsg;
-    const isResetDisabled = disabled || (!inputValue.trim() && !errorMsg);
+    // const isResetDisabled = disabled || (!inputValue.trim() && !errorMsg);
 
     return (
-        <div style={{ padding: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem', maxWidth: '1000px', margin: '0 auto' }}>
+        <div style={{ padding: '2rem', display: 'flex', flexDirection: 'column', alignItems: 'end', gap: '1rem', maxWidth: '1000px', margin: '0 auto' }}>
+            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'left', gap: '0.5rem'}}>
 
-            {/*MOVE*/}
-            <Button onClick={toggleLanguage} style={{ alignSelf: 'flex-end', border: 'none' }}>
-                {i18n.language === 'en' ? 'CS' : 'EN'}
-            </Button>
+                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                    <h3>Learn Resolution</h3>
+                    {/*<Button onClick={toggleLanguage} style={{ alignSelf: 'flex-end', border: 'none', height: '1.5rem', }}>*/}
+                    {/*    {i18n.language === 'en' ? 'CS' : 'EN'}*/}
+                    {/*</Button>*/}
 
-            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'left', gap: '1rem'}}>
-                <div style={{ fontSize: '1.2rem', whiteSpace: 'nowrap' }}>
+                    {/*<div style={{display: 'flex'}}>*/}
+                    {/*<Button onClick={handleReset} style={{ background: 'none', border: 'none', fontSize: '1rem', textDecoration: 'underline'}}>*/}
+                    {/*    {t('buttons.reset')}*/}
+                    {/*</Button>*/}
+
+                    <div style={{
+                        alignSelf: 'flex-end',
+                        display: 'flex',
+                        background: '#e0e0e0',
+                        borderRadius: '20px',
+                        // gap: '2px',
+                        cursor: 'pointer',
+                    }}>
+                        <div
+                            onClick={() => handleLanguageSelect('en')}
+                            style={{
+                                padding: '0.2rem 0.8rem',
+                                borderRadius: '16px',
+                                fontSize: '0.9rem',
+                                transition: 'all 0.2s ease',
+                                background: i18n.language === 'en' ? '#fff' : 'transparent',
+                                color: i18n.language === 'en' ? '#333' : '#888',
+                            }}
+                        >
+                            EN
+                        </div>
+                        <div
+                            onClick={() => handleLanguageSelect('cs')}
+                            style={{
+                                padding: '0.2rem 0.8rem',
+                                borderRadius: '16px',
+                                fontSize: '0.9rem',
+                                transition: 'all 0.2s ease',
+                                background: i18n.language === 'cs' ? '#fff' : 'transparent',
+                                color: i18n.language === 'cs' ? '#333' : '#888',
+                            }}
+                        >
+                            CZ
+                        </div>
+                    </div>
+                    {/*</div>*/}
+                </div>
+                <div style={{ fontSize: '1rem', whiteSpace: 'nowrap', color: '#000000', padding: '0.5rem 0rem 0rem 0' }}>
                     {t('input.enterFormula')}
                 </div>
-                    <textarea
-                        ref={textareaRef}
-                        value={inputValue}
-                        // placeholder="~p v t, k v s v r"
-                        onChange={handleChange}
-                        disabled={disabled}
-                        rows={1}
-                        style={{
-                            width: '100%',
-                            padding: '0.75rem 1rem',
-                            lineHeight: '1.5',
-                            fontSize: '1rem',
-                            fontFamily: 'monospace',
-                            borderRadius: '8px',
-                            border: errorMsg ? '2px solid #f44336' : '2px solid #ccc',
-                            outline: 'none',
-                            resize: 'none',
-                            overflow: 'hidden',
-                            transition: 'border-color 0.2s',
-                            boxShadow: errorMsg ? '0 0 0 3px rgba(244, 67, 54, 0.1)' : 'none',
-                            background: disabled ? '#f5f5f5' : '#fff',
-                            color:'black',
-                            backgroundColor: '#FFFFFF',
-                            ...({ fieldSizing: 'content' } as any)
+                <textarea
+                    ref={textareaRef}
+                    value={inputValue}
+                    // placeholder="~p v t, k v s v r"
+                    onChange={handleChange}
+                    disabled={disabled}
+                    rows={1}
+                    style={{
+                        width: '100%',
+                        padding: '0.5rem 1rem',
+                        lineHeight: '1.5',
+                        fontSize: '1rem',
+                        fontFamily: 'monospace',
+                        borderRadius: '12px',
+                        border: errorMsg ? '1px solid #f44336' : '1px solid #ccc',
+                        outline: 'none',
+                        resize: 'none',
+                        resize: 'none',
+                        overflowY: 'auto',
+                        maxHeight: '35vh',
+                        transition: 'border-color 0.2s',
+                        // boxShadow: errorMsg ? '0 0 0 3px rgba(244, 67, 54, 0.1)' : 'none',
+                        background: disabled ? '#f5f5f5' : '#fff',
+                        color:'black',
+                        backgroundColor: '#FFFFFF',
+                        ...({ fieldSizing: 'content' } as any)
 
-                        }}
-                    />
+                    }}
+                />
             </div>
 
             <div style={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', minHeight: '2.5rem'}}>
                 <div style={{ padding: '0 0.5rem', minHeight: '2rem' }}>
                     <span style={{
-                        color: errorMsg ? '#f44336' : '#666',
+                        color: '#f44336',
                         fontSize: '0.95rem',
-                        fontWeight: errorMsg ? 'bold' : 'normal'
+                        fontWeight: 'medium'
                     }}>
                         {/*{errorMsg || "Use '~' for NOT, 'v' for OR, and ',' to separate clauses."}*/}
-                        {errorMsg}
+                        {errorMsg ? t(errorMsg.key, errorMsg.params) : ''}
+                        {/*{t(errorMsg.key, errorMsg.params)}*/}
                     </span>
                 </div>
+                {/*<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'end'}}>*/}
+                    <div style={{ display: 'flex', gap: '1rem', flexShrink: 0 }}>
 
-                <div style={{ display: 'flex', gap: '1rem', flexShrink: 0 }}>
+                        <Button onClick={handleSolve} disabled={isActionDisabled}>
+                            {t('buttons.solve')}
+                        </Button>
 
-                    <Button onClick={handleSolve} disabled={isActionDisabled}>
-                        {t('buttons.solve')}
-                    </Button>
-
-                    <Button onClick={handlePractice} disabled={isActionDisabled}>
-                        {t('buttons.practice')}
-                    </Button>
-
-                    <Button onClick={handleReset} disabled={isResetDisabled}>
+                        <Button onClick={handlePractice} disabled={isActionDisabled}>
+                            {t('buttons.practice')}
+                        </Button>
+                    <Button onClick={handleReset} style={{ background: 'none', border: 'none', fontSize: '0.9rem', textDecoration: 'underline', padding: ' 0.4rem 0 0 0'}}>
                         {t('buttons.reset')}
                     </Button>
-            </div>
+                    </div>
+                {/*</div>*/}
             </div>
         </div>
     );
