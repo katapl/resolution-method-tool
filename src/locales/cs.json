@@ -1,5 +1,6 @@
 {
   "input": {
+    "title": "Learn Resolution",
     "enterFormula": "Vložte formuli:",
     "errInvalidChar": "Neplatný znak: \"{{char}}\". Povoleny: písmena, ~, ¬, v, ∨, +, ,, ^, ∧, &, |, =, ⊢",
     "errMultipleEntailment": "Povolen je pouze jeden symbol vyplývaní (|=, ⊢)",
@@ -7,7 +8,9 @@
     "errNotFormula": "Vstup musí být formule v KNF",
     "errNeedTwoClauses": "Pro provedení rezoluce je potřeba vložit alespoň dvě klauzule.",
     "errMaxClauses": "Formule je moc dlouhá. Maximum klauzulí je {{max}}, (Ve vaší formuli je {{current}}).",
-    "errMaxVariables": "Formule je moc komplexní. Maximum unikátních literálů je {{max}} (Ve vaší formuli je {{current}})."
+    "errMaxVariables": "Formule je moc komplexní. Maximum unikátních literálů je {{max}} (Ve vaší formuli je {{current}}).",
+    "errMultipleConclusions": "Pouze jedna klauzule může následovat symbol vyplývání.",
+    "errMissingConclusion": "Po symbolu vyplývání musí následovat právě jedna klauzule."
   },
   "sandbox": {
     "selectLiteral": "Vyberte literál k rezoluci:",
@@ -34,6 +37,13 @@
     "msgContradictionSatisfiable": "Byla nalezena prázdná klauzule. This means the set of clauses is unsatisfiable (it contains a contradiction).",
     "msgEmptySetEntailment": "Všechny klauzule byly zredukovány a množina je prázdná, but no contradiction was found. Therefore, the entailment does NOT hold.",
     "msgEmptySetSatisfiable": "Všechny klauzule byly zredukovány a množina je prázdná. To znamená, že původní množina předpokladů je splnitelná."
+  },
+  "result": {
+    "title": "Result",
+    "entailed": "An empty clause was derived. The premises logically entail the conclusion (Valid).",
+    "unsatisfiable": "An empty clause was derived. The formula is unsatisfiable.",
+    "notEntailed": "Resolution has been exhausted without deriving an empty clause. The premises do not entail the conclusion (Invalid).",
+    "satisfiable": "Resolution has been exhausted without deriving an empty clause. The formula is satisfiable."
   },
   "engine": {
     "negateConclusion" : "Důsledek byl negován a přidán do množiny předpokladů",

@@ -1,0 +1,22 @@
+/*button component styles*/
+.custom-button {
+    padding: 0rem 1rem;
+    height: 2rem;
+    background: #FFFFFF;
+    color: grey;
+    border-radius: 8px;
+    border: 1px solid grey;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.custom-button:hover:not(:disabled) {
+    background: #f0f0f0;
+}
+
+.custom-button:disabled {
+    background: #ccc;
+    color: #888;
+    cursor: not-allowed;
+}

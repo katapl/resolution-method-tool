@@ -1,5 +1,6 @@
 {
   "input": {
+    "title": "Learn Resolution",
     "enterFormula": "Enter formula:",
     "errInvalidChar": "Invalid character: \"{{char}}\". Allowed: letters, ~, ¬, v, ∨, +, ,, ^, ∧, &, |, =, ⊢",
     "errMultipleEntailment": "Only one entailment symbol (|=, ⊢) is allowed per formula.",
@@ -7,7 +8,9 @@
     "errNotFormula": "Input must be a formula in CNF.",
     "errNeedTwoClauses": "Please enter at least two clauses to perform resolution.",
     "errMaxClauses": "Formula is too large. Maximum {{max}} clauses allowed (You have {{current}}).",
-    "errMaxVariables": "Formula is too complex. Maximum {{max}} unique variables allowed (You have {{current}})."
+    "errMaxVariables": "Formula is too complex. Maximum {{max}} unique variables allowed (You have {{current}}).",
+    "errMultipleConclusions": "Only one clause is allowed after the entailment symbol.",
+    "errMissingConclusion": "You must provide a conclusion after the entailment symbol."
   },
   "sandbox": {
     "selectLiteral": "Select Literal to Resolve:",
@@ -34,6 +37,14 @@
     "msgContradictionSatisfiable": "An empty clause was derived. This means the set of clauses is unsatisfiable.",
     "msgEmptySetEntailment": "All clauses were reduced and the set is empty, but no contradiction was found. Therefore, the entailment does NOT hold.",
     "msgEmptySetSatisfiable": "All clauses were reduced and the set is empty. This means the original set of clauses is satisfiable (consistent)."
+  },
+
+  "result": {
+    "title": "Result",
+    "entailed": "An empty clause was derived. The premises logically entail the conclusion (Valid).",
+    "unsatisfiable": "An empty clause was derived. The formula is unsatisfiable.",
+    "notEntailed": "Resolution has been exhausted without deriving an empty clause. The premises do not entail the conclusion (Invalid).",
+    "satisfiable": "Resolution has been exhausted without deriving an empty clause. The formula is satisfiable."
   },
   "engine": {
     "negateConclusion" : "Negated the conclusion and added it to the set.",

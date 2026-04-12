@@ -60,6 +60,7 @@ export default function ClauseNode({ id, data }: NodeProps<ClauseNodeData>) {
             transition: 'all 0.2s ease',
             minWidth: '120px',
             textAlign: 'center',
+            whiteSpace: 'nowrap',
         }}>
             {/* opacity 0 when canvas static */}
             <Handle type="target" position={Position.Top} style={{ background: '#555', opacity: 0 }} />
