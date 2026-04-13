@@ -1,0 +1,117 @@
+.mainContainer {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    animation: fadeIn 0.3s ease-out;
+}
+
+.placeholder {
+    max-width: 1200px;
+    margin: 0 auto;
+    min-height: 700px;
+    background-color: transparent;
+}
+
+.loadingContainer {
+    text-align: center;
+    padding: 4rem;
+    color: #333333;
+    min-height: 700px;
+}
+
+.pulseText {
+    animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.errorContainer {
+    text-align: center;
+    padding: 4rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.errorBox {
+    background-color: #ffebee;
+    border: 2px solid #f44336;
+    border-radius: 12px;
+    padding: 2rem;
+}
+
+.errorTitle {
+    color: #d32f2f;
+    margin: 0 0 1rem 0;
+}
+
+.errorMessage {
+    color: #333333;
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+.errorHint {
+    color: #666666;
+    margin-top: 1rem;
+}
+
+.canvasWrapper {
+    background-color: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #cccccc;
+}
+
+.canvasHeader {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.5rem;
+    padding: 1rem 1rem 0 1rem;
+    border-bottom: 1px solid #dddddd;
+}
+
+.stepTitle {
+    margin: 0;
+    color: #000000;
+}
+
+.stepMessage {
+    margin: 0 0 1rem 0;
+    font-size: 1.1rem;
+    color: #333333;
+}
+
+.resultWrapper {
+    margin-top: 1.5rem;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.dots {
+    padding: 0 0.5rem;
+    color: #666666;
+}
+
+.pageBtnActive {
+    background-color: #4da392 !important;
+    color: #ffffff !important;
+    border-color: #4da392 !important;
+}
+
+.pageBtnInactive {
+    background-color: #ffffff;
+    color: gray;
+}

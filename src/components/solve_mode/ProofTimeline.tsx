@@ -1,13 +1,13 @@
-import { useMemo, useEffect, useRef, useState } from 'react';
+import { useMemo, useEffect, useState } from 'react';
 import { autoSolve } from '../../engine/resolver';
 import StepCanvas from './StepCanvas';
-import type { Clause } from "../../engine/types.ts";
+import type { Clause, ProofStep } from "../../engine/types.ts";
 import type { WorkerMessage } from "../engine/worker.ts"
-import { useLocalStorage } from '../../hook/useLocalStorage';
 import { useTranslation } from 'react-i18next';
 import ResultPanel from './ResultPanel';
-import Button from "../Button";
+import Button from "../button/Button";
 import { getPaginationRange } from "../../utils/pagination"
+import styles from './ProofTimeline.module.css';
 
 interface ProofTimelineProps {
     initialClauses: Clause[];
@@ -62,9 +62,7 @@ export default function ProofTimeline({ initialClauses, onReset }: ProofTimeline
     }, [initialClauses]);
 
     const hasEmptyClause = finalPool?.some(c => c.literals.length === 0) ?? false;
-
     const hasConclusion = initialClauses?.some(c => c.isNegatedConclusion) ?? false;
-
     const isEmptySet = (finalPool || []).length === 0;
 
     const visibleHistory = fullHistory.slice(0, visibleStepCount);
@@ -80,7 +78,6 @@ export default function ProofTimeline({ initialClauses, onReset }: ProofTimeline
 
     const [showLoadingUi, setShowLoadingUi] = useState(false);
 
-    // delete?
     useEffect(() => {
         let timer: ReturnType<typeof setTimeout>;
         if (isSolving) {
@@ -92,24 +89,26 @@ export default function ProofTimeline({ initialClauses, onReset }: ProofTimeline
     }, [isSolving]);
 
     if (isSolving) {
-        if (!showLoadingUi) return null;
+        if (!showLoadingUi) {
+            return <div className={styles.placeholder} />;
+        }
         return (
-            <div style={{ textAlign: 'center', padding: '4rem', color: '#333' }}>
-                <h2 style={{ animation: 'pulse 1.5s infinite' }}>
+            <div className={styles.loadingContainer}>
+                <h2 className={styles.pulseText}>
                     Engine is crunching the logic...
                 </h2>
                 <p>This may take a few seconds for complex formulas.</p>
             </div>
         );
     }
-// test?
+
     if (workerError) {
         return (
-            <div style={{ textAlign: 'center', padding: '4rem', maxWidth: '600px', margin: '0 auto' }}>
-                <div style={{ background: '#ffebee', border: '2px solid #f44336', borderRadius: '12px', padding: '2rem' }}>
-                    <h2 style={{ color: '#d32f2f', margin: '0 0 1rem 0' }}>Formula Too Complex</h2>
-                    <p style={{ color: '#333', fontSize: '1.1rem', margin: 0 }}>{workerError}</p>
-                    <p style={{ color: '#666', marginTop: '1rem' }}>
+            <div className={styles.errorContainer}>
+                <div className={styles.errorBox}>
+                    <h2 className={styles.errorTitle}>Formula Too Complex</h2>
+                    <p className={styles.errorMessage}>{workerError}</p>
+                    <p className={styles.errorHint}>
                         Try simplifying your input or using fewer variables.
                     </p>
                 </div>
@@ -132,24 +131,18 @@ export default function ProofTimeline({ initialClauses, onReset }: ProofTimeline
     }
 
     return (
-        <div style={{
-            maxWidth: '1200px',
-            margin: '0 auto',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '0.5rem'
-        }}>
+        <div className={styles.mainContainer}>
 
-            <div style={{ background: '#fff', borderRadius: '12px', border: '1px solid #ccc' }}>
-                <div style={{ display: 'flex', flexDirection:'column', justifyContent: 'space-between', alignItems: 'start', gap: '0.5rem', padding: '1rem 1rem 0 1rem', borderBottom: '1px solid #ddd', }}>
-                    <h3 style={{ margin: 0, color: 'black' }}>
+            <div className={styles.canvasWrapper}>
+                <div className={styles.canvasHeader}>
+                    <h3 className={styles.stepTitle}>
                         {t('solve.step', { count: currentStep.stepNumber })}
                     </h3>
-
-                <p style={{ margin: '0 0 1rem 0', fontSize: '1.1rem', color: '#333' }}>
-                    {typeof currentStep.message === 'string' ? currentStep.message : t(currentStep.message.key, currentStep.message.params)}
-                </p>
+                    <p className={styles.stepMessage}>
+                        {baseMessage}
+                    </p>
                 </div>
+
                 <StepCanvas
                     step={currentStep}
                     key={currentStep.stepNumber}
@@ -157,7 +150,7 @@ export default function ProofTimeline({ initialClauses, onReset }: ProofTimeline
             </div>
 
             {isLastStep && (
-                <div style={{ marginTop: '1.5rem' }}>
+                <div className={styles.resultWrapper}>
                     <ResultPanel
                         hasEmptyClause={hasEmptyClause}
                         isEmptySet={isEmptySet}
@@ -166,25 +159,15 @@ export default function ProofTimeline({ initialClauses, onReset }: ProofTimeline
                 </div>
             )}
 
-            <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '0.5rem',
-                marginTop: '1.5rem',
-                flexWrap: 'wrap'
-            }}>
-                <Button
-                    onClick={handlePrev}
-                    disabled={visibleStepCount === 1}
-                >
+            <div className={styles.pagination}>
+                <Button onClick={handlePrev} disabled={visibleStepCount === 1}>
                     &lsaquo;
                 </Button>
 
                 {paginationRange.map((item, index) => {
                     if (item === '...') {
                         return (
-                            <span key={`dots-${index}`} style={{ padding: '0 0.5rem', color: '#666' }}>
+                            <span key={`dots-${index}`} className={styles.dots}>
                                 &#8230;
                             </span>
                         );
@@ -194,22 +177,17 @@ export default function ProofTimeline({ initialClauses, onReset }: ProofTimeline
                     const isActive = pageNumber === visibleStepCount;
 
                     return (
-                    <Button
-                        key={pageNumber}
-                        onClick={() => handleJumpTo(pageNumber)}
-                        style={{
-                            background: isActive? '#4da392' : '#FFFFFF', //5a5bb0 or 4da392
-                            color: isActive ? '#FFFFFF' : 'grey',
-                        }}
-                    >
-                        {pageNumber}
-                    </Button>
+                        <Button
+                            key={pageNumber}
+                            onClick={() => handleJumpTo(pageNumber)}
+                            className={isActive ? styles.pageBtnActive : styles.pageBtnInactive}
+                        >
+                            {pageNumber}
+                        </Button>
                     );
                 })}
-                <Button
-                    onClick={handleNext}
-                    disabled={isLastStep}
-                >
+
+                <Button onClick={handleNext} disabled={isLastStep}>
                     &rsaquo;
                 </Button>
             </div>

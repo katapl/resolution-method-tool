@@ -1,4 +1,5 @@
 import { useTranslation } from 'react-i18next';
+import styles from './ResultPanel.module.css';
 
 interface ResultPanelProps {
     hasEmptyClause: boolean;
@@ -22,19 +23,11 @@ export default function ResultPanel({ hasEmptyClause, isEmptySet, hasConclusion 
     }
 
     return (
-        <div style={{
-            background: '#fff',
-            padding: '2rem',
-            borderRadius: '12px',
-            boxShadow: '0 4px 15px rgba(0,0,0,0.05)',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '0.5rem'
-        }}>
-            <h2 style={{margin: 0, color: '#333'}}>
+        <div className={styles.panel}>
+            <h3 className={styles.title}>
                 {t(titleKey)}
-            </h2>
-            <p style={{margin: 0, fontSize: '1.1rem', color: '#333'}}>
+            </h3>
+            <p className={styles.message}>
                 {t(messageKey)}
             </p>
         </div>

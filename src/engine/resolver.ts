@@ -59,7 +59,8 @@ function generateResolventsPhase(
     negClauses: Clause[],
     targetVar: string,
     initialStepCounter: number,
-    history: ProofStep[]
+    history: ProofStep[],
+    maxSteps: number
 ): { newResolvents: Clause[], emptyClauseFound: boolean, nextStepCounter: number } {
 
     const newResolvents: Clause[] = [];
@@ -68,6 +69,9 @@ function generateResolventsPhase(
 
     posClauses.some(pos => {
         return negClauses.some(neg => {
+            if (stepCounter >= maxSteps) {
+                throw new Error(`Calculation halted: Surpassed the maximum limit of ${maxSteps} steps during resolution.`);
+            }
             const targetLiteral = pos.literals.find(l => l.name === targetVar)!;
             const newId = `auto-res-${stepCounter}`;
             const resolvent = resolve(targetLiteral, pos, neg, newId);
@@ -145,7 +149,7 @@ export function autoSolve(initialClauses: Clause[]): { finalPool: Clause[], hist
 
         if (posClauses.length > 0 && negClauses.length > 0) {
 
-            const phaseAResult = generateResolventsPhase(pool, posClauses, negClauses, targetVar, stepCounter, history);
+            const phaseAResult = generateResolventsPhase(pool, posClauses, negClauses, targetVar, stepCounter, history, MAX_STEPS);
             const newResolvents = phaseAResult.newResolvents;
             emptyClauseFound = phaseAResult.emptyClauseFound;
             stepCounter = phaseAResult.nextStepCounter;

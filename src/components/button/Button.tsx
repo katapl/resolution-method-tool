@@ -1,5 +1,5 @@
 import React from 'react';
-import './button.css';
+import styles from './Button.module.css';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {}
 
@@ -7,7 +7,7 @@ export default function Button({ children, disabled, style, className = '', ...p
     return (
         <button
             disabled={disabled}
-            className={`custom-button ${className}`}
+            className={`${styles.button} ${className}`}
             style={style}
             {...props}
         >

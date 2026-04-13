@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
-import Button from '../Button';
+import Button from '../button/Button';
 import ReactFlow, {
     Background, Controls, type Node, type Edge, type NodeChange, type EdgeChange, useNodesState, useEdgesState,
     applyNodeChanges, applyEdgeChanges
@@ -193,15 +193,16 @@ export default function SandboxCanvas({ initialClauses }: SandboxCanvasProps) {
                     <div style={{
                         display: 'flex',
                         gap: '0.75rem',
-                        alignItems: 'center'
+                        alignItems: 'center',
+                        paddingLeft: '1rem'
                     }}>
                         {availableVariables.map(v => (
                             <Button
                                 key={v}
                                 onClick={() => handleLiteralSelect(v)}
                                 style={{
-                                    padding: '0.4rem 1.2rem',
-                                    background: '#2196F3',
+                                    padding: '0.4rem 0.8rem',
+                                    background: '#4da392',
                                     color: 'white',
                                     border: 'none',
                                     borderRadius: '6px',

@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { parseFormulaToClauses } from '../engine/parser';
-import type {Clause} from "../engine/types.ts";
+import type { Clause } from "../engine/types.ts";
 import { useLocalStorage } from '../hook/useLocalStorage';
-import Button from './Button';
+import Button from './button/Button';
+import styles from './FormulaInput.module.css';
 
 interface FormulaInputProps {
     onSolve: (clauses: Clause[]) => void;
@@ -63,7 +64,7 @@ export default function FormulaInput({ onSolve, onPractice, onReset, disabled }:
         if (textarea) {
             window.requestAnimationFrame(() => {
                 textarea.style.height = 'auto';
-                textarea.style.height = `${textarea.scrollHeight}px`;
+                textarea.style.height = `${textarea.scrollHeight + 2}px`;
             });
         }
     }, []);
@@ -89,8 +90,7 @@ export default function FormulaInput({ onSolve, onPractice, onReset, disabled }:
         }
 
         const stringWithoutEntailments = value.replace(entailmentRegex, '');
-        if (stringWithoutEntailments.includes('|') || stringWithoutEntailments
-            .includes('=')) {
+        if (stringWithoutEntailments.includes('|') || stringWithoutEntailments.includes('=')) {
             setErrorMsg({ key: 'input.errInvalidEquals' });
             return;
         }
@@ -106,11 +106,6 @@ export default function FormulaInput({ onSolve, onPractice, onReset, disabled }:
                 setErrorMsg({ key: 'input.errMissingConclusion' });
                 return;
             }
-
-            // if (rightClauses.length > 1) {
-            //     setErrorMsg({ key: 'input.errMultipleConclusions' });
-            //     return;
-            // }
         }
 
         const hasOperatorSymbol = /[~,!¬∨^∧+&,|⊢=\-]/.test(value);
@@ -121,8 +116,9 @@ export default function FormulaInput({ onSolve, onPractice, onReset, disabled }:
             return;
         }
 
-        const clauses = value.split(/\s*,\s*|\s*\^\s*|\s*∧\s*|\s*&\s*|\|=|⊢|\|-/)
+        const clauses = value.split(/\s*,\s*|\s*\^\s*|\s*&\s*|\|=|⊢|\|-/)
             .filter(c => c.trim().length > 0);
+
         if (clauses.length < 2) {
             setErrorMsg({ key: 'input.errNeedTwoClauses' });
             return;
@@ -168,7 +164,6 @@ export default function FormulaInput({ onSolve, onPractice, onReset, disabled }:
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const val = e.target.value;
         setInputValue(val);
-        // validateInput(val);
         adjustHeight();
     };
 
@@ -205,143 +200,85 @@ export default function FormulaInput({ onSolve, onPractice, onReset, disabled }:
 
     const isActionDisabled = disabled || !inputValue.trim() || !!errorMsg;
 
-    return (
-        <div style={{ paddingTop: '2rem', display: 'flex', flexDirection: 'column', gap: '1rem', maxWidth: '1000px', margin: '0 auto' }}>
-            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'left', gap: '0.5rem'}}>
+    let textAreaClass = styles.textarea;
+    if (errorMsg) textAreaClass += ` ${styles.textareaError}`;
+    if (disabled) textAreaClass += ` ${styles.textareaDisabled}`;
 
-                <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                    <Button
-                        onClick={onReset}
-                        style={{
-                            background: 'none',
-                            border: 'none',
-                            fontSize: '1.5rem',
-                            fontWeight: 'bold',
-                            padding: ' 0.4rem 0 0 0',
-                            color: '#4da392'
-                    }}>
+    return (
+        <div className={styles.container}>
+            <div className={styles.inputGroup}>
+
+                <div className={styles.header}>
+                    <Button onClick={onReset} className={styles.titleBtn}>
                         {t('input.title')}
                     </Button>
 
-                    <div style={{
-                        alignSelf: 'flex-end',
-                        display: 'flex',
-                        background: '#e0e0e0',
-                        borderRadius: '12px',
-                        cursor: 'pointer',
-                    }}>
+                    <div className={styles.langSwitch}>
                         <div
                             onClick={() => handleLanguageSelect('en')}
-                            style={{
-                                padding: '0.2rem 0.8rem',
-                                borderRadius: '12px',
-                                fontSize: '0.9rem',
-                                transition: 'all 0.2s ease',
-                                background: i18n.language === 'en' ? '#fff' : 'transparent',
-                                color: i18n.language === 'en' ? '#333' : '#888',
-                            }}
+                            className={`${styles.langOption} ${i18n.language === 'en' ? styles.langActive : styles.langInactive}`}
                         >
                             EN
                         </div>
                         <div
                             onClick={() => handleLanguageSelect('cs')}
-                            style={{
-                                padding: '0.2rem 0.8rem',
-                                borderRadius: '12px',
-                                fontSize: '0.9rem',
-                                transition: 'all 0.2s ease',
-                                background: i18n.language === 'cs' ? '#fff' : 'transparent',
-                                color: i18n.language === 'cs' ? '#333' : '#888',
-                            }}
+                            className={`${styles.langOption} ${i18n.language === 'cs' ? styles.langActive : styles.langInactive}`}
                         >
                             CZ
                         </div>
                     </div>
                 </div>
-                <div style={{ fontSize: '1rem', whiteSpace: 'nowrap', color: '#000000', padding: '0.5rem 0rem 0rem 0' }}>
+
+                <div className={styles.label}>
                     {t('input.enterFormula')}
                 </div>
+
                 <textarea
                     ref={textareaRef}
                     value={inputValue}
                     onFocus={() => { hasInteractedRef.current = true; }}
-                    // placeholder="~p v t, k v s v r"
                     onChange={handleChange}
                     disabled={disabled}
                     rows={1}
-                    style={{
-                        width: '100%',
-                        padding: '0.5rem 1rem',
-                        lineHeight: '1.5',
-                        fontSize: '1rem',
-                        fontFamily: 'monospace',
-                        borderRadius: '12px',
-                        border: errorMsg ? '1px solid #f44336' : '1px solid #ccc',
-                        outline: 'none',
-                        resize: 'none',
-                        resize: 'none',
-                        overflowY: 'auto',
-                        maxHeight: '35vh',
-                        transition: 'border-color 0.2s',
-                        background: disabled ? '#f5f5f5' : '#fff',
-                        color:'black',
-                        backgroundColor: '#FFFFFF',
-                        ...({ fieldSizing: 'content' } as any)
-
-                    }}
+                    className={textAreaClass}
                 />
             </div>
 
-            <div style={{
-                width: '100%',
-                display: 'flex',
-                justifyContent: 'space-between',
-                gap: '1rem',
-                minHeight: '2.5rem'
-            }}>
-                    <div style={{
-                        display: 'flex',
-                        gap: '0.5rem',
-                        flexWrap: 'wrap'
-                    }}>
-                        {[
-                            { symbol: '∧', label: 'AND' },
-                            { symbol: '∨', label: 'OR' },
-                            { symbol: '¬', label: 'NOT' },
-                            { symbol: '⊢', label: 'ENTAILS' }
-                        ].map((item) => (
-                            <Button
-                                key={item.symbol}
-                                type="button"
-                                onClick={() => insertSymbol(item.symbol)}
-                                onMouseDown={(e) => e.preventDefault()}
-                                title={item.label}
-                                style={{
-                                    padding: ' 0 0.5rem 0 0.5rem'
-                                }}
-                            >
-                                {item.symbol}
-                            </Button>
-                        ))}
-                    </div>
-                    <div style={{ display: 'flex', gap: '1rem', flexShrink: 0 }}>
-                        <Button onClick={handleSolve} disabled={isActionDisabled}>
-                            {t('buttons.solve')}
+            <div className={styles.toolbar}>
+                <div className={styles.symbolGroup}>
+                    {[
+                        { symbol: '∧', label: 'AND' },
+                        { symbol: '∨', label: 'OR' },
+                        { symbol: '¬', label: 'NOT' },
+                        { symbol: '⊢', label: 'ENTAILS' }
+                    ].map((item) => (
+                        <Button
+                            key={item.symbol}
+                            type="button"
+                            onClick={() => insertSymbol(item.symbol)}
+                            onMouseDown={(e) => e.preventDefault()}
+                            title={item.label}
+                            className={styles.symbolBtn}
+                        >
+                            {item.symbol}
                         </Button>
-                        <Button onClick={handlePractice} disabled={isActionDisabled}>
-                            {t('buttons.practice')}
-                        </Button>
-                    </div>
+                    ))}
+                </div>
+
+                <div className={styles.actionGroup}>
+                    <Button onClick={handleSolve} disabled={isActionDisabled}>
+                        {t('buttons.solve')}
+                    </Button>
+                    <Button onClick={handlePractice} disabled={isActionDisabled}>
+                        {t('buttons.practice')}
+                    </Button>
+                </div>
             </div>
-            <div style={{ padding: '0 0.5rem', height: '3rem' }}>
-                    <span style={{
-                        color: '#f44336',
-                        fontSize: '0.95rem',
-                        fontWeight: 'medium',
-                        fontStyle: 'italic',
-                    }}>
-                        {errorMsg ? t(errorMsg.key, errorMsg.params) : '\u00A0'}
-                    </span>
+
+            <div className={styles.errorContainer}>
+                <span className={styles.errorText}>
+                    {errorMsg ? t(errorMsg.key, errorMsg.params) : '\u00A0'}
+                </span>
             </div>
         </div>
     );

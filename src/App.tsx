@@ -4,7 +4,7 @@ import { useState } from 'react';
 import FormulaInput from "./components/FormulaInput";
 import { useLocalStorage } from './hook/useLocalStorage';
 import type { Clause } from '/engine/types';
-import Button from "./components/Button";
+import Button from "./components/button/Button";
 import { useTranslation } from 'react-i18next';
 
 type AppMode = 'IDLE' | 'SOLVE' | 'PRACTICE';
@@ -33,6 +33,7 @@ function App() {
         <div style={{
             backgroundColor: '#f0f2f5',
             minHeight: mode === 'IDLE' ? '100vh' : '150vh',
+            paddingBottom: '6rem',
             gap: '0.5rem',
             display: 'flex',
             flexDirection: 'column'
