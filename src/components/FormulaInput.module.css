@@ -40,7 +40,7 @@
 
 .titleBtn:hover {
     background: transparent !important;
-    opacity: 0.8;
+    color: #3d8274 !important;
 }
 
 .label {
@@ -128,4 +128,12 @@
     font-size: 0.95rem;
     font-weight: 500;
     font-style: italic;
+}
+
+.symbolBtn {
+    padding: 0 0.5rem !important;
+
+    font-family: "Cambria Math", "Segoe UI Symbol", "Times New Roman", serif;
+    font-weight: 400;
+    font-size: 1.25rem;
 }

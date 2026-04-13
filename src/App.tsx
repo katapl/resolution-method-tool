@@ -6,6 +6,7 @@ import { useLocalStorage } from './hook/useLocalStorage';
 import type { Clause } from '/engine/types';
 import Button from "./components/button/Button";
 import { useTranslation } from 'react-i18next';
+import styles from './App.module.css';
 
 type AppMode = 'IDLE' | 'SOLVE' | 'PRACTICE';
 
@@ -29,15 +30,10 @@ function App() {
         setStartingClauses([]);
     };
 
+    const containerClass = `${styles.appContainer} ${mode !== 'IDLE' ? styles.appContainerActive : ''}`;
+
     return (
-        <div style={{
-            backgroundColor: '#f0f2f5',
-            minHeight: mode === 'IDLE' ? '100vh' : '150vh',
-            paddingBottom: '6rem',
-            gap: '0.5rem',
-            display: 'flex',
-            flexDirection: 'column'
-        }}>
+        <div className={containerClass}>
             <div>
                 <FormulaInput
                     onSolve={handleSolve}
@@ -46,13 +42,7 @@ function App() {
                 />
 
                 {mode === 'IDLE' && (
-                    <div style={{
-                        textAlign: 'left',
-                        color: '#666',
-                        padding: '2rem',
-                        maxWidth: '1000px',
-                        margin: '0px auto'
-                    }}>
+                    <div className={styles.idleExamples}>
                         {/*<p>Explanation of the two modes here.</p>*/}
                         <ul>
                             <li>~p v t, a v z, ~z v ~t, p, ~a</li>
@@ -69,28 +59,31 @@ function App() {
                     </div>
                 )}
 
-                    <div id="canvas-container" style={{ scrollMarginTop: '2rem' }}>
-                {mode === 'SOLVE' && (
-                    <ProofTimeline
-                        onReset={handleResetApp}
-                        key={`timeline-${startingClauses.length > 0 ? startingClauses[0].id : 'empty'}`}
-                        initialClauses={startingClauses} />
-                )}
+                <div id="canvas-container" className={styles.canvasContainer}>
+                    {mode === 'SOLVE' && (
+                        <ProofTimeline
+                            onReset={handleResetApp}
+                            key={`timeline-${startingClauses.length > 0 ? startingClauses[0].id : 'empty'}`}
+                            initialClauses={startingClauses} />
+                    )}
 
-                {mode === 'PRACTICE' && (
-                    <SandboxCanvas
-                        key={`sandbox-${startingClauses.length > 0 ? startingClauses[0].id : 'empty'}`}
-                        initialClauses={startingClauses} />
-                )}
-                    </div>
+                    {mode === 'PRACTICE' && (
+                        <SandboxCanvas
+                            key={`sandbox-${startingClauses.length > 0 ? startingClauses[0].id : 'empty'}`}
+                            initialClauses={startingClauses} />
+                    )}
+                </div>
             </div>
+
             {mode !== 'IDLE' && (
-                <Button onClick={handleResetApp} style={{ background: 'none', border: 'none', fontSize: '0.9rem', textDecoration: 'underline', padding: ' 0.4rem 0 0 0'}}>
-                    {t('buttons.reset')}
-                </Button>
+                <div className={styles.resetWrapper}>
+                    <Button onClick={handleResetApp} className={styles.resetBtn}>
+                        {t('buttons.reset')}
+                    </Button>
+                </div>
             )}
         </div>
     );
 }
-export default App;
 
+export default App;

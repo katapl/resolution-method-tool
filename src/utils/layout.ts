@@ -34,12 +34,14 @@ export const generateStepLayout = (step: ProofStep) => {
         const totalRowWidth = (rowClauses.length * CELL_WIDTH) - COLUMN_GAP;
         absoluteMaxWidth = Math.max(absoluteMaxWidth, totalRowWidth);
 
-        let currentCellStartX = -totalRowWidth / 2;
+        let currentCellStartX = -(rowClauses.length * CELL_WIDTH) / 2;
 
         rowClauses.forEach((clause, colIndex) => {
-            const actualNodeWidth = estimateNodeWidth(clause.literals);
+            // const actualNodeWidth = estimateNodeWidth(clause.literals);
+            // const cellCenterX = currentCellStartX + (CELL_WIDTH / 2);
+            // const nodeTopLeftX = cellCenterX - (actualNodeWidth / 2);
+            // const yPos = rowIndex * ROW_SPACING + 20;
             const cellCenterX = currentCellStartX + (CELL_WIDTH / 2);
-            const nodeTopLeftX = cellCenterX - (actualNodeWidth / 2);
             const yPos = rowIndex * ROW_SPACING + 20;
 
             const isRemoved = (step.type === 'REDUCTION' || step.type === 'INIT') && !!step.removedClauses?.some(r => r.id === clause.id);
@@ -54,7 +56,8 @@ export const generateStepLayout = (step: ProofStep) => {
             generatedNodes.push({
                 id: clause.id,
                 type: 'clause',
-                position: { x: nodeTopLeftX, y: yPos },
+                position: { x: cellCenterX, y: yPos },
+                origin: [0.5, 0],
                 data: {
                     clause: { ...clause, removed: isRemoved },
                     currentPhase: 'DONE',
@@ -76,7 +79,8 @@ export const generateStepLayout = (step: ProofStep) => {
         generatedNodes.push({
             id: step.resolvent.id,
             type: 'clause',
-            position: { x: resolventTopLeftX, y: resolventY },
+            position: { x: resolventCenterX, y: resolventY },
+            origin: [0.5, 0],
             data: {
                 clause: { ...step.resolvent, removed: false },
                 currentPhase: 'DONE',

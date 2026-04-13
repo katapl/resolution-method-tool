@@ -1,16 +1,15 @@
 import { useState, useCallback, useEffect, useRef } from 'react';
 import Button from '../button/Button';
 import ReactFlow, {
-    Background, Controls, type Node, type Edge, type NodeChange, type EdgeChange, useNodesState, useEdgesState,
-    applyNodeChanges, applyEdgeChanges
+    Background, Controls, type Node, type Edge, useNodesState, useEdgesState
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { useLocalStorage } from '../../hook/useLocalStorage';
 import { useSandboxEngine } from '../../hook/useSandboxEngine';
-import { type Clause, clauseToString } from "../../engine/types";
+import { type Clause } from "../../engine/types";
 import ClauseNode from './ClauseNode';
 import { useTranslation } from 'react-i18next';
 import { generateSandboxLayout } from '../../utils/layout';
+import styles from './SandboxCanvas.module.css';
 
 const nodeTypes = { clause: ClauseNode };
 
@@ -161,55 +160,20 @@ export default function SandboxCanvas({ initialClauses }: SandboxCanvasProps) {
     }, [activePool, currentPhase, targetLiteral, selectedIds, reducibleClauseIds, handleRemoveRequest, handleNodeSelect, setNodes]);
 
     return (
-        <div style={{
-            height: '80vh',
-            width: '100%',
-            maxWidth: '1200px',
-            margin: '0 auto',
-            display: 'flex',
-            flexDirection: 'column',
-            overflow: 'hidden',
-            borderRadius: '12px',
-            border: '1px solid #ccc'
-        }}>
-            <div style={{
-                padding: '1rem',
-                background: 'white',
-                borderBottom: '1px solid #ddd',
+        <div className={styles.container}>
+            <div className={styles.header}>
 
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-
-                minHeight: '4.5rem',
-                transition: 'background 0.3s ease'
-            }}>
-
-                <strong style={{ color: 'grey', fontSize: '1.1rem', margin: 0 }}>
+                <p className={styles.feedbackText}>
                     {t(feedback.msg.key, feedback.msg.params)}
-                </strong>
+                </p>
 
                 {currentPhase === 'LITERAL_SELECTION' && (
-                    <div style={{
-                        display: 'flex',
-                        gap: '0.75rem',
-                        alignItems: 'center',
-                        paddingLeft: '1rem'
-                    }}>
+                    <div className={styles.literalGroup}>
                         {availableVariables.map(v => (
                             <Button
                                 key={v}
                                 onClick={() => handleLiteralSelect(v)}
-                                style={{
-                                    padding: '0.4rem 0.8rem',
-                                    background: '#4da392',
-                                    color: 'white',
-                                    border: 'none',
-                                    borderRadius: '6px',
-                                    cursor: 'pointer',
-                                    fontWeight: 'bold',
-                                    height: 'auto'
-                                }}
+                                className={styles.literalBtn}
                             >
                                 {v}
                             </Button>
@@ -218,14 +182,20 @@ export default function SandboxCanvas({ initialClauses }: SandboxCanvasProps) {
                 )}
             </div>
 
-            <div style={{ flexGrow: 1, background: '#ffffff' }}>
+            <div className={styles.flowWrapper}>
                 <ReactFlow
                     nodes={nodes}
                     edges={edges}
+                    onNodeClick={(event, node) => {
+                        if (node.data.onSelect) {
+                            node.data.onSelect();
+                        }
+                    }}
                     nodeTypes={nodeTypes}
                     onNodesChange={onNodesChange}
                     onEdgesChange={onEdgesChange}
                     elementsSelectable={true}
+                    nodeDragThreshold={10}
                     fitView
                     translateExtent={cameraBounds}
                 >

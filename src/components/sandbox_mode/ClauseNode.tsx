@@ -46,7 +46,7 @@ export default function ClauseNode({ id, data }: NodeProps<ClauseNodeData>) {
 
     return (
         <div
-            onClick={data.onSelect}
+            // onClick={data.onSelect}
             className={nodeClass}
         >
             <Handle type="target" position={Position.Top} style={{ background: '#555', opacity: 0 }} />

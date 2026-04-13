@@ -1,5 +1,5 @@
 <svg width="1726" height="1726" viewBox="0 0 1726 1726" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect width="1726" height="1726" fill="url(#paint0_linear_122_480)"/>
+<rect width="1726" height="1726" rx="400" ry="400" fill="url(#paint0_linear_122_480)"/>
 <path d="M378 1348V378H483.306V809.606H1348V914.911H483.306V1348H378Z" fill="white"/>
 <defs>
 <linearGradient id="paint0_linear_122_480" x1="0" y1="0" x2="1726" y2="1726" gradientUnits="userSpaceOnUse">
