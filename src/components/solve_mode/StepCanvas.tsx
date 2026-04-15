@@ -4,6 +4,7 @@ import type { ProofStep } from '../../engine/types';
 import ClauseNode from '../sandbox_mode/ClauseNode';
 import { useMemo } from 'react';
 import { generateStepLayout } from '../../utils/layout';
+import styles from './StepCanvas.module.css';
 
 const nodeTypes = { clause: ClauseNode };
 const defaultEdgeOptions = { animated: false };
@@ -18,7 +19,7 @@ export default function StepCanvas({ step }: StepCanvasProps) {
     }, [step]);
 
     return (
-        <div style={{ flexGrow: 1, height: '500px', width: '100%', background: '#FFFFFF', borderRadius: '12px',}}>
+        <div className={styles.canvasWrapper}>
             <ReactFlow
                 nodes={nodes}
                 edges={edges}

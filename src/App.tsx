@@ -6,6 +6,8 @@ import type { Clause } from './engine/types';
 import Button from "./components/button/Button";
 import { useTranslation } from 'react-i18next';
 import styles from './App.module.css';
+import MiniTimeline from "./components/guide/MiniTimeline"
+import MiniSandbox from "./components/guide/MiniSandbox"
 
 type AppMode = 'IDLE' | 'SOLVE' | 'PRACTICE';
 
@@ -57,22 +59,27 @@ function App() {
                 />
 
                 {mode === 'IDLE' && (
-                    <div className={styles.idleExamples}>
-                        {/*<p>Explanation of the two modes here.</p>*/}
-                        <ul>
-                            <li>~p v t, a v z, ~z v ~t, p, ~a</li>
-                            <li>p v k, ~p v s, ~p v ~r, ~t v r, ~s v t, ~k</li>
-                            <li> a, ~a v ~b v c, ~a v ~d v f, ~d v b, ~c v g, ~f v g, ~g</li>
-                            <li>p v q v r, ~p v s v t, ~s v y, ~t, ~p v ~x, ~q v w, ~q v w (empty set)</li>
-                            <li>x v y, ~z v t, ~x v t, ~y v z, ~t (empty clause)</li>
-                            <li> ~p v r v s, p v q, ~r v t, ~r v e, ~e v ~t v s (empty set)</li>
-                            <li> ~a v b, ~a v f, ~a v ~b v c, ~c v f, ~c v ~d v f, a(empty set)</li>
-                            <li> ~x v y, ~y v z v ~x, t v x, t v ~z, ~t v x, ~z (empty clause)</li>
-                            <li>A, ~A v B, ~B v C, ~C v D, ~D v E, ~E, F v ~F v G, H v I v ~H, J v K, J v K v L, J v K v ~M, N v O, P v N, Q v R v S, ~Q v T, ~R v U, ~S v V, ~T v ~U v W, X v Y v Z, ~X v W</li>
-                            <li>P v Q v R v S, P v Q v R v ~S, P v Q v ~R v S, P v Q v ~R v ~S, P v ~Q v R v S, P v ~Q v R v ~S, P v ~Q v ~R v S, P v ~Q v ~R v ~S, ~P v Q v R v S, ~P v Q v R v ~S, ~P v Q v ~R v S, ~P v Q v ~R v ~S, ~P v ~Q v R v S, ~P v ~Q v R v ~S, ~P v ~Q v ~R v S, ~P v ~Q v ~R v ~S</li>
-                        </ul>
+                    <div className={styles.modeExamples}>
+                    <MiniTimeline/>
+                    <MiniSandbox/>
                     </div>
                 )}
+                    {/*<div className={styles.idleExamples}>*/}
+                        {/*<p>Explanation of the two modes here.</p>*/}
+                        {/*<ul>*/}
+                        {/*    <li>~p v t, a v z, ~z v ~t, p, ~a</li>*/}
+                        {/*    <li>p v k, ~p v s, ~p v ~r, ~t v r, ~s v t, ~k</li>*/}
+                        {/*    <li> a, ~a v ~b v c, ~a v ~d v f, ~d v b, ~c v g, ~f v g, ~g</li>*/}
+                        {/*    <li>p v q v r, ~p v s v t, ~s v y, ~t, ~p v ~x, ~q v w, ~q v w (empty set)</li>*/}
+                        {/*    <li>x v y, ~z v t, ~x v t, ~y v z, ~t (empty clause)</li>*/}
+                        {/*    <li> ~p v r v s, p v q, ~r v t, ~r v e, ~e v ~t v s (empty set)</li>*/}
+                        {/*    <li> ~a v b, ~a v f, ~a v ~b v c, ~c v f, ~c v ~d v f, a(empty set)</li>*/}
+                        {/*    <li> ~x v y, ~y v z v ~x, t v x, t v ~z, ~t v x, ~z (empty clause)</li>*/}
+                        {/*    <li>A, ~A v B, ~B v C, ~C v D, ~D v E, ~E, F v ~F v G, H v I v ~H, J v K, J v K v L, J v K v ~M, N v O, P v N, Q v R v S, ~Q v T, ~R v U, ~S v V, ~T v ~U v W, X v Y v Z, ~X v W</li>*/}
+                        {/*    <li>P v Q v R v S, P v Q v R v ~S, P v Q v ~R v S, P v Q v ~R v ~S, P v ~Q v R v S, P v ~Q v R v ~S, P v ~Q v ~R v S, P v ~Q v ~R v ~S, ~P v Q v R v S, ~P v Q v R v ~S, ~P v Q v ~R v S, ~P v Q v ~R v ~S, ~P v ~Q v R v S, ~P v ~Q v R v ~S, ~P v ~Q v ~R v S, ~P v ~Q v ~R v ~S</li>*/}
+                        {/*</ul>*/}
+                    {/*</div>*/}
+
 
                 <div id="canvas-container" className={styles.canvasContainer}>
                     {mode === 'SOLVE' && (
@@ -93,7 +100,7 @@ function App() {
             {mode !== 'IDLE' && (
                 <div className={styles.resetWrapper}>
                     <Button onClick={handleResetApp} className={styles.resetBtn}>
-                        {t('buttons.reset')}
+                        {t('input.reset')}
                     </Button>
                 </div>
             )}

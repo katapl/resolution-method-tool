@@ -2,9 +2,14 @@
   "input": {
     "title": "Learn Resolution",
     "enterFormula": "Vložte formuli:",
+    "solve": "Vyřešit",
+    "practice": "Procvičit",
+    "reset": "Zpět k návodu",
+    "step": "Krok {{count}}",
+    "result": "Výsledek",
     "errInvalidChar": "Neplatný znak: \"{{char}}\". Povoleny: písmena, ~, ¬, v, ∨, +, ,, ^, ∧, &, |, =, ⊢",
     "errMultipleEntailment": "Povolen je pouze jeden symbol vyplývaní (|=, ⊢)",
-    "errInvalidEquals": "The '=' character can only be used as part of an entailment operator (|=).",
+    "errInvalidEquals": "Znak '=' může být použít jenom jako součást operátoru vyplývání (|=).",
     "errNotFormula": "Vstup musí být formule v KNF",
     "errNeedTwoClauses": "Pro provedení rezoluce je potřeba vložit alespoň dvě klauzule.",
     "errMaxClauses": "Formule je moc dlouhá. Maximum klauzulí je {{max}}, (Ve vaší formuli je {{current}}).",
@@ -12,46 +17,22 @@
     "errMultipleConclusions": "Pouze jedna klauzule může následovat symbol vyplývání.",
     "errMissingConclusion": "Po symbolu vyplývání musí následovat právě jedna klauzule.",
     "errMultiChar": "Literál musí být jedno písmeno. Nalezen: \"{{literal}}\"",
-    "errMissingOperator": "Literály musí být odděleny operátorem ('v' nebo ',').",
+    "errMissingOperator": "Literály musí být odděleny operátorem ('v' nebo ',' nebo '&').",
     "errParse": "{{msg}}"
-  },
-  "sandbox": {
-    "selectLiteral": "Vyberte literál k rezoluci:",
-    "removeHint": "Nápověda: Musíte odstranit klauzule obsahující vybraný literál.",
-    "proofCompleteContradiction": "Důkaz dokončen! Nalezena prázdná klauzule (Spor).",
-    "proofCompleteSatisfiable": "Důkaz dokončen! Dosaženo prázdné množiny (Splnitelné)."
-  },
-  "solve": {
-    "step": "Krok {{count}}"
-  },
-  "buttons": {
-    "solve": "Vyřešit",
-    "practice": "Procvičit",
-    "reset": "Zpět k návodu",
-    "nextStep": "Další krok",
-    "previousStep": "Předchozí krok",
-    "fullSolution": "Celé řešení",
-    "calculating": "Kalkulace..."
   },
   "results": {
     "titleContradiction": "Spor nalezen",
     "titleEmptySet": "Prázdná množina",
-    "msgContradictionEntailment": "Byla nalezena prázdná klauzule. This proves that the negated conclusion contradicts the premises. Therefore, the original entailment holds true!",
-    "msgContradictionSatisfiable": "Byla nalezena prázdná klauzule. This means the set of clauses is unsatisfiable (it contains a contradiction).",
-    "msgEmptySetEntailment": "Všechny klauzule byly zredukovány a množina je prázdná, but no contradiction was found. Therefore, the entailment does NOT hold.",
+    "msgContradictionEntailment": "Byla nalezena prázdná klauzule. To dokazuje, že negovaný závěr je kontradikcí předpokladů. Tudíž, původní závěr vyplývá z předpokladů.",
+    "msgContradictionSatisfiable": "Byla nalezena prázdná klauzule. To znamená, že množina předpokladů je nesplnitelná.",
+    "msgEmptySetEntailment": "Všechny klauzule byly zredukovány a množina je prázdná, ale nebyl nalezen spor. Tudíž, původní závěr z předpokladů nevyplývá.",
     "msgEmptySetSatisfiable": "Všechny klauzule byly zredukovány a množina je prázdná. To znamená, že původní množina předpokladů je splnitelná."
-  },
-  "result": {
-    "title": "Result",
-    "entailed": "An empty clause was derived. The premises logically entail the conclusion (Valid).",
-    "unsatisfiable": "An empty clause was derived. The formula is unsatisfiable.",
-    "notEntailed": "Resolution has been exhausted without deriving an empty clause. The premises do not entail the conclusion (Invalid).",
-    "satisfiable": "Resolution has been exhausted without deriving an empty clause. The formula is satisfiable."
   },
   "engine": {
     "negateConclusion" : "Důsledek byl negován a přidán do množiny předpokladů",
     "removeParents" : "Odstraněny klauzule obsahující {{literal}}",
     "resolvedOn": "Provedena rezoluce na literálu {{literal}}.",
+
     "removedTautologies_one": "Odstraněna {{count}} tautologie.",
     "removedTautologies_few": "Odstraněny {{count}} tautologie.",
     "removedTautologies_other": "Odstraněno {{count}} tautologií.",
@@ -84,6 +65,20 @@
     "phaseReductionAfter": "Všechny rezoleventy podle \"{{literal}}\" vytvořeny. Teď proveď redukci.",
     "phaseReductionBasic": "Proveď redukci množiny.",
     "phaseSelectLiteral": "Vyber literál pro rezoluci.",
-    "phaseFinishedLiteral": "Finished with \"{{literal}}\". Vyber další."
+    "phaseFinishedLiteral": "Finished with \"{{literal}}\". Vyber další.",
+    "entailmentPrefix": "Závěr byl negován a přidán do množiny předpokladů."
+  },
+  "tutorial": {
+    "timelineTitle": "Co dělá tlačítko Vyřešit?",
+    "timelineFrame1": "1. The engine starts with your initial clauses.",
+    "timelineFrame2": "2. It finds complementary literals (P and ~P) and resolves them.",
+    "btnPrev": "Previous",
+    "btnNext": "Next",
+    "sandboxTitle": "Co dělá tlačítko Procvičit?",
+    "sandboxStep1": "Step 1: Click the red 'X' button on the tautology (A v ~A) to remove it.",
+    "sandboxStep2": "Step 2: Now click the first clause (A v B) to select it.",
+    "sandboxStep3": "Step 3: Click the second clause (~A v C) to resolve them.",
+    "sandboxStep4": "Great job! You created a new resolvent.",
+    "btnReset": "Reset Practice"
   }
 }

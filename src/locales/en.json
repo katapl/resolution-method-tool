@@ -2,6 +2,11 @@
   "input": {
     "title": "Learn Resolution",
     "enterFormula": "Enter formula:",
+    "solve": "Solve",
+    "practice": "Practice",
+    "reset": "Back to Guide",
+    "step": "Step {{count}}",
+    "result": "Result",
     "errInvalidChar": "Invalid character: \"{{char}}\". Allowed: letters, ~, ¬, v, ∨, +, ,, ^, ∧, &, |, =, ⊢",
     "errMultipleEntailment": "Only one entailment symbol (|=, ⊢) is allowed per formula.",
     "errInvalidEquals": "The '=' character can only be used as part of an entailment operator (|=).",
@@ -12,26 +17,8 @@
     "errMultipleConclusions": "Only one clause is allowed after the entailment symbol.",
     "errMissingConclusion": "You must provide a conclusion after the entailment symbol.",
     "errMultiChar": "Variables must be a single letter. Found: \"{{literal}}\"",
-    "errMissingOperator": "Variables must be separated by an operator ('v' or ',').",
+    "errMissingOperator": "Variables must be separated by an operator ('v' or ',' or '&').",
     "errParse": "{{msg}}"
-  },
-  "sandbox": {
-    "selectLiteral": "Select Literal to Resolve:",
-    "removeHint": "Hint: You must remove clauses containing the selected literal.",
-    "proofCompleteContradiction": "Proof Complete! Empty clause found (Contradiction).",
-    "proofCompleteSatisfiable": "Proof Complete! Empty set reached (Satisfiable)."
-  },
-  "solve": {
-    "step": "Step {{count}}"
-  },
-  "buttons": {
-    "solve": "Solve",
-    "practice": "Practice",
-    "reset": "Back to Guide",
-    "nextStep": "Next Step",
-    "previousStep": "Previous Step",
-    "fullSolution": "Full solution",
-    "calculating": "Calculating..."
   },
   "results": {
     "titleContradiction": "Contradiction Reached",
@@ -40,14 +27,6 @@
     "msgContradictionSatisfiable": "An empty clause was derived. This means the set of clauses is unsatisfiable.",
     "msgEmptySetEntailment": "All clauses were reduced and the set is empty, but no contradiction was found. Therefore, the entailment does NOT hold.",
     "msgEmptySetSatisfiable": "All clauses were reduced and the set is empty. This means the original set of clauses is satisfiable (consistent)."
-  },
-
-  "result": {
-    "title": "Result",
-    "entailed": "An empty clause was derived. The premises logically entail the conclusion (Valid).",
-    "unsatisfiable": "An empty clause was derived. The formula is unsatisfiable.",
-    "notEntailed": "Resolution has been exhausted without deriving an empty clause. The premises do not entail the conclusion (Invalid).",
-    "satisfiable": "Resolution has been exhausted without deriving an empty clause. The formula is satisfiable."
   },
   "engine": {
     "negateConclusion" : "Negated the conclusion and added it to the set.",
@@ -66,13 +45,13 @@
     "removedSubsumed": "You removed a subsumed clause.",
     "removedPureLiteral": "Clause removed because \"{{literal}}\" is a pure literal.",
     "errInvalidRemoval": "This clause is not a tautology, is not subsumed, and has no pure literals.",
-    "errSystemMemory": "System Error: Clause not found in memory. Please click Start Over.",
+    "errSystemMemory": "System Error: Clause not found in memory. Please click reset app.",
     "errNoTarget": "No target literal selected.",
     "errDuplicate": "You have already resolved this exact pair.",
     "errInvalidMatch": "Invalid move! These clauses do not resolve on \"{{literal}}\".",
     "errMustRemoveTarget": "You must remove clauses containing the selected literal.",
-    "proofContradiction": "Empty clause (Contradiction).",
-    "proofSatisfiable": "Empty set (Satisfiable).",
+    "proofContradiction": "Proof Complete! Empty clause found (Contradiction).",
+    "proofSatisfiable": "Proof Complete! Empty set reached (Satisfiable).",
     "resolvedContinue": "Resolved on \"{{literal}}\". Continue matching pairs.",
     "resolutionDoneSweep": "All resolutions for \"{{literal}}\" are done. Now you must manually remove all clauses containing \"{{literal}}\".",
     "phaseResolving": "Resolving on \"{{literal}}\". Match remaining clauses.",
@@ -80,6 +59,20 @@
     "phaseReductionAfter": "All done resolving on \"{{literal}}\". Now perform reduction.",
     "phaseReductionBasic": "Perform set reduction.",
     "phaseSelectLiteral": "Select a literal to resolve on.",
-    "phaseFinishedLiteral": "Finished with \"{{literal}}\". Select next."
+    "phaseFinishedLiteral": "Finished with \"{{literal}}\". Select next.",
+    "entailmentPrefix": "The conclusion was negated and added to set of premises."
+  },
+  "tutorial": {
+    "timelineTitle": "Solve: Overview",
+    "timelineFrame1": "1. The engine starts with your initial clauses.",
+    "timelineFrame2": "2. It finds complementary literals (P and ~P) and resolves them.",
+    "btnPrev": "Previous",
+    "btnNext": "Next",
+    "sandboxTitle": "Practice: Overview",
+    "sandboxStep1": "Step 1: Click the red 'X' button on the tautology (A v ~A) to remove it.",
+    "sandboxStep2": "Step 2: Now click the first clause (A v B) to select it.",
+    "sandboxStep3": "Step 3: Click the second clause (~A v C) to resolve them.",
+    "sandboxStep4": "Great job! You created a new resolvent.",
+    "btnReset": "Reset Practice"
   }
 }

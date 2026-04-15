@@ -102,8 +102,13 @@ export default function FormulaInput({ onSolve, onPractice, onReset, disabled }:
             const rightClauses = rightSide.split(/\s*,\s*|\s*\^\s*|\s*∧\s*|\s*&\s*/)
                 .filter(c => c.trim().length > 0);
 
-            if (rightClauses.length === 0 || rightClauses.length > 1) {
+            if (rightClauses.length === 0) {
                 setErrorMsg({ key: 'input.errMissingConclusion' });
+                return;
+            }
+
+            if (rightClauses.length > 1) {
+                setErrorMsg({ key: 'input.errMultipleConclusions' });
                 return;
             }
         }
@@ -293,10 +298,10 @@ export default function FormulaInput({ onSolve, onPractice, onReset, disabled }:
 
                 <div className={styles.actionGroup}>
                     <Button onClick={handleSolve} disabled={isActionDisabled}>
-                        {t('buttons.solve')}
+                        {t('input.solve')}
                     </Button>
                     <Button onClick={handlePractice} disabled={isActionDisabled}>
-                        {t('buttons.practice')}
+                        {t('input.practice')}
                     </Button>
                 </div>
             </div>

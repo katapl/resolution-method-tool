@@ -28,16 +28,14 @@
 
 .selected {
     background-color: #f0f8ff;
-    border-color: #333333;
+    border-color: #4da392;
     opacity: 1;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 .highlighted {
     background-color: #f0fdf4;
     border-color: #4CAF50;
     opacity: 1;
-    box-shadow: 0 4px 8px rgba(76, 175, 80, 0.2);
 }
 
 .removed {

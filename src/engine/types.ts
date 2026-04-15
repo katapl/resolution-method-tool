@@ -39,11 +39,3 @@ export function clauseToString(clause: Clause): string {
         .map(l => l.polarity ? l.name : `¬ ${l.name}`)
         .join(' ∨ ');
 }
-
-// export function clauseToLatex(clause: Clause): string {
-//     if (clause.literals.length === 0) return "\\square";
-//
-//     return clause.literals
-//         .map(l => l.polarity ? l.name : `\\neg ${l.name}`)
-//         .join(' \\lor ');
-// }

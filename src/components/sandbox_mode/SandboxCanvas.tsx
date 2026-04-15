@@ -33,7 +33,7 @@ export default function SandboxCanvas({ initialClauses }: SandboxCanvasProps) {
     }, [storageKey]);
     const {
         engineState, activePool, feedback, currentPhase, targetLiteral, availableVariables, reducibleClauseIds,
-        handleRemoveRequest, handleResolution, handleLiteralSelect
+        handleRemoveRequest, handleResolution, handleLiteralSelect, isPristineEntailment
     } = useSandboxEngine(initialClauses, savedEngineState);
 
     const initialNodes = useMemo(() => JSON.parse(localStorage.getItem(`prover_nodes_${storageKey}`) || 'null'), [storageKey]);
@@ -201,6 +201,7 @@ export default function SandboxCanvas({ initialClauses }: SandboxCanvasProps) {
             <div className={styles.header}>
 
                 <p className={styles.feedbackText}>
+                    {isPristineEntailment && `${t('sandbox.entailmentPrefix')} `}
                     {t(feedback.msg.key, feedback.msg.params)}
                 </p>
 

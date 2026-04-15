@@ -131,7 +131,7 @@ export default function ProofTimeline({ initialClauses }: ProofTimelineProps) {
             <div className={styles.canvasWrapper}>
                 <div className={styles.canvasHeader}>
                     <h3 className={styles.stepTitle}>
-                        {t('solve.step', { count: currentStep.stepNumber })}
+                        {t('input.step', { count: currentStep.stepNumber })}
                     </h3>
                     <p className={styles.stepMessage}>
                         {baseMessage}

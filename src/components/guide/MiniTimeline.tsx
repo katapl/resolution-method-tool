@@ -1,0 +1,135 @@
+import { useState } from 'react';
+import ReactFlow, { Background, type Node, type Edge } from 'reactflow';
+import 'reactflow/dist/style.css';
+import Button from '../button/Button';
+import ClauseNode from '../sandbox_mode/ClauseNode';
+import styles from './MiniGuide.module.css';
+import { useTranslation } from 'react-i18next';
+
+const nodeTypes = { clause: ClauseNode };
+
+const TUTORIAL_FRAMES: { textKey: string; nodes: Node[]; edges: Edge[] }[] = [
+    {
+        textKey: "tutorial.timelineFrame1",
+        nodes: [
+            {
+                id: 'c1',
+                type: 'clause',
+                position: { x: 150, y: 50 },
+                data: {
+                    clause: {
+                        id: 'c1',
+                        literals: [{ name: 'P', polarity: true }, { name: 'Q', polarity: true }],
+                        removed: false
+                    }
+                }
+            },
+            {
+                id: 'c2',
+                type: 'clause',
+                position: { x: 350, y: 50 },
+                data: {
+                    clause: {
+                        id: 'c2',
+                        literals: [{ name: 'P', polarity: false }, { name: 'R', polarity: true }],
+                        removed: false
+                    }
+                }
+            }
+        ],
+        edges: []
+    },
+    {
+        textKey: "tutorial.timelineFrame2",
+        nodes: [
+            {
+                id: 'c1',
+                type: 'clause',
+                position: { x: 150, y: 50 },
+                data: {
+                    clause: {
+                        id: 'c1',
+                        literals: [{ name: 'P', polarity: true }, { name: 'Q', polarity: true }],
+                        removed: false
+                    },
+                    isSelected: true
+                }
+            },
+            {
+                id: 'c2',
+                type: 'clause',
+                position: { x: 350, y: 50 },
+                data: {
+                    clause: {
+                        id: 'c2',
+                        literals: [{ name: 'P', polarity: false }, { name: 'R', polarity: true }],
+                        removed: false
+                    },
+                    isSelected: true
+                }
+            },
+            {
+                id: 'res1',
+                type: 'clause',
+                position: { x: 250, y: 150 },
+                data: {
+                    clause: {
+                        id: 'res1',
+                        literals: [{ name: 'Q', polarity: true }, { name: 'R', polarity: true }],
+                        removed: false
+                    },
+                    isHighlighted: true
+                }
+            }
+        ],
+        edges: [
+            { id: 'e1', source: 'c1', target: 'res1', animated: true, style: { stroke: '#999', strokeWidth: 2 } },
+            { id: 'e2', source: 'c2', target: 'res1', animated: true, style: { stroke: '#999', strokeWidth: 2 } }
+        ]
+    }
+];
+
+export default function MiniTimeline() {
+    const { t } = useTranslation();
+    const [frameIndex, setFrameIndex] = useState(0);
+    const currentFrame = TUTORIAL_FRAMES[frameIndex];
+
+    return (
+        <div className={styles.container}>
+            <h4 className={styles.title}>{t('tutorial.timelineTitle')}</h4>
+            <p className={styles.instructionText}>{t(currentFrame.textKey)}</p>
+
+            <div className={styles.canvasWrapper}>
+                <ReactFlow
+                    nodes={currentFrame.nodes}
+                    edges={currentFrame.edges}
+                    nodeTypes={nodeTypes}
+                    defaultViewport={{ x: 0, y: 0, zoom: 1.5 }}
+                    nodesDraggable={false}
+                    zoomOnScroll={false}
+                    panOnDrag={true}
+                    preventScrolling={false}
+                    nodeOrigin={[0.5, 0]}
+                    translateExtent={[[-100, -50], [600, 300]]}
+                >
+                    <Background gap={16} size={1} />
+                </ReactFlow>
+            </div>
+
+            <div className={styles.controls}>
+                <Button
+                    onClick={() => setFrameIndex(p => Math.max(p - 1, 0))}
+                    disabled={frameIndex === 0}
+                >
+                    {t('tutorial.btnPrev')}
+                </Button>
+                <Button
+                    onClick={() => setFrameIndex(p => Math.min(p + 1, TUTORIAL_FRAMES.length - 1))}
+                    disabled={frameIndex === TUTORIAL_FRAMES.length - 1}
+                >
+                    {t('tutorial.btnNext')}
+                </Button>
+            </div>
+        </div>
+    );
+}

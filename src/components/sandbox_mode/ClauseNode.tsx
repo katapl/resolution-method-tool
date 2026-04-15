@@ -2,8 +2,6 @@ import { Handle, Position, type NodeProps } from 'reactflow';
 import type { Clause } from '../../engine/types';
 import type { SandboxPhase } from '../../hook/useSandboxEngine';
 import { clauseToString } from '../../engine/types';
-import 'katex/dist/katex.min.css';
-// import { InlineMath } from 'react-katex';
 import styles from './ClauseNode.module.css';
 
 export type ClauseNodeData = {
@@ -54,7 +52,6 @@ export default function ClauseNode({ id, data }: NodeProps<ClauseNodeData>) {
             <Handle type="target" position={Position.Top} style={{ background: '#555', opacity: 0 }} />
 
             <div className={styles.mathContainer}>
-                {/*<InlineMath math={clauseToLatex(clause)} />*/}
                 {clauseToString(clause)}
             </div>
 

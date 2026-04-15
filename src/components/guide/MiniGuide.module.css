@@ -1,0 +1,36 @@
+.container {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto 24px auto;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 24px;
+    background-color: #ffffff;
+}
+
+.title {
+    margin-top: 0;
+    margin-bottom: 8px;
+    color: #333333;
+}
+
+.instructionText {
+    height: 40px;
+    color: #555555;
+    font-size: 1.1rem;
+}
+
+.canvasWrapper {
+    height: 350px;
+    width: 100%;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 1px solid #eeeeee;
+}
+
+.controls {
+    margin-top: 16px;
+    display: flex;
+    gap: 12px;
+}

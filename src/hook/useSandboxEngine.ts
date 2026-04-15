@@ -15,6 +15,7 @@ interface SandboxState {
     resolvedPairs: Set<string>;
     targetLiteral: string | null;
     lastExhaustedLiteral: string | null;
+    hasInteracted: boolean;
 }
 
 export function useSandboxEngine(initialClauses: Clause[], savedState: SandboxState | null = null) {
@@ -23,7 +24,8 @@ export function useSandboxEngine(initialClauses: Clause[], savedState: SandboxSt
             activePool: initialClauses,
             resolvedPairs: new Set(),
             targetLiteral: null,
-            lastExhaustedLiteral: null
+            lastExhaustedLiteral: null,
+            hasInteracted: false
         }
     );
 
@@ -31,6 +33,16 @@ export function useSandboxEngine(initialClauses: Clause[], savedState: SandboxSt
         type: 'success' | 'error' | 'info';
         msg: ProofMessage;
     } | null>(null);
+
+    // const [hasInteracted, setHasInteracted] = useState(!!savedState);
+
+    // 2. Check if the initial pool contains a negated conclusion
+    const hasNegatedConclusion = useMemo(() =>
+            initialClauses.some(c => c.isNegatedConclusion),
+        [initialClauses]);
+
+    // 3. This is true ONLY if it's an entailment AND the user hasn't clicked anything yet
+    const isPristineEntailment = hasNegatedConclusion && !engineState.hasInteracted;
 
     const { phase: currentPhase, feedback: dynamicFeedback } = useMemo(
         () => getCurrentPhase(engineState),
@@ -47,7 +59,7 @@ export function useSandboxEngine(initialClauses: Clause[], savedState: SandboxSt
         if (error) {
             setFeedbackOverride({ type: 'error', msg: error });
         } else {
-            setEngineState(newState);
+            setEngineState({...newState, hasInteracted: true});
             setFeedbackOverride(null);
         }
     }, [engineState, currentPhase]);
@@ -62,7 +74,7 @@ export function useSandboxEngine(initialClauses: Clause[], savedState: SandboxSt
             return null;
         }
 
-        setEngineState(newState);
+        setEngineState({ ...newState, hasInteracted: true });
         setFeedbackOverride(feedback);
         return resolvent;
     }, [engineState, currentPhase]);
@@ -71,7 +83,7 @@ export function useSandboxEngine(initialClauses: Clause[], savedState: SandboxSt
         const { newState } = executeSelectLiteral(engineState, literalName, currentPhase);
 
         if (newState !== engineState) {
-            setEngineState(newState);
+            setEngineState({ ...newState, hasInteracted: true });;
             setFeedbackOverride(null);
         }
     }, [engineState, currentPhase]);
@@ -92,6 +104,7 @@ export function useSandboxEngine(initialClauses: Clause[], savedState: SandboxSt
         availableVariables,
         handleRemoveRequest,
         handleResolution,
-        handleLiteralSelect
+        handleLiteralSelect,
+        isPristineEntailment
     };
 }

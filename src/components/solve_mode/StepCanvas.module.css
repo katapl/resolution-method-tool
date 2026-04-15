@@ -1,0 +1,7 @@
+.canvasWrapper {
+    flex-grow: 1;
+    height: 500px;
+    width: 100%;
+    background-color: #FFFFFF;
+    border-radius: 12px;
+}
