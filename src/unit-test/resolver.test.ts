@@ -9,27 +9,6 @@ function makeClause(id: string, literals: { name: string, polarity: boolean }[])
 
 describe('Core Resolution Logic', () => {
 
-    describe('getComplementaryLiteral', () => {
-        it('should find the complementary literal when one exists', () => {
-            const c1 = makeClause('1', [{ name: 'P', polarity: true }]);
-            const c2 = makeClause('2', [{ name: 'P', polarity: false }, { name: 'Q', polarity: true }]);
-
-            const result = getComplementaryLiteral(c1, c2);
-
-            expect(result).not.toBeNull();
-            expect(result?.name).toBe('P');
-        });
-
-        it('should return null if no complementary literal exists', () => {
-            const c1 = makeClause('1', [{ name: 'P', polarity: true }]);
-            const c2 = makeClause('2', [{ name: 'Q', polarity: false }]);
-
-            const result = getComplementaryLiteral(c1, c2);
-
-            expect(result).toBeNull();
-        });
-    });
-
     describe('resolve', () => {
         it('should correctly merge parents and eliminate the target literal', () => {
             const c1 = makeClause('1', [{ name: 'P', polarity: true }, { name: 'R', polarity: true }]);

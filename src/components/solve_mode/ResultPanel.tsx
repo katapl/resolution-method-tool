@@ -12,7 +12,6 @@ export default function ResultPanel({ hasEmptyClause, isEmptySet, hasConclusion 
 
     let titleKey = "";
     let messageKey = "";
-    let resultColor = "";
 
     if (hasEmptyClause) {
         titleKey = "results.titleContradiction";

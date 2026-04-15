@@ -1,6 +1,5 @@
-import {type Literal, type Clause, type ProofStep, clauseToString} from "./types.ts";
+import {type Literal, type Clause, type ProofStep } from "./types.ts";
 import { runReductions } from "./reduction.ts"
-import { useTranslation } from "react-i18next"
 
 export function resolve(literal: Literal, c1: Clause, c2: Clause, newId: string): Clause {
     const combined = [...c1.literals, ...c2.literals];

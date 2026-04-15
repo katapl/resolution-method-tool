@@ -1,7 +1,6 @@
-import ReactFlow, {type Node, type Edge, Background } from 'reactflow';
+import ReactFlow, { Background } from 'reactflow';
 import 'reactflow/dist/style.css';
-import {type ProofStep } from '../../engine/resolver';
-import { clauseToString } from "../../engine/types.ts";
+import type { ProofStep } from '../../engine/types';
 import ClauseNode from '../sandbox_mode/ClauseNode';
 import { useMemo } from 'react';
 import { generateStepLayout } from '../../utils/layout';
@@ -38,6 +37,7 @@ export default function StepCanvas({ step }: StepCanvasProps) {
                 minZoom={dynamicMinZoom}
                 maxZoom={2.0}
                 translateExtent={translateExtent}
+                nodeOrigin={[0.5, 0]}
             >
                 <Background gap={16} size={1} />
             </ReactFlow>

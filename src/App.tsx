@@ -1,9 +1,8 @@
 import ProofTimeline from "./components/solve_mode/ProofTimeline.tsx";
 import SandboxCanvas from "./components/sandbox_mode/SandboxCanvas";
-import { useState } from 'react';
 import FormulaInput from "./components/FormulaInput";
 import { useLocalStorage } from './hook/useLocalStorage';
-import type { Clause } from '/engine/types';
+import type { Clause } from './engine/types';
 import Button from "./components/button/Button";
 import { useTranslation } from 'react-i18next';
 import styles from './App.module.css';

@@ -1,9 +1,7 @@
 import { useState, useCallback, useMemo } from 'react';
-import { useLocalStorage } from './useLocalStorage';
 import type { Clause, ProofMessage } from '../engine/types';
-import { evaluateResolution, getReducibleClauseIds } from '../engine/sandboxRules';
+import { getReducibleClauseIds } from '../engine/sandboxRules';
 import { getCurrentPhase, getAvailableVariables, executeResolutionStep, executeRemoveClause, executeSelectLiteral } from '../engine/sandboxEngine';
-import { checkTautology, checkSubsumption, getPureLiteral } from '../engine/reduction';
 
 export type SandboxPhase =
     | 'REDUCTION'

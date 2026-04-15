@@ -1,8 +1,7 @@
 import { useMemo, useEffect, useState } from 'react';
-import { autoSolve } from '../../engine/resolver';
 import StepCanvas from './StepCanvas';
 import type { Clause, ProofStep } from "../../engine/types.ts";
-import type { WorkerMessage } from "../engine/worker.ts"
+import type { WorkerMessage } from "../engine/worker"
 import { useTranslation } from 'react-i18next';
 import ResultPanel from './ResultPanel';
 import Button from "../button/Button";
@@ -66,11 +65,11 @@ export default function ProofTimeline({ initialClauses, onReset }: ProofTimeline
     const hasConclusion = initialClauses?.some(c => c.isNegatedConclusion) ?? false;
     const isEmptySet = (finalPool || []).length === 0;
 
-    const visibleHistory = fullHistory.slice(0, visibleStepCount);
+    // const visibleHistory = fullHistory.slice(0, visibleStepCount);
 
     const handleNext = () => setVisibleStepCount(prev => Math.min(prev + 1, totalSteps));
     const handlePrev = () => setVisibleStepCount(prev => Math.max(prev - 1, 1));
-    const handleLast = () => setVisibleStepCount(totalSteps);
+    // const handleLast = () => setVisibleStepCount(totalSteps);
     const handleJumpTo = (step: number) => setVisibleStepCount(step);
 
     const paginationRange = useMemo(() => {
@@ -127,9 +126,9 @@ export default function ProofTimeline({ initialClauses, onReset }: ProofTimeline
         // @ts-ignore - dynamic translation params
         : t(currentStep.message.key, currentStep.message.params);
 
-    const handleReset = (e: React.FormEvent) => {
-        onReset();
-    }
+    // const handleReset = (e: React.FormEvent) => {
+    //     onReset();
+    // }
 
     return (
         <div className={styles.mainContainer}>

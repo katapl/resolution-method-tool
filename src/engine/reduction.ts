@@ -1,4 +1,4 @@
-import type {Clause} from "./types.ts";
+import type { Clause, Literal, ProofStep } from './types';
 import { literalToString } from "./types"
 
 export function checkTautology(clause: Clause): boolean {

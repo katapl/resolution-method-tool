@@ -1,5 +1,5 @@
 import { type Node, type Edge } from 'reactflow';
-import { type ProofStep } from '../engine/resolver';
+import type { ProofStep } from '../../engine/types';
 import { type Clause } from '../engine/types';
 
 const estimateNodeWidth = (literals: any[]) => {
@@ -13,7 +13,7 @@ export const generateStepLayout = (step: ProofStep) => {
     let generatedEdges: Edge[] = [];
     let absoluteMaxWidth = 0;
 
-    const maxNodeWidth = Math.max(80, ...step.poolBefore.map(c => estimateNodeWidth(c.literals)));
+    const maxNodeWidth = Math.max(80, ...step.poolBefore.map((c: Clause) => estimateNodeWidth(c.literals)));
 
     const COLUMN_GAP = 50;
     const CELL_WIDTH = maxNodeWidth + COLUMN_GAP;
@@ -36,7 +36,7 @@ export const generateStepLayout = (step: ProofStep) => {
 
         let currentCellStartX = -(rowClauses.length * CELL_WIDTH) / 2;
 
-        rowClauses.forEach((clause, colIndex) => {
+        rowClauses.forEach((clause) => {
             // const actualNodeWidth = estimateNodeWidth(clause.literals);
             // const cellCenterX = currentCellStartX + (CELL_WIDTH / 2);
             // const nodeTopLeftX = cellCenterX - (actualNodeWidth / 2);
@@ -44,7 +44,7 @@ export const generateStepLayout = (step: ProofStep) => {
             const cellCenterX = currentCellStartX + (CELL_WIDTH / 2);
             const yPos = rowIndex * ROW_SPACING + 20;
 
-            const isRemoved = (step.type === 'REDUCTION' || step.type === 'INIT') && !!step.removedClauses?.some(r => r.id === clause.id);
+            const isRemoved = (step.type === 'REDUCTION' || step.type === 'INIT') && !!step.removedClauses?.some((r: Clause) => r.id === clause.id);
             const isParent = step.type === 'RESOLUTION' && (clause.id === step.parent1?.id || clause.id === step.parent2?.id);
             const isHighlighted = (step.type === 'INIT' && clause.isNegatedConclusion) || isParent;
 
@@ -57,7 +57,6 @@ export const generateStepLayout = (step: ProofStep) => {
                 id: clause.id,
                 type: 'clause',
                 position: { x: cellCenterX, y: yPos },
-                origin: [0.5, 0],
                 data: {
                     clause: { ...clause, removed: isRemoved },
                     currentPhase: 'DONE',
@@ -73,14 +72,13 @@ export const generateStepLayout = (step: ProofStep) => {
     if (step.type === 'RESOLUTION' && step.resolvent) {
         const resolventWidth = estimateNodeWidth(step.resolvent.literals);
         const resolventCenterX = (parent1CenterX + parent2CenterX) / 2;
-        const resolventTopLeftX = resolventCenterX - (resolventWidth / 2);
+        // const resolventTopLeftX = resolventCenterX - (resolventWidth / 2);
         const resolventY = (maxRowIndex + 1) * ROW_SPACING + 60;
 
         generatedNodes.push({
             id: step.resolvent.id,
             type: 'clause',
             position: { x: resolventCenterX, y: resolventY },
-            origin: [0.5, 0],
             data: {
                 clause: { ...step.resolvent, removed: false },
                 currentPhase: 'DONE',
@@ -146,7 +144,6 @@ export const generateSandboxLayout = (
                 id: clause.id,
                 type: 'clause',
                 position: { x: cellCenterX, y: yPos },
-                origin: [0.5, 0],
                 data: {
                     clause: clause,
                     currentPhase: currentPhase,

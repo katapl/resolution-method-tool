@@ -235,6 +235,7 @@ export default function SandboxCanvas({ initialClauses }: SandboxCanvasProps) {
                     nodeDragThreshold={10}
                     fitView
                     translateExtent={cameraBounds}
+                    nodeOrigin={[0.5, 0]}
                 >
                     <Background gap={16} size={1} />
                     <Controls />

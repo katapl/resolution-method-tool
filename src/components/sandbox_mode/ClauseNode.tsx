@@ -3,7 +3,7 @@ import type { Clause } from '../../engine/types';
 import type { SandboxPhase } from '../../hook/useSandboxEngine';
 import { clauseToString } from '../../engine/types';
 import 'katex/dist/katex.min.css';
-import { InlineMath } from 'react-katex';
+// import { InlineMath } from 'react-katex';
 import styles from './ClauseNode.module.css';
 
 export type ClauseNodeData = {

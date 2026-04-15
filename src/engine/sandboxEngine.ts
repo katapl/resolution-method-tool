@@ -89,7 +89,10 @@ export function getCurrentPhase(state: SandboxState): {
 
     return {
         phase: 'LITERAL_SELECTION',
-        msg: { key: 'sandbox.phaseFinishedLiteral', params: { literal: targetLiteral } }
+        feedback: {
+            type: 'info',
+            msg: { key: 'sandbox.phaseFinishedLiteral', params: { literal: targetLiteral } }
+        }
     };
 }
 
