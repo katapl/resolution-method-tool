@@ -77,7 +77,7 @@ function App() {
                 <div id="canvas-container" className={styles.canvasContainer}>
                     {mode === 'SOLVE' && (
                         <ProofTimeline
-                            onReset={handleResetApp}
+                            // onReset={handleResetApp}
                             key={`timeline-${startingClauses.length > 0 ? startingClauses[0].id : 'empty'}`}
                             initialClauses={startingClauses} />
                     )}
