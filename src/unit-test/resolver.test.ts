@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getComplementaryLiteral, resolve } from '../engine/resolver.ts';
+import { resolve } from '../engine/resolver.ts';
 import { checkTautology } from '../engine/reduction.ts';
 import type { Clause, Literal } from '../engine/types.ts';
 

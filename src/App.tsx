@@ -12,7 +12,7 @@ type AppMode = 'IDLE' | 'SOLVE' | 'PRACTICE';
 function App() {
     const [mode, setMode] = useLocalStorage<AppMode>('prover_app_mode', 'IDLE');
     const [startingClauses, setStartingClauses] = useLocalStorage<Clause[]>('prover_starting_clauses', []);
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
 
     const handleSolve = (clauses: Clause[]) => {
         setStartingClauses(clauses);

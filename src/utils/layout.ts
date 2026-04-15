@@ -1,5 +1,5 @@
 import { type Node, type Edge } from 'reactflow';
-import type { ProofStep } from '../../engine/types';
+import type { ProofStep } from '../engine/types';
 import { type Clause } from '../engine/types';
 
 const estimateNodeWidth = (literals: any[]) => {
@@ -70,7 +70,7 @@ export const generateStepLayout = (step: ProofStep) => {
     });
 
     if (step.type === 'RESOLUTION' && step.resolvent) {
-        const resolventWidth = estimateNodeWidth(step.resolvent.literals);
+        // const resolventWidth = estimateNodeWidth(step.resolvent.literals);
         const resolventCenterX = (parent1CenterX + parent2CenterX) / 2;
         // const resolventTopLeftX = resolventCenterX - (resolventWidth / 2);
         const resolventY = (maxRowIndex + 1) * ROW_SPACING + 60;

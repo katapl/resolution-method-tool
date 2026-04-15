@@ -1,7 +1,7 @@
 import { useMemo, useEffect, useState } from 'react';
 import StepCanvas from './StepCanvas';
 import type { Clause, ProofStep } from "../../engine/types.ts";
-import type { WorkerMessage } from "../engine/worker"
+import type { WorkerMessage } from "../../engine/worker"
 import { useTranslation } from 'react-i18next';
 import ResultPanel from './ResultPanel';
 import Button from "../button/Button";
@@ -11,12 +11,11 @@ import { useLocalStorage } from '../../hook/useLocalStorage';
 
 interface ProofTimelineProps {
     initialClauses: Clause[];
-    onReset: () => void;
 }
 
-export default function ProofTimeline({ initialClauses, onReset }: ProofTimelineProps) {
+export default function ProofTimeline({ initialClauses }: ProofTimelineProps) {
 
-    const { t, i18n } = useTranslation();
+    const { t } = useTranslation();
 
     const [fullHistory, setFullHistory] = useState<ProofStep[]>([]);
     const [finalPool, setFinalPool] = useState<Clause[]>([]);
@@ -125,10 +124,6 @@ export default function ProofTimeline({ initialClauses, onReset }: ProofTimeline
         ? currentStep.message
         // @ts-ignore - dynamic translation params
         : t(currentStep.message.key, currentStep.message.params);
-
-    // const handleReset = (e: React.FormEvent) => {
-    //     onReset();
-    // }
 
     return (
         <div className={styles.mainContainer}>

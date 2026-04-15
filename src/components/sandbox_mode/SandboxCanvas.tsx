@@ -223,7 +223,7 @@ export default function SandboxCanvas({ initialClauses }: SandboxCanvasProps) {
                 <ReactFlow
                     nodes={nodes}
                     edges={edges}
-                    onNodeClick={(event, node) => {
+                    onNodeClick={(_, node) => {
                         if (!node.data.clause.removed) {
                             handleNodeSelect(node.id);
                         }

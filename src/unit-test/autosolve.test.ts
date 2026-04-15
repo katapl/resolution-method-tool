@@ -20,7 +20,7 @@ describe('The Davis-Putnam Auto-Solver', () => {
         const rawInput = "P v Q, R";
         const initialPool = parseFormulaToClauses(rawInput);
 
-        const { finalPool, history } = autoSolve(initialPool);
+        const { finalPool } = autoSolve(initialPool);
 
         expect(finalPool.length).toBe(0);
     });
