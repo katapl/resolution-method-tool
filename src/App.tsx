@@ -28,6 +28,22 @@ function App() {
     const handleResetApp = () => {
         setMode('IDLE');
         setStartingClauses([]);
+        const keysToDelete: string[] = [];
+
+        for (let i = 0; i < localStorage.length; i++) {
+            const key = localStorage.key(i);
+            if (key && (
+                key.startsWith('prover_engine_') ||
+                key.startsWith('prover_nodes_') ||
+                key.startsWith('prover_edges_') ||
+                key.startsWith('prover_selected_') ||
+                key === 'prover_timeline_step'
+            )) {
+                keysToDelete.push(key);
+            }
+        }
+
+        keysToDelete.forEach(key => localStorage.removeItem(key));
     };
 
     const containerClass = `${styles.appContainer} ${mode !== 'IDLE' ? styles.appContainerActive : ''}`;

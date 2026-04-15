@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect, useRef } from 'react';
+import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import Button from '../button/Button';
 import ReactFlow, {
     Background, Controls, type Node, type Edge, useNodesState, useEdgesState
@@ -19,16 +19,36 @@ interface SandboxCanvasProps {
 
 export default function SandboxCanvas({ initialClauses }: SandboxCanvasProps) {
     const { t } = useTranslation();
+    const storageKey = initialClauses.length > 0 ? initialClauses[0].id : 'empty';
+    const savedEngineState = useMemo(() => {
+        const raw = localStorage.getItem(`prover_engine_${storageKey}`);
+        if (raw) {
+            const parsed = JSON.parse(raw);
+            return {
+                ...parsed,
+                resolvedPairs: new Set(parsed.resolvedPairs)
+            };
+        }
+        return null;
+    }, [storageKey]);
     const {
-        activePool, feedback, currentPhase, targetLiteral, availableVariables, reducibleClauseIds,
+        engineState, activePool, feedback, currentPhase, targetLiteral, availableVariables, reducibleClauseIds,
         handleRemoveRequest, handleResolution, handleLiteralSelect
-    } = useSandboxEngine(initialClauses);
+    } = useSandboxEngine(initialClauses, savedEngineState);
 
-    const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>([]);
-    const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>([]);
-    const [selectedIds, setSelectedIds] = useState<string[]>([]);
+    const initialNodes = useMemo(() => JSON.parse(localStorage.getItem(`prover_nodes_${storageKey}`) || 'null'), [storageKey]);
+    const initialEdges = useMemo(() => JSON.parse(localStorage.getItem(`prover_edges_${storageKey}`) || 'null'), [storageKey]);
+    const initialSelected = useMemo(() => JSON.parse(localStorage.getItem(`prover_selected_${storageKey}`) || '[]'), [storageKey]);
+
+    const [nodes, setNodes, onNodesChange] = useNodesState<Node[]>(initialNodes || []);
+    const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>(initialEdges || []);
+    const [selectedIds, setSelectedIds] = useState<string[]>(initialSelected);
 
     const [cameraBounds, setCameraBounds] = useState<[[number, number], [number, number]]>()
+
+    useEffect(() => {
+        localStorage.setItem(`prover_selected_${storageKey}`, JSON.stringify(selectedIds));
+    }, [selectedIds, storageKey]);
 
     const selectedIdsRef = useRef<string[]>([]);
     useEffect(() => {
@@ -36,6 +56,26 @@ export default function SandboxCanvas({ initialClauses }: SandboxCanvasProps) {
     }, [selectedIds]);
 
     const newPositionsRef = useRef<Record<string, { x: number, y: number }>>({});
+
+    useEffect(() => {
+        const serialized = {
+            ...engineState,
+            resolvedPairs: Array.from(engineState.resolvedPairs)
+        };
+        localStorage.setItem(`prover_engine_${storageKey}`, JSON.stringify(serialized));
+    }, [engineState, storageKey]);
+
+    useEffect(() => {
+        if (nodes.length > 0) {
+            localStorage.setItem(`prover_nodes_${storageKey}`, JSON.stringify(nodes));
+        }
+    }, [nodes, storageKey]);
+
+    useEffect(() => {
+        if (edges.length > 0) {
+            localStorage.setItem(`prover_edges_${storageKey}`, JSON.stringify(edges));
+        }
+    }, [edges, storageKey]);
 
     const handleNodeSelect = useCallback((clickedId: string) => {
         if (currentPhase !== 'RESOLUTION') return;
@@ -100,7 +140,6 @@ export default function SandboxCanvas({ initialClauses }: SandboxCanvasProps) {
                             isSelected: selectedIds.includes(n.id),
                             isReducible: reducibleClauseIds.includes(n.id),
                             onRemove: handleRemoveRequest,
-                            onSelect: poolClause.removed ? undefined : () => handleNodeSelect(poolClause.id)
                         }
                     };
                 });
@@ -119,7 +158,6 @@ export default function SandboxCanvas({ initialClauses }: SandboxCanvasProps) {
                             isSelected: selectedIds.includes(node.id),
                             isReducible: reducibleClauseIds.includes(poolClause.id),
                             onRemove: handleRemoveRequest,
-                            onSelect: poolClause.removed ? undefined : () => handleNodeSelect(poolClause.id)
                         }
                     });
                 }
@@ -146,7 +184,6 @@ export default function SandboxCanvas({ initialClauses }: SandboxCanvasProps) {
                         isReducible: reducibleClauseIds.includes(clause.id),
                         isHighlighted: true,
                         onRemove: handleRemoveRequest,
-                        onSelect: clause.removed ? undefined : () => handleNodeSelect(clause.id)
                     }
                 });
             });
@@ -157,7 +194,7 @@ export default function SandboxCanvas({ initialClauses }: SandboxCanvasProps) {
             setCameraBounds(newCameraBounds);
         }
 
-    }, [activePool, currentPhase, targetLiteral, selectedIds, reducibleClauseIds, handleRemoveRequest, handleNodeSelect, setNodes]);
+    }, [activePool, currentPhase, targetLiteral, selectedIds, reducibleClauseIds, handleRemoveRequest, /*handleNodeSelect*/, setNodes]);
 
     return (
         <div className={styles.container}>
@@ -187,8 +224,8 @@ export default function SandboxCanvas({ initialClauses }: SandboxCanvasProps) {
                     nodes={nodes}
                     edges={edges}
                     onNodeClick={(event, node) => {
-                        if (node.data.onSelect) {
-                            node.data.onSelect();
+                        if (!node.data.clause.removed) {
+                            handleNodeSelect(node.id);
                         }
                     }}
                     nodeTypes={nodeTypes}

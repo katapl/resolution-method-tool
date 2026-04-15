@@ -93,59 +93,66 @@ export function getCurrentPhase(state: SandboxState): {
     };
 }
 
-export function resolveStep(state: SandboxState, id1: string, id2: string) {
-    const result = evaluateResolution(
-        id1,
-        id2,
-        state.activePool,
-        state.resolvedPairs,
-        state.targetLiteral
-    );
-
-    if (!result.newPool) {
-        return { error: result.message };
+export function executeSelectLiteral(state: SandboxState, literalName: string, currentPhase: SandboxPhase): { newState: SandboxState } {
+    if (currentPhase === 'LITERAL_SELECTION' || (currentPhase === 'RESOLUTION' && state.targetLiteral === null)) {
+        return {
+            newState: {
+                ...state,
+                targetLiteral: literalName
+            }
+        };
     }
-
-    return {
-        newState: {
-            ...state,
-            activePool: result.newPool,
-            resolvedPairs: result.newResolvedPairs!,
-        },
-        resolvent: result.resolvent,
-        message: result.message,
-        status: result.status
-    };
+    return { newState: state };
 }
 
-export function removeClauseStep(state: SandboxState, clauseId: string) {
-    const newPool = state.activePool.filter(c => c.id !== clauseId);
+export function executeRemoveClause(state: SandboxState, clauseId: string, currentPhase: SandboxPhase): { newState: SandboxState, error?: ProofMessage } {
+    const targetClause = state.activePool.find(c => c.id === clauseId);
+    if (!targetClause) return { newState: state };
+
+    if (currentPhase === 'MANUAL_SWEEP') {
+        const hasTarget = targetClause.literals.some(l => l.name === state.targetLiteral);
+        if (!hasTarget) {
+            return { newState: state, error: { key: 'sandbox.errMustRemoveTarget' } };
+        }
+    }
+
+    const newPool = state.activePool.map(c =>
+        c.id === clauseId ? { ...c, removed: true } : c
+    );
 
     let newTarget = state.targetLiteral;
-
-    if (
-        state.targetLiteral &&
-        !newPool.some(c => c.literals.some(l => l.name === state.targetLiteral))
-    ) {
+    if (state.targetLiteral && !newPool.some(c => !c.removed && c.literals.some(l => l.name === state.targetLiteral))) {
         newTarget = null;
     }
 
     return {
+        newState: { ...state, activePool: newPool, targetLiteral: newTarget }
+    };
+}
+
+export function executeResolutionStep(state: SandboxState, id1: string, id2: string): { newState: SandboxState, resolvent: Clause | null, feedback: { type: 'success'|'error'|'info', msg: ProofMessage } } {
+    const result = evaluateResolution(id1, id2, state.activePool, state.resolvedPairs, state.targetLiteral);
+
+    if (result.status === 'DUPLICATE' || result.status === 'INVALID') {
+        return { newState: state, resolvent: null, feedback: { type: 'error', msg: result.message } };
+    }
+
+    return {
         newState: {
             ...state,
-            activePool: newPool,
-            targetLiteral: newTarget
+            activePool: result.newPool!,
+            resolvedPairs: result.newResolvedPairs!
+        },
+        resolvent: result.resolvent || null,
+        feedback: {
+            type: result.status === 'REMOVE_PARENTS' ? 'success' : 'info',
+            msg: result.message
         }
     };
 }
 
-
-export function selectLiteral(state: SandboxState, literal: string) {
-    return {
-        state: {
-            ...state,
-            targetLiteral: literal,
-            lastExhaustedLiteral: null
-        }
-    };
+export function getAvailableVariables(activePool: Clause[]): string[] {
+    return Array.from(
+        new Set(activePool.filter(c => !c.removed).flatMap(c => c.literals.map(l => l.name)))
+    ).sort();
 }

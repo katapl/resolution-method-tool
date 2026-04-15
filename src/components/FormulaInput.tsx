@@ -139,7 +139,21 @@ export default function FormulaInput({ onSolve, onPractice, onReset, disabled }:
             return;
         }
 
-        const uniqueVars = new Set(value.match(/[a-zA-Z0-9]+/g)?.filter(v => v.toLowerCase() !== 'v') || []);
+        const missingOperatorRegex = /[a-uw-zA-UW-Z]\s+[\~!¬]*[a-uw-zA-UW-Z]/;
+        if (missingOperatorRegex.test(value)) {
+            setErrorMsg({ key: 'input.errMissingOperator' });
+            return;
+        }
+
+        const allVars = value.match(/[a-zA-Z]+/g)?.filter(v => v.toLowerCase() !== 'v') || [];
+
+        const multiCharVar = allVars.find(v => v.length > 1);
+        if (multiCharVar) {
+            setErrorMsg({ key: 'input.errMultiChar', params: { literal: multiCharVar } });
+            return;
+        }
+
+        const uniqueVars = new Set(allVars);
         if (uniqueVars.size > 26) {
             setErrorMsg({ key: 'input.errMaxVariables', params: { current: uniqueVars.size, max: 26 } });
             return;
@@ -172,8 +186,14 @@ export default function FormulaInput({ onSolve, onPractice, onReset, disabled }:
         if (!inputValue.trim()) return;
 
         localStorage.setItem('prover_timeline_step', '1');
-        const parsedClauses = parseFormulaToClauses(inputValue);
-        onSolve(parsedClauses);
+        if (errorMsg) return;
+
+        try {
+            const clauses = parseFormulaToClauses(inputValue);
+            onSolve(clauses);
+        } catch (error: any) {
+            setErrorMsg({ key: 'input.errParse', params: { msg: error.message } });
+        }
         scrollToCanvas();
     };
 
@@ -182,8 +202,14 @@ export default function FormulaInput({ onSolve, onPractice, onReset, disabled }:
         if (!inputValue.trim()) return;
 
         localStorage.setItem('prover_timeline_step', '1');
-        const parsedClauses = parseFormulaToClauses(inputValue);
-        onPractice(parsedClauses);
+        if (errorMsg) return;
+
+        try {
+            const clauses = parseFormulaToClauses(inputValue);
+            onPractice(clauses);
+        } catch (error: any) {
+            setErrorMsg({ key: 'input.errParse', params: { msg: error.message } });
+        }
         scrollToCanvas();
     };
 

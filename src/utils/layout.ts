@@ -134,12 +134,10 @@ export const generateSandboxLayout = (
         const totalRowWidth = (rowClauses.length * CELL_WIDTH) - COLUMN_GAP;
         absoluteMaxWidth = Math.max(absoluteMaxWidth, totalRowWidth);
 
-        let currentCellStartX = -totalRowWidth / 2;
+        let currentCellStartX = -(rowClauses.length * CELL_WIDTH) / 2;
 
         rowClauses.forEach((clause) => {
-            const actualNodeWidth = estimateNodeWidth(clause.literals);
             const cellCenterX = currentCellStartX + (CELL_WIDTH / 2);
-            const nodeTopLeftX = cellCenterX - (actualNodeWidth / 2);
             const yPos = rowIndex * ROW_SPACING + 20;
 
             const isSelected = selectedParents.some(p => p.id === clause.id);
@@ -147,7 +145,8 @@ export const generateSandboxLayout = (
             generatedNodes.push({
                 id: clause.id,
                 type: 'clause',
-                position: { x: nodeTopLeftX, y: yPos },
+                position: { x: cellCenterX, y: yPos },
+                origin: [0.5, 0],
                 data: {
                     clause: clause,
                     currentPhase: currentPhase,

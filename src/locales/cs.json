@@ -10,7 +10,10 @@
     "errMaxClauses": "Formule je moc dlouhá. Maximum klauzulí je {{max}}, (Ve vaší formuli je {{current}}).",
     "errMaxVariables": "Formule je moc komplexní. Maximum unikátních literálů je {{max}} (Ve vaší formuli je {{current}}).",
     "errMultipleConclusions": "Pouze jedna klauzule může následovat symbol vyplývání.",
-    "errMissingConclusion": "Po symbolu vyplývání musí následovat právě jedna klauzule."
+    "errMissingConclusion": "Po symbolu vyplývání musí následovat právě jedna klauzule.",
+    "errMultiChar": "Literál musí být jedno písmeno. Nalezen: \"{{literal}}\"",
+    "errMissingOperator": "Literály musí být odděleny operátorem ('v' nebo ',').",
+    "errParse": "{{msg}}"
   },
   "sandbox": {
     "selectLiteral": "Vyberte literál k rezoluci:",

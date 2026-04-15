@@ -8,6 +8,7 @@ import ResultPanel from './ResultPanel';
 import Button from "../button/Button";
 import { getPaginationRange } from "../../utils/pagination"
 import styles from './ProofTimeline.module.css';
+import { useLocalStorage } from '../../hook/useLocalStorage';
 
 interface ProofTimelineProps {
     initialClauses: Clause[];
@@ -23,7 +24,7 @@ export default function ProofTimeline({ initialClauses, onReset }: ProofTimeline
     const [isSolving, setIsSolving] = useState<boolean>(true);
     const [workerError, setWorkerError] = useState<string | null>(null);
 
-    const [visibleStepCount, setVisibleStepCount] = useState<number>(1);
+    const [visibleStepCount, setVisibleStepCount] = useLocalStorage<number>('prover_timeline_step', 1);
     const totalSteps = fullHistory.length;
 
     useEffect(() => {

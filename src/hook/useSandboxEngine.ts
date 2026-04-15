@@ -1,8 +1,8 @@
 import { useState, useCallback, useMemo } from 'react';
 import { useLocalStorage } from './useLocalStorage';
 import type { Clause, ProofMessage } from '../engine/types';
-import { evaluateResolution } from '../engine/sandboxRules';
-import { getCurrentPhase } from '../engine/sandboxEngine';
+import { evaluateResolution, getReducibleClauseIds } from '../engine/sandboxRules';
+import { getCurrentPhase, getAvailableVariables, executeResolutionStep, executeRemoveClause, executeSelectLiteral } from '../engine/sandboxEngine';
 import { checkTautology, checkSubsumption, getPureLiteral } from '../engine/reduction';
 
 export type SandboxPhase =
@@ -19,30 +19,24 @@ interface SandboxState {
     lastExhaustedLiteral: string | null;
 }
 
-export function useSandboxEngine(initialClauses: Clause[]) {
-    const [engineState, setEngineState] = useState<SandboxState>({
-        activePool: initialClauses,
-        resolvedPairs: new Set(),
-        targetLiteral: null,
-        lastExhaustedLiteral: null
-    });
+export function useSandboxEngine(initialClauses: Clause[], savedState: SandboxState | null = null) {
+    const [engineState, setEngineState] = useState<SandboxState>(
+        savedState || {
+            activePool: initialClauses,
+            resolvedPairs: new Set(),
+            targetLiteral: null,
+            lastExhaustedLiteral: null
+        }
+    );
 
     const [feedbackOverride, setFeedbackOverride] = useState<{
         type: 'success' | 'error' | 'info';
         msg: ProofMessage;
     } | null>(null);
 
-    const { activePool, targetLiteral, lastExhaustedLiteral, resolvedPairs } = engineState;
-
     const { phase: currentPhase, feedback: dynamicFeedback } = useMemo(
-        () =>
-            getCurrentPhase({
-                activePool,
-                resolvedPairs,
-                targetLiteral,
-                lastExhaustedLiteral
-            }),
-        [activePool, resolvedPairs, targetLiteral, lastExhaustedLiteral]
+        () => getCurrentPhase(engineState),
+        [engineState]
     );
 
     const feedback = currentPhase === 'DONE' ? dynamicFeedback : (feedbackOverride ?? dynamicFeedback);
@@ -50,92 +44,52 @@ export function useSandboxEngine(initialClauses: Clause[]) {
     const handleRemoveRequest = useCallback((clauseId: string) => {
         if (currentPhase !== 'REDUCTION' && currentPhase !== 'MANUAL_SWEEP') return;
 
-        const targetClause = activePool.find(c => c.id === clauseId);
-        if (!targetClause) return;
+        const { newState, error } = executeRemoveClause(engineState, clauseId, currentPhase);
 
-        if (currentPhase === 'MANUAL_SWEEP') {
-            const hasTarget = targetClause.literals.some(l => l.name === targetLiteral);
-            if (!hasTarget) {
-                setFeedbackOverride({
-                    type: 'error',
-                    msg: { key: 'sandbox.errMustRemoveTarget' }
-                });
-                return;
-            }
+        if (error) {
+            setFeedbackOverride({ type: 'error', msg: error });
+        } else {
+            setEngineState(newState);
+            setFeedbackOverride(null);
         }
-
-        setEngineState(prev => {
-            const newPool = prev.activePool.map(c =>
-                c.id === clauseId ? { ...c, removed: true } : c
-            );
-
-            let newTarget = prev.targetLiteral;
-            if (prev.targetLiteral && !newPool.some(c => !c.removed && c.literals.some(l => l.name === prev.targetLiteral))) {
-                newTarget = null;
-            }
-
-            return { ...prev, activePool: newPool, targetLiteral: newTarget };
-        });
-        setFeedbackOverride(null);
-    }, [activePool, currentPhase, targetLiteral, setEngineState]);
+    }, [engineState, currentPhase]);
 
     const handleResolution = useCallback((id1: string, id2: string) => {
         if (currentPhase !== 'RESOLUTION') return null;
 
-        const result = evaluateResolution(id1, id2, activePool, resolvedPairs, targetLiteral);
+        const { newState, resolvent, feedback } = executeResolutionStep(engineState, id1, id2);
 
-        if (result.status === 'DUPLICATE' || result.status === 'INVALID') {
-            setFeedbackOverride({ type: 'error', msg: result.message });
+        if (feedback.type === 'error') {
+            setFeedbackOverride(feedback);
             return null;
         }
 
-        setEngineState(prev => ({
-            ...prev,
-            activePool: result.newPool!,
-            resolvedPairs: result.newResolvedPairs!
-        }));
-
-        setFeedbackOverride({
-            type: result.status === 'REMOVE_PARENTS' ? 'success' : 'info',
-            msg: result.message
-        });
-
-        return result.resolvent;
-    }, [currentPhase, activePool, resolvedPairs, targetLiteral, setEngineState]);
+        setEngineState(newState);
+        setFeedbackOverride(feedback);
+        return resolvent;
+    }, [engineState, currentPhase]);
 
     const handleLiteralSelect = useCallback((literalName: string) => {
-        if (currentPhase === 'LITERAL_SELECTION' || (currentPhase === 'RESOLUTION' && targetLiteral === null)) {
-            setEngineState(prev => ({
-                ...prev,
-                targetLiteral: literalName,
-                lastExhaustedLiteral: null
-            }));
+        const { newState } = executeSelectLiteral(engineState, literalName, currentPhase);
+
+        if (newState !== engineState) {
+            setEngineState(newState);
             setFeedbackOverride(null);
         }
-    }, [currentPhase, targetLiteral, setEngineState]);
+    }, [engineState, currentPhase]);
 
-    const availableVariables = useMemo(() => {
-        return Array.from(
-            new Set(activePool.filter(c => !c.removed).flatMap(c => c.literals.map(l => l.name)))
-        ).sort();
-    }, [activePool]);
+    const availableVariables = useMemo(() => getAvailableVariables(engineState.activePool), [engineState.activePool]);
 
     const reducibleClauseIds = useMemo(() => {
-        if (currentPhase !== 'REDUCTION') return [];
-
-        const logicalPool = activePool.filter(c => !c.removed);
-        return logicalPool.filter(clause =>
-            checkTautology(clause) ||
-            checkSubsumption(clause, logicalPool) ||
-            getPureLiteral(clause, logicalPool) !== null
-        ).map(c => c.id);
-    }, [currentPhase, activePool]);
+        return currentPhase === 'REDUCTION' ? getReducibleClauseIds(engineState.activePool) : [];
+    }, [currentPhase, engineState.activePool]);
 
     return {
-        activePool,
+        engineState,
+        activePool: engineState.activePool,
         feedback,
         currentPhase,
-        targetLiteral,
+        targetLiteral: engineState.targetLiteral,
         reducibleClauseIds,
         availableVariables,
         handleRemoveRequest,

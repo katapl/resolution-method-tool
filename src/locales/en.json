@@ -10,7 +10,10 @@
     "errMaxClauses": "Formula is too large. Maximum {{max}} clauses allowed (You have {{current}}).",
     "errMaxVariables": "Formula is too complex. Maximum {{max}} unique variables allowed (You have {{current}}).",
     "errMultipleConclusions": "Only one clause is allowed after the entailment symbol.",
-    "errMissingConclusion": "You must provide a conclusion after the entailment symbol."
+    "errMissingConclusion": "You must provide a conclusion after the entailment symbol.",
+    "errMultiChar": "Variables must be a single letter. Found: \"{{literal}}\"",
+    "errMissingOperator": "Variables must be separated by an operator ('v' or ',').",
+    "errParse": "{{msg}}"
   },
   "sandbox": {
     "selectLiteral": "Select Literal to Resolve:",

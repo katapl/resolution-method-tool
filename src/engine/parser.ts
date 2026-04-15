@@ -13,8 +13,8 @@ const parseLiteral = (rawLit: string): Literal | null => {
     const name = noSpaceLit.replace(/^[\~!¬]+/, '');
     if (!name) return null;
 
-    if (!/^[a-zA-Z]+$/.test(name)) {
-        throw new Error(`Syntax Error: Invalid literal "${name}". Literals must be alphanumeric.`);
+    if (!/^[a-zA-Z]$/.test(name)) {
+        throw new Error(`Syntax Error: Invalid literal "${name}". Literals must be a single letter.`);
     }
 
     return { polarity: !isNegated, name };

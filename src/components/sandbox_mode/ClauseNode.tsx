@@ -1,7 +1,7 @@
 import { Handle, Position, type NodeProps } from 'reactflow';
 import type { Clause } from '../../engine/types';
 import type { SandboxPhase } from '../../hook/useSandboxEngine';
-import { clauseToString, clauseToLatex } from '../../engine/types';
+import { clauseToString } from '../../engine/types';
 import 'katex/dist/katex.min.css';
 import { InlineMath } from 'react-katex';
 import styles from './ClauseNode.module.css';
@@ -43,16 +43,19 @@ export default function ClauseNode({ id, data }: NodeProps<ClauseNodeData>) {
     } else if (isHighlighted) {
         nodeClass += ` ${styles.highlighted}`;
     }
+    if (currentPhase === 'RESOLUTION') {
+        nodeClass += ` ${styles.resolvable}`;
+    }
 
     return (
         <div
-            // onClick={data.onSelect}
             className={nodeClass}
         >
             <Handle type="target" position={Position.Top} style={{ background: '#555', opacity: 0 }} />
 
             <div className={styles.mathContainer}>
-                <InlineMath math={clauseToLatex(clause)} />
+                {/*<InlineMath math={clauseToLatex(clause)} />*/}
+                {clauseToString(clause)}
             </div>
 
             {isInteractive && !isRemoved && onRemove && (

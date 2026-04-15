@@ -18,19 +18,7 @@ export function resolve(literal: Literal, c1: Clause, c2: Clause, newId: string)
     return {
         id: newId,
         literals: uniqueLiterals,
-        parents: [c1.id, c2.id],
     };
-}
-
-export function getComplementaryLiteral(c1: Clause, c2: Clause): Literal | null {
-    for (const l1 of c1.literals) {
-        for (const l2 of c2.literals) {
-            if (l1.name === l2.name && l1.polarity !== l2.polarity) {
-                return l1;
-            }
-        }
-    }
-    return null;
 }
 
 function getVariables(pool: Clause[]): string[] {
@@ -38,7 +26,6 @@ function getVariables(pool: Clause[]): string[] {
     pool.forEach(c => c.literals.forEach(l => vars.add(l.name)));
     return Array.from(vars);
 }
-
 
 function selectNextVariable(pool: Clause[], vars: string[]): string {
     const sortedVars = [...vars].sort((a, b) => {
@@ -186,35 +173,3 @@ export function autoSolve(initialClauses: Clause[]): { finalPool: Clause[], hist
     return { finalPool: pool, history };
 }
 
-// currently unused function
-export function findFirstResolution(pool: Clause[], stepCounter: number, resolvedPairs: Set<string>): ProofStep | null {
-    for (let i = 0; i < pool.length; i++) {
-        for (let j = i + 1; j < pool.length; j++) {
-            const c1 = pool[i];
-            const c2 = pool[j];
-
-            const pairKey = `${c1.id}-${c2.id}`;
-            if (resolvedPairs.has(pairKey)) continue;
-
-            const targetLiteral = getComplementaryLiteral(c1, c2);
-
-            if (targetLiteral) {
-                const newId = `auto-${stepCounter}`;
-                return {
-                    stepNumber: stepCounter,
-                    type: 'RESOLUTION',
-                    // message: `Resolved on "${targetLiteral.name}".`,
-                    message: {
-                        key: 'engine.resolvedOn',
-                        params: { literal: targetLiteral.name}
-                    },
-                    poolBefore: [...pool],
-                    parent1: c1,
-                    parent2: c2,
-                    resolvent: resolve(targetLiteral, c1, c2, newId)
-                };
-            }
-        }
-    }
-    return null;
-}

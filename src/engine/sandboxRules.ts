@@ -1,5 +1,5 @@
 import { type Clause, type ProofMessage } from './types';
-import { getComplementaryLiteral, resolve } from './resolver';
+import { resolve } from './resolver';
 import { checkTautology, checkSubsumption, getPureLiteral } from './reduction';
 
 export interface RemovalResult {
@@ -128,4 +128,14 @@ export function checkUnresolvedPairsForLiteral(
     return posClauses.some(p =>
         negClauses.some(n => !resolvedPairs.has(`${p.id}-${n.id}`))
     );
+}
+
+export function getReducibleClauseIds(currentPool: Clause[]): string[] {
+    const logicalPool = currentPool.filter(c => !c.removed);
+
+    return logicalPool.filter(clause =>
+        checkTautology(clause) ||
+        checkSubsumption(clause, logicalPool) ||
+        getPureLiteral(clause, logicalPool) !== null
+    ).map(c => c.id);
 }
