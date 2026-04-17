@@ -46,10 +46,12 @@ export function findAllModels(clauses: Clause[]): Assignment[] {
     //     delete currentAssignment[currentVar];
     // }
 
-    backtrack(0, {});
+    // backtrack(0, {});
+    backtrack(0, {}, variables, clauses, satisfyingModels);
 
     return satisfyingModels;
 }
+
 
 function backtrack(
     index: number,

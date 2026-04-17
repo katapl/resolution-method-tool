@@ -1,8 +1,6 @@
-import FormulaInput from '../FormulaInput';
 import MiniTimeline from './MiniTimeline';
 import MiniSandbox from './MiniSandbox';
 import { useTranslation } from 'react-i18next';
-import type { Clause } from '../../engine/types';
 import styles from './Guide.module.css';
 
 const EXAMPLE_FORMULAS = [
@@ -26,7 +24,7 @@ interface GuideProps {
     onSelectExample: (formula: string) => void;
 }
 
-export default function Guide({ onSelectExample }: IdleModeProps) {
+export default function Guide({ onSelectExample }: GuideProps) {
     const { t } = useTranslation();
 
     return (

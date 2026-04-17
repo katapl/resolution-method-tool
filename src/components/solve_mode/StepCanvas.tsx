@@ -1,14 +1,8 @@
-import ReactFlow, { Background } from 'reactflow';
-import 'reactflow/dist/style.css';
 import type { ProofStep } from '../../engine/types';
-import ClauseNode from '../sandbox_mode/ClauseNode';
 import { useMemo } from 'react';
 import { generateStepLayout } from '../../utils/layout';
 import styles from './StepCanvas.module.css';
 import BaseCanvas from "../BaseCanvas";
-
-const nodeTypes = { clause: ClauseNode };
-const defaultEdgeOptions = { animated: false };
 
 interface StepCanvasProps {
     step: ProofStep;
@@ -26,7 +20,7 @@ export default function StepCanvas({ step }: StepCanvasProps) {
             <BaseCanvas
                 nodes={nodes}
                 edges={edges}
-                defaultEdgeOptions={defaultEdgeOptions}
+                // defaultEdgeOptions={defaultEdgeOptions}
                 nodesDraggable={false}
                 nodesConnectable={false}
                 elementsSelectable={false}

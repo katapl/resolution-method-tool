@@ -1,15 +1,11 @@
 import { useState } from 'react';
-import ReactFlow, { Background, type Node, type Edge } from 'reactflow';
-import 'reactflow/dist/style.css';
+// import ReactFlow, { Background, type Node, type Edge } from 'reactflow';
+// import 'reactflow/dist/style.css';
 import ClauseNode from "../sandbox_mode/ClauseNode"
 import styles from './Guide.module.css';
 import { useTranslation } from 'react-i18next';
 import Button from '../button/Button';
 import BaseCanvas from "../BaseCanvas"
-
-const nodeTypes = { clause: ClauseNode };
-
-const proOptions = { hideAttribution: true };
 
 export default function MiniSandbox() {
     const { t } = useTranslation();

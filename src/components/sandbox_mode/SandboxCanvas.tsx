@@ -1,7 +1,9 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import Button from '../button/Button';
 import ReactFlow, {
-    Background, Controls, type Node, type Edge, useNodesState, useEdgesState
+    type Node, type Edge,
+    useNodesState, useEdgesState,
+    Controls
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { useSandboxEngine } from '../../hook/useSandboxEngine';
@@ -11,9 +13,6 @@ import { useTranslation } from 'react-i18next';
 import { generateSandboxLayout } from '../../utils/layout';
 import styles from './SandboxCanvas.module.css';
 import BaseCanvas from "../BaseCanvas";
-
-const nodeTypes = { clause: ClauseNode };
-const proOptions = { hideAttribution: true };
 
 interface SandboxCanvasProps {
     initialClauses: Clause[];

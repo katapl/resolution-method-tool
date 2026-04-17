@@ -5,7 +5,7 @@ import type { Assignment } from "../../engine/types"
 
 interface ResultPanelProps {
     hasEmptyClause: boolean;
-    isEmptySet: boolean;
+    // isEmptySet: boolean;
     hasConclusion: boolean;
     models?: Assignment[] | null;
     modelError?: string | null;
@@ -13,9 +13,9 @@ interface ResultPanelProps {
 
 export default function ResultPanel({
         hasEmptyClause,
-        isEmptySet,
+        // isEmptySet,
         hasConclusion,
-        models,
+        models = null,
         modelError
     }: ResultPanelProps) {
     const {t} = useTranslation();

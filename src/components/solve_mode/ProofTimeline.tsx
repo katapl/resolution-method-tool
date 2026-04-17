@@ -10,7 +10,6 @@ import { getPaginationRange } from "../../utils/pagination"
 import styles from './ProofTimeline.module.css';
 import { useLocalStorage } from '../../hook/useLocalStorage';
 import { MoreHorizontal, ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from 'lucide-react';
-import BaseCanvas from "../BaseCanvas";
 
 interface ProofTimelineProps {
     initialClauses: Clause[];
