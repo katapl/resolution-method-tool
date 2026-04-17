@@ -8,8 +8,6 @@ interface StepCanvasProps {
     step: ProofStep;
 }
 
-const proOptions = { hideAttribution: true };
-
 export default function StepCanvas({ step }: StepCanvasProps) {
     const { nodes, edges, dynamicMinZoom, translateExtent} = useMemo(() => {
         return generateStepLayout(step);

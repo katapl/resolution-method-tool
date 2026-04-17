@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { type Node, type Edge } from 'reactflow';
 import 'reactflow/dist/style.css';
 import Button from '../button/Button';
-import ClauseNode from '../sandbox_mode/ClauseNode';
 import styles from './Guide.module.css';
 import { useTranslation } from 'react-i18next';
 import BaseCanvas from "../BaseCanvas";
