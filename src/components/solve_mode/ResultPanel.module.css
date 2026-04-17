@@ -1,12 +1,12 @@
 .panel {
     display: flex;
     flex-direction: column;
-    background-color: #fff;
+    /*background-color: #fff;*/
     gap: 1rem;
-    padding: 2rem;
+    /*padding: 2rem;*/
 
-    border: 1px solid #ccc;
-    border-radius: 12px;
+    /*border: 1px solid #ccc;*/
+    /*border-radius: 12px;*/
 }
 
 .title {
@@ -17,4 +17,139 @@
 .message {
     margin: 0;
     font-size: 1.1rem;
+}
+
+.errorBox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    background: #fffbeb;
+    color: #b45309;
+    border-radius: 6px;
+    font-size: 0.9rem;
+}
+
+.loadingState {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #666;
+    padding: 24px 0;
+}
+
+.spinner {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+.noModelsText {
+    color: #666;
+    font-style: italic;
+}
+
+.tableSection {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.tableTitle {
+    margin: 0;
+    color: #333;
+    font-size: 1.05rem;
+}
+
+.tableWrapper {
+    width: 100%;
+    overflow-x: auto; /* Enables horizontal scrolling for many variables! */
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.truthTable {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: center;
+    font-family: monospace;
+    font-size: 0.95rem;
+}
+
+.truthTable th {
+    background-color: #f9fafb;
+    padding: 12px 16px;
+    font-weight: 600;
+    color: #374151;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.truthTable td {
+    padding: 10px 16px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.truthTable tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.truthTable tbody tr:hover {
+    background-color: #f9fafb;
+}
+
+.cellContent {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.resultColHeader {
+    border-left: 2px solid #d1d5db !important;
+    background-color: #f3f4f6 !important;
+}
+
+.resultCell {
+    border-left: 2px solid #d1d5db;
+    background-color: #fafafa;
+}
+
+.truthTable.dense th {
+    padding: 8px 6px;
+    font-size: 0.85rem;
+}
+
+.truthTable.dense td {
+    padding: 6px 4px;
+}
+
+.truthTable.dense .cellContent {
+    padding: 2px 6px;
+    gap: 4px;
+}
+
+.truthTable.ultraDense th {
+    padding: 4px 2px;
+    font-size: 0.75rem;
+}
+
+.truthTable.ultraDense td {
+    padding: 4px 2px;
+}
+
+.truthTable.ultraDense .cellContent {
+    background-color: transparent !important;
+    padding: 0;
+    gap: 2px;
+    font-size: 0.8rem;
+}
+
+.truthTable.ultraDense .cellContent svg {
+    display: none;
 }

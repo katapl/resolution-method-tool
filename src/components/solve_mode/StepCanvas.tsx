@@ -5,6 +5,7 @@ import ClauseNode from '../sandbox_mode/ClauseNode';
 import { useMemo } from 'react';
 import { generateStepLayout } from '../../utils/layout';
 import styles from './StepCanvas.module.css';
+import BaseCanvas from "../BaseCanvas";
 
 const nodeTypes = { clause: ClauseNode };
 const defaultEdgeOptions = { animated: false };
@@ -13,6 +14,8 @@ interface StepCanvasProps {
     step: ProofStep;
 }
 
+const proOptions = { hideAttribution: true };
+
 export default function StepCanvas({ step }: StepCanvasProps) {
     const { nodes, edges, dynamicMinZoom, translateExtent} = useMemo(() => {
         return generateStepLayout(step);
@@ -20,28 +23,45 @@ export default function StepCanvas({ step }: StepCanvasProps) {
 
     return (
         <div className={styles.canvasWrapper}>
-            <ReactFlow
+            <BaseCanvas
                 nodes={nodes}
                 edges={edges}
                 defaultEdgeOptions={defaultEdgeOptions}
-                nodeTypes={nodeTypes}
-                panOnDrag={true}
-                zoomOnScroll={true}
-                zoomOnPinch={true}
-                preventScrolling={false}
                 nodesDraggable={false}
                 nodesConnectable={false}
                 elementsSelectable={false}
+                zoomOnScroll={true}
+                zoomOnPinch={true}
+                zoomOnDoubleClick={false}
                 fitView
                 fitViewOptions={{ padding: 0.2, maxZoom: 1.2 }}
-                zoomOnDoubleClick={false}
                 minZoom={dynamicMinZoom}
                 maxZoom={2.0}
                 translateExtent={translateExtent}
-                nodeOrigin={[0.5, 0]}
-            >
-                <Background gap={16} size={1} />
-            </ReactFlow>
+            />
+            {/*<ReactFlow*/}
+            {/*    nodes={nodes}*/}
+            {/*    edges={edges}*/}
+            {/*    defaultEdgeOptions={defaultEdgeOptions}*/}
+            {/*    nodeTypes={nodeTypes}*/}
+            {/*    panOnDrag={true}*/}
+            {/*    zoomOnScroll={true}*/}
+            {/*    zoomOnPinch={true}*/}
+            {/*    preventScrolling={false}*/}
+            {/*    nodesDraggable={false}*/}
+            {/*    nodesConnectable={false}*/}
+            {/*    elementsSelectable={false}*/}
+            {/*    fitView*/}
+            {/*    fitViewOptions={{ padding: 0.2, maxZoom: 1.2 }}*/}
+            {/*    zoomOnDoubleClick={false}*/}
+            {/*    minZoom={dynamicMinZoom}*/}
+            {/*    maxZoom={2.0}*/}
+            {/*    translateExtent={translateExtent}*/}
+            {/*    nodeOrigin={[0.5, 0]}*/}
+            {/*    proOptions={proOptions}*/}
+            {/*>*/}
+            {/*    <Background gap={16} size={1} />*/}
+            {/*</ReactFlow>*/}
         </div>
     );
 }

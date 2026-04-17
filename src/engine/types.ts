@@ -39,3 +39,12 @@ export function clauseToString(clause: Clause): string {
         .map(l => l.polarity ? l.name : `¬ ${l.name}`)
         .join(' ∨ ');
 }
+
+// Represents a single row in  truth table ( P: true, Q: false )
+// change to string to char?
+export type Assignment = Record<string, boolean>;
+
+// identical to
+// export type Assignment = {
+//     [variableName: string]: boolean;
+// };

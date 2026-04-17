@@ -2,11 +2,14 @@ import { useState } from 'react';
 import ReactFlow, { Background, type Node, type Edge } from 'reactflow';
 import 'reactflow/dist/style.css';
 import ClauseNode from "../sandbox_mode/ClauseNode"
-import styles from './MiniGuide.module.css';
+import styles from './Guide.module.css';
 import { useTranslation } from 'react-i18next';
 import Button from '../button/Button';
+import BaseCanvas from "../BaseCanvas"
 
 const nodeTypes = { clause: ClauseNode };
+
+const proOptions = { hideAttribution: true };
 
 export default function MiniSandbox() {
     const { t } = useTranslation();
@@ -112,21 +115,31 @@ export default function MiniSandbox() {
             </div>
 
             <div className={styles.canvasWrapper}>
-                <ReactFlow
+                <BaseCanvas
                     nodes={nodes}
                     edges={edges}
-                    nodeTypes={nodeTypes}
                     onNodeClick={handleNodeClick}
-                    defaultViewport={{ x: 0, y: 0, zoom: 1.5 }}
                     nodesDraggable={true}
                     zoomOnScroll={false}
-                    panOnDrag={true}
-                    preventScrolling={false}
-                    nodeOrigin={[0.5, 0]}
+                    defaultViewport={{ x: 0, y: 0, zoom: 1.5 }}
                     translateExtent={[[-100, -50], [600, 300]]}
-                >
-                    <Background gap={16} size={1} />
-                </ReactFlow>
+                />
+                {/*<ReactFlow*/}
+                {/*    nodes={nodes}*/}
+                {/*    edges={edges}*/}
+                {/*    nodeTypes={nodeTypes}*/}
+                {/*    onNodeClick={handleNodeClick}*/}
+                {/*    defaultViewport={{ x: 0, y: 0, zoom: 1.5 }}*/}
+                {/*    nodesDraggable={true}*/}
+                {/*    zoomOnScroll={false}*/}
+                {/*    panOnDrag={true}*/}
+                {/*    preventScrolling={false}*/}
+                {/*    nodeOrigin={[0.5, 0]}*/}
+                {/*    translateExtent={[[-100, -50], [600, 300]]}*/}
+                {/*    proOptions={proOptions}*/}
+                {/*>*/}
+                {/*    <Background gap={16} size={1} />*/}
+                {/*</ReactFlow>*/}
             </div>
                 <div className={styles.controls}>
                     <Button

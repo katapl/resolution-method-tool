@@ -10,8 +10,10 @@ import ClauseNode from './ClauseNode';
 import { useTranslation } from 'react-i18next';
 import { generateSandboxLayout } from '../../utils/layout';
 import styles from './SandboxCanvas.module.css';
+import BaseCanvas from "../BaseCanvas";
 
 const nodeTypes = { clause: ClauseNode };
+const proOptions = { hideAttribution: true };
 
 interface SandboxCanvasProps {
     initialClauses: Clause[];
@@ -221,26 +223,42 @@ export default function SandboxCanvas({ initialClauses }: SandboxCanvasProps) {
             </div>
 
             <div className={styles.flowWrapper}>
-                <ReactFlow
+                <BaseCanvas
                     nodes={nodes}
                     edges={edges}
-                    onNodeClick={(_, node) => {
-                        if (!node.data.clause.removed) {
-                            handleNodeSelect(node.id);
-                        }
-                    }}
-                    nodeTypes={nodeTypes}
                     onNodesChange={onNodesChange}
                     onEdgesChange={onEdgesChange}
+                    onNodeClick={(_, node) => {
+                        if (!node.data.clause.removed) handleNodeSelect(node.id);
+                    }}
                     elementsSelectable={true}
                     nodeDragThreshold={10}
                     fitView
                     translateExtent={cameraBounds}
-                    nodeOrigin={[0.5, 0]}
                 >
-                    <Background gap={16} size={1} />
-                    <Controls />
-                </ReactFlow>
+                    <Controls/>
+                </BaseCanvas>
+                {/*<ReactFlow*/}
+                {/*    nodes={nodes}*/}
+                {/*    edges={edges}*/}
+                {/*    onNodeClick={(_, node) => {*/}
+                {/*        if (!node.data.clause.removed) {*/}
+                {/*            handleNodeSelect(node.id);*/}
+                {/*        }*/}
+                {/*    }}*/}
+                {/*    nodeTypes={nodeTypes}*/}
+                {/*    onNodesChange={onNodesChange}*/}
+                {/*    onEdgesChange={onEdgesChange}*/}
+                {/*    elementsSelectable={true}*/}
+                {/*    nodeDragThreshold={10}*/}
+                {/*    fitView*/}
+                {/*    translateExtent={cameraBounds}*/}
+                {/*    nodeOrigin={[0.5, 0]}*/}
+                {/*    proOptions={proOptions}*/}
+                {/*>*/}
+                {/*    <Background gap={16} size={1} />*/}
+                {/*    <Controls />*/}
+                {/*</ReactFlow>*/}
             </div>
         </div>
     );

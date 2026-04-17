@@ -11,9 +11,10 @@ interface FormulaInputProps {
     onPractice: (clauses: Clause[]) => void;
     onReset: () => void;
     disabled?: boolean;
+    injectedFormula?: { text: string, time: number } | null;
 }
 
-export default function FormulaInput({ onSolve, onPractice, onReset, disabled }: FormulaInputProps) {
+export default function FormulaInput({ onSolve, onPractice, onReset, disabled, injectedFormula }: FormulaInputProps) {
     const { t, i18n } = useTranslation();
     const [inputValue, setInputValue] = useLocalStorage<string>('prover_input_text', '');
     const [errorMsg, setErrorMsg] = useState<{
@@ -24,6 +25,13 @@ export default function FormulaInput({ onSolve, onPractice, onReset, disabled }:
     const [savedLang, setSavedLang] = useLocalStorage<string>('prover_language', 'en');
 
     const hasInteractedRef = useRef(false);
+
+    useEffect(() => {
+        if (injectedFormula) {
+            setInputValue(injectedFormula.text);
+            setErrorMsg(null);
+        }
+    }, [injectedFormula]);
 
     const scrollToCanvas = () => {
         setTimeout(() => {
@@ -121,7 +129,7 @@ export default function FormulaInput({ onSolve, onPractice, onReset, disabled }:
             return;
         }
 
-        const clauses = value.split(/\s*,\s*|\s*\^\s*|\s*&\s*|\|=|⊢|\|-/)
+        const clauses = value.split(/\s*,\s*|\s*\^\s*|\s*∧\s*|\s*&\s*|\|=|⊢|\|-/)
             .filter(c => c.trim().length > 0);
 
         if (clauses.length < 2) {

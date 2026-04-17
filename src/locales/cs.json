@@ -26,7 +26,9 @@
     "msgContradictionEntailment": "Byla nalezena prázdná klauzule. To dokazuje, že negovaný závěr je kontradikcí předpokladů. Tudíž, původní závěr vyplývá z předpokladů.",
     "msgContradictionSatisfiable": "Byla nalezena prázdná klauzule. To znamená, že množina předpokladů je nesplnitelná.",
     "msgEmptySetEntailment": "Všechny klauzule byly zredukovány a množina je prázdná, ale nebyl nalezen spor. Tudíž, původní závěr z předpokladů nevyplývá.",
-    "msgEmptySetSatisfiable": "Všechny klauzule byly zredukovány a množina je prázdná. To znamená, že původní množina předpokladů je splnitelná."
+    "msgEmptySetSatisfiable": "Všechny klauzule byly zredukovány a množina je prázdná. To znamená, že původní množina předpokladů je splnitelná.",
+    "counterExamples": "Protipříklady",
+    "satisfyingAssignments": "Splňující pravdivostní ohodnocení"
   },
   "engine": {
     "negateConclusion" : "Důsledek byl negován a přidán do množiny předpokladů",
@@ -80,5 +82,12 @@
     "sandboxStep3": "Step 3: Click the second clause (~A v C) to resolve them.",
     "sandboxStep4": "Great job! You created a new resolvent.",
     "btnReset": "Reset Practice"
+  },
+  "guide": {
+    "try": "Stačí kliknout na příklad a vyzkoušet"
+  },
+  "error": {
+    "fatalWorkerCrash": "Vlákno jádra spadlo: {{message}}. Prosím obnovte stránku a zkuste to znovu.",
+    "unknownError": "Neznámá chyba"
   }
 }

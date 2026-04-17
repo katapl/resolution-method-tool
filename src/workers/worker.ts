@@ -1,5 +1,5 @@
-import { autoSolve } from './resolver';
-import type { Clause, ProofStep } from './types';
+import { autoSolve } from '../engine/resolver';
+import type { Clause, ProofStep } from '../engine/types';
 
 export type WorkerSuccessPayload = { finalPool: Clause[], history: ProofStep[] };
 export type WorkerMessage =

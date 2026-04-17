@@ -1,13 +1,16 @@
 import { useMemo, useEffect, useState } from 'react';
 import StepCanvas from './StepCanvas';
-import type { Clause, ProofStep } from "../../engine/types.ts";
-import type { WorkerMessage } from "../../engine/worker"
+import type { Clause, ProofStep, Assignment } from "../../engine/types.ts";
+import type { WorkerMessage } from "../../workers/worker"
+import type { ModelWorkerMessage } from "../../workers/modelWorker"
 import { useTranslation } from 'react-i18next';
 import ResultPanel from './ResultPanel';
 import Button from "../button/Button";
 import { getPaginationRange } from "../../utils/pagination"
 import styles from './ProofTimeline.module.css';
 import { useLocalStorage } from '../../hook/useLocalStorage';
+import { MoreHorizontal, ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from 'lucide-react';
+import BaseCanvas from "../BaseCanvas";
 
 interface ProofTimelineProps {
     initialClauses: Clause[];
@@ -25,6 +28,11 @@ export default function ProofTimeline({ initialClauses }: ProofTimelineProps) {
     const [visibleStepCount, setVisibleStepCount] = useLocalStorage<number>('prover_timeline_step', 1);
     const totalSteps = fullHistory.length;
 
+    const [isResultExpanded, setIsResultExpanded] = useState<boolean>(false);
+
+    const [models, setModels] = useState<Assignment[] | null>(null);
+    const [modelError, setModelError] = useState<string | null>(null);
+
     useEffect(() => {
         if (!initialClauses || initialClauses.length === 0) {
             setIsSolving(false);
@@ -33,12 +41,14 @@ export default function ProofTimeline({ initialClauses }: ProofTimelineProps) {
 
         setIsSolving(true);
         setFullHistory([]);
+        setModels(null);
+        setModelError(null);
 
-        const worker = new Worker(new URL('../../engine/worker.ts', import.meta.url), {
+        const engineWorker = new Worker(new URL('../../workers/worker.ts', import.meta.url), {
             type: 'module'
         });
 
-        worker.onmessage = (e: MessageEvent<WorkerMessage>) => {
+        engineWorker.onmessage = (e: MessageEvent<WorkerMessage>) => {
             if (e.data.type === 'SUCCESS') {
                 const newHistory = e.data.payload.history;
 
@@ -53,22 +63,47 @@ export default function ProofTimeline({ initialClauses }: ProofTimelineProps) {
             }
         };
 
-        worker.postMessage(initialClauses);
+        engineWorker.onerror = (errorEvent: ErrorEvent) => {
+            // This catches syntax errors, 404s, and infinite loops that crash the thread
+            // locale tokens???
+            const fallbackMessage = t('error.unknownError');
+            console.error('Fatal Worker Crash:', errorEvent);
+            setWorkerError(t('error.fatalWorkerCrash', {
+                message: errorEvent.message || fallbackMessage
+            }));
+            setIsSolving(false);
+        };
+
+        engineWorker.postMessage(initialClauses);
+
+        const modelWorker = new Worker(new URL('../../workers/modelWorker.ts', import.meta.url), { type: 'module' });
+
+        modelWorker.onmessage = (e: MessageEvent<ModelWorkerMessage>) => {
+            if (e.data.type === 'SUCCESS') {
+                setModels(e.data.payload);
+            } else {
+                setModelError(e.data.payload);
+            }
+        };
+
+        modelWorker.onerror = () => {
+            setModelError("Model thread crashed unexpectedly.");
+        };
+
+        modelWorker.postMessage(initialClauses);
 
         return () => {
-            worker.terminate();
+            engineWorker.terminate();
+            modelWorker.terminate();
         };
-    }, [initialClauses]);
+    }, [initialClauses, setVisibleStepCount]);
 
     const hasEmptyClause = finalPool?.some(c => c.literals.length === 0) ?? false;
     const hasConclusion = initialClauses?.some(c => c.isNegatedConclusion) ?? false;
     const isEmptySet = (finalPool || []).length === 0;
 
-    // const visibleHistory = fullHistory.slice(0, visibleStepCount);
-
     const handleNext = () => setVisibleStepCount(prev => Math.min(prev + 1, totalSteps));
     const handlePrev = () => setVisibleStepCount(prev => Math.max(prev - 1, 1));
-    // const handleLast = () => setVisibleStepCount(totalSteps);
     const handleJumpTo = (step: number) => setVisibleStepCount(step);
 
     const paginationRange = useMemo(() => {
@@ -131,39 +166,61 @@ export default function ProofTimeline({ initialClauses }: ProofTimelineProps) {
             <div className={styles.canvasWrapper}>
                 <div className={styles.canvasHeader}>
                     <h3 className={styles.stepTitle}>
-                        {t('input.step', { count: currentStep.stepNumber })}
+                        {/*{t('input.step', { count: currentStep.stepNumber })}*/}
+                        {isLastStep
+                            ? t('input.result')
+                            : t('input.step', { count: currentStep.stepNumber })
+                        }
                     </h3>
+                    <div className={styles.resultRow}>
                     <p className={styles.stepMessage}>
                         {baseMessage}
                     </p>
+                    {isLastStep && (
+                        <Button
+                            className={styles.resultToggleBtn}
+                            onClick={() => setIsResultExpanded(!isResultExpanded)}
+                        >
+                            {isResultExpanded ? (
+                                <ChevronUp size={28} />
+                            ) : (
+                                <ChevronDown size={28} />
+                            )}
+                        </Button>
+                    )}
+                    </div>
                 </div>
 
-                <StepCanvas
-                    step={currentStep}
-                    key={currentStep.stepNumber}
-                />
+                <div className={styles.canvasBody}>
+                    <StepCanvas
+                        step={currentStep}
+                        key={currentStep.stepNumber}
+                    />
+
+                    {isLastStep && (
+                        <div className={`${styles.resultOverlay} ${isResultExpanded ? styles.expanded : ''}`}>
+                            <ResultPanel
+                                hasEmptyClause={hasEmptyClause}
+                                isEmptySet={isEmptySet}
+                                hasConclusion={hasConclusion}
+                                models={models}
+                                modelError={modelError}
+                            />
+                        </div>
+                    )}
+                </div>
             </div>
 
-            {isLastStep && (
-                <div className={styles.resultWrapper}>
-                    <ResultPanel
-                        hasEmptyClause={hasEmptyClause}
-                        isEmptySet={isEmptySet}
-                        hasConclusion={hasConclusion}
-                    />
-                </div>
-            )}
-
             <div className={styles.pagination}>
-                <Button onClick={handlePrev} disabled={visibleStepCount === 1}>
-                    &lsaquo;
+                <Button onClick={handlePrev} disabled={visibleStepCount === 1} className={styles.icon}>
+                    <ChevronLeft size={28} />
                 </Button>
 
                 {paginationRange.map((item, index) => {
                     if (item === '...') {
                         return (
                             <span key={`dots-${index}`} className={styles.dots}>
-                                &#8230;
+                                <MoreHorizontal size={18} strokeWidth={2.5} color="#999" />
                             </span>
                         );
                     }
@@ -182,8 +239,8 @@ export default function ProofTimeline({ initialClauses }: ProofTimelineProps) {
                     );
                 })}
 
-                <Button onClick={handleNext} disabled={isLastStep}>
-                    &rsaquo;
+                <Button onClick={handleNext} disabled={isLastStep} className={styles.icon}>
+                    <ChevronRight size={28} />
                 </Button>
             </div>
         </div>

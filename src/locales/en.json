@@ -26,7 +26,9 @@
     "msgContradictionEntailment": "An empty clause was derived. This proves that the negated conclusion contradicts the premises. Therefore, the original entailment holds true!",
     "msgContradictionSatisfiable": "An empty clause was derived. This means the set of clauses is unsatisfiable.",
     "msgEmptySetEntailment": "All clauses were reduced and the set is empty, but no contradiction was found. Therefore, the entailment does NOT hold.",
-    "msgEmptySetSatisfiable": "All clauses were reduced and the set is empty. This means the original set of clauses is satisfiable (consistent)."
+    "msgEmptySetSatisfiable": "All clauses were reduced and the set is empty. This means the original set of clauses is satisfiable (consistent).",
+    "counterExamples": "Counter-Examples",
+    "satisfyingAssignments": "Satisfying Assignments"
   },
   "engine": {
     "negateConclusion" : "Negated the conclusion and added it to the set.",
@@ -74,5 +76,12 @@
     "sandboxStep3": "Step 3: Click the second clause (~A v C) to resolve them.",
     "sandboxStep4": "Great job! You created a new resolvent.",
     "btnReset": "Reset Practice"
+  },
+  "guide": {
+    "try": "Click on an example to try"
+  },
+  "error": {
+    "fatalWorkerCrash": "Engine thread crashed: {{message}}. Please refresh and try again.",
+    "unknownError": "Unknown error"
   }
 }

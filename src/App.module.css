@@ -12,27 +12,6 @@
     min-height: 150vh;
 }
 
-.idleExamples {
-    text-align: left;
-    color: #666666;
-    padding: 2rem;
-    max-width: 1000px;
-    margin: 0 auto;
-}
-
-.idleExamples ul {
-    line-height: 1.8;
-}
-
-.modeExamples {
-    padding-top: 2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    max-width: 1000px;
-    margin: 0 auto;
-}
-
 .canvasContainer {
     scroll-margin-top: 2rem;
 }
