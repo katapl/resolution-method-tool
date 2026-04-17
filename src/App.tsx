@@ -1,7 +1,7 @@
 import ProofTimeline from "./components/solve_mode/ProofTimeline.tsx";
 import SandboxCanvas from "./components/sandbox_mode/SandboxCanvas";
 import FormulaInput from "./components/FormulaInput";
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useLocalStorage } from './hook/useLocalStorage';
 import type { Clause } from './engine/types';
 import Button from "./components/button/Button";
