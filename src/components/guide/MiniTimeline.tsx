@@ -1,6 +1,6 @@
 import { useState } from 'react';
-// import ReactFlow, { Background, type Node, type Edge } from 'reactflow';
-// import 'reactflow/dist/style.css';
+import { type Node, type Edge } from 'reactflow';
+import 'reactflow/dist/style.css';
 import Button from '../button/Button';
 import ClauseNode from '../sandbox_mode/ClauseNode';
 import styles from './Guide.module.css';

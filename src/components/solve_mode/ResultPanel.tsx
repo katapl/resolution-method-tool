@@ -5,7 +5,7 @@ import type { Assignment } from "../../engine/types"
 
 interface ResultPanelProps {
     hasEmptyClause: boolean;
-    // isEmptySet: boolean;
+    isEmptySet: boolean;
     hasConclusion: boolean;
     models?: Assignment[] | null;
     modelError?: string | null;
@@ -13,7 +13,7 @@ interface ResultPanelProps {
 
 export default function ResultPanel({
         hasEmptyClause,
-        // isEmptySet,
+        isEmptySet,
         hasConclusion,
         models = null,
         modelError
@@ -27,7 +27,7 @@ export default function ResultPanel({
         if (hasEmptyClause) {
             titleKey = "results.titleContradiction";
             messageKey = "results.msgContradictionEntailment"
-        } else {
+        } else if (isEmptySet) {
             titleKey = "results.titleEmptySet";
             messageKey = "results.msgEmptySetEntailment";
         }
@@ -35,7 +35,7 @@ export default function ResultPanel({
         if (hasEmptyClause) {
             titleKey = "results.titleContradiction";
             messageKey = "results.msgContradictionSatisfiable";
-        } else {
+        } else if (isEmptySet) {
             titleKey = "results.titleEmptySet";
             messageKey = "results.msgEmptySetSatisfiable";
         }

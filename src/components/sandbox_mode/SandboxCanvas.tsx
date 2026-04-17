@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import Button from '../button/Button';
-import ReactFlow, {
+import {
     type Node, type Edge,
     useNodesState, useEdgesState,
     Controls
@@ -8,7 +8,6 @@ import ReactFlow, {
 import 'reactflow/dist/style.css';
 import { useSandboxEngine } from '../../hook/useSandboxEngine';
 import { type Clause } from "../../engine/types";
-import ClauseNode from './ClauseNode';
 import { useTranslation } from 'react-i18next';
 import { generateSandboxLayout } from '../../utils/layout';
 import styles from './SandboxCanvas.module.css';
