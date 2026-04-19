@@ -89,8 +89,8 @@ export default function MiniSandbox() {
             }
         ];
         edges = [
-            { id: 'e1', source: 'c1', target: 'res', animated: true, style: { stroke: '#999', strokeWidth: 2 } },
-            { id: 'e2', source: 'c2', target: 'res', animated: true, style: { stroke: '#999', strokeWidth: 2 } }
+            { id: 'e1', source: 'c1', target: 'res', animated: false, style: { stroke: '#999', strokeWidth: 2 } },
+            { id: 'e2', source: 'c2', target: 'res', animated: false, style: { stroke: '#999', strokeWidth: 2 } }
         ];
     }
 
@@ -101,8 +101,9 @@ export default function MiniSandbox() {
 
     return (
         <div className={styles.container}>
-            <h4 className={styles.title}>{t('tutorial.sandboxTitle')}</h4>
-            <div className={styles.instructionText} style={{ fontWeight: '500' }}>
+            <h4 className={styles.text}>{t('tutorial.sandboxTitle')}</h4>
+            <p className={styles.instructionText}>{t('tutorial.practiceExplanation')}</p>
+            <div className={styles.instructionText}>
                 {step === 0 && t('tutorial.sandboxStep1')}
                 {step === 1 && t('tutorial.sandboxStep2')}
                 {step === 2 && t('tutorial.sandboxStep3')}
@@ -119,22 +120,6 @@ export default function MiniSandbox() {
                     defaultViewport={{ x: 0, y: 0, zoom: 1.5 }}
                     translateExtent={[[-100, -50], [600, 300]]}
                 />
-                {/*<ReactFlow*/}
-                {/*    nodes={nodes}*/}
-                {/*    edges={edges}*/}
-                {/*    nodeTypes={nodeTypes}*/}
-                {/*    onNodeClick={handleNodeClick}*/}
-                {/*    defaultViewport={{ x: 0, y: 0, zoom: 1.5 }}*/}
-                {/*    nodesDraggable={true}*/}
-                {/*    zoomOnScroll={false}*/}
-                {/*    panOnDrag={true}*/}
-                {/*    preventScrolling={false}*/}
-                {/*    nodeOrigin={[0.5, 0]}*/}
-                {/*    translateExtent={[[-100, -50], [600, 300]]}*/}
-                {/*    proOptions={proOptions}*/}
-                {/*>*/}
-                {/*    <Background gap={16} size={1} />*/}
-                {/*</ReactFlow>*/}
             </div>
                 <div className={styles.controls}>
                     <Button

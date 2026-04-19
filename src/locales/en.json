@@ -1,11 +1,12 @@
 {
   "input": {
     "title": "Learn Resolution",
-    "enterFormula": "Enter formula:",
+    "enterFormula": "Enter formula in CNF:",
     "solve": "Solve",
     "practice": "Practice",
     "reset": "Back to Guide",
     "step": "Step {{count}}",
+    "stepResult": "Step {{count}} (Result)",
     "result": "Result",
     "errInvalidChar": "Invalid character: \"{{char}}\". Allowed: letters, ~, ¬, v, ∨, +, ,, ^, ∧, &, |, =, ⊢",
     "errMultipleEntailment": "Only one entailment symbol (|=, ⊢) is allowed per formula.",
@@ -18,6 +19,7 @@
     "errMissingConclusion": "You must provide a conclusion after the entailment symbol.",
     "errMultiChar": "Variables must be a single letter. Found: \"{{literal}}\"",
     "errMissingOperator": "Variables must be separated by an operator ('v' or ',' or '&').",
+    "errTrailingNegation": "Each negation symbol (~, !, ¬) must be followed by a variable.",
     "errParse": "{{msg}}"
   },
   "results": {
@@ -28,7 +30,11 @@
     "msgEmptySetEntailment": "All clauses were reduced and the set is empty, but no contradiction was found. Therefore, the entailment does NOT hold.",
     "msgEmptySetSatisfiable": "All clauses were reduced and the set is empty. This means the original set of clauses is satisfiable (consistent).",
     "counterExamples": "Counter-Examples",
-    "satisfyingAssignments": "Satisfying Assignments"
+    "satisfyingAssignments": "Satisfying Assignments",
+    "conclusion": "Conclusion",
+    "formula": "Formula",
+    "moreAboutResult": "What does the result mean?",
+    "calculating": "Calculating combinations..."
   },
   "engine": {
     "negateConclusion" : "Negated the conclusion and added it to the set.",
@@ -65,12 +71,16 @@
     "entailmentPrefix": "The conclusion was negated and added to set of premises."
   },
   "tutorial": {
-    "timelineTitle": "Solve: Overview",
-    "timelineFrame1": "1. The engine starts with your initial clauses.",
-    "timelineFrame2": "2. It finds complementary literals (P and ~P) and resolves them.",
+    "timelineTitle": "Solve mode",
+    "solveExplanation": "In this mode, you can click through the course of the entire algorithm step by step.",
+    "timelineFrame1": "Step 1: Started with the initial clauses.",
+    "timelineFrame2": "Step 2: Resolved on P.",
+    "timelineFrame3": "Step 3: Removed parent clauses.",
+    "timelineFrame4": "Step 4: Removed tautology. Empty set reached!",
     "btnPrev": "Previous",
     "btnNext": "Next",
-    "sandboxTitle": "Practice: Overview",
+    "sandboxTitle": "Practice mode",
+    "practiceExplanation": "In this mode, you can create the resolvents yourself!",
     "sandboxStep1": "Step 1: Click the red 'X' button on the tautology (A v ~A) to remove it.",
     "sandboxStep2": "Step 2: Now click the first clause (A v B) to select it.",
     "sandboxStep3": "Step 3: Click the second clause (~A v C) to resolve them.",
@@ -78,7 +88,13 @@
     "btnReset": "Reset Practice"
   },
   "guide": {
-    "try": "Click on an example to try"
+    "try": "Click on an example to try!",
+    "welcomeText": "Welcome! This app is for learning the resolution method in propositional logic. The algorithm presented by this app is based on Davis-Putnam with parent clause deletion and basic reduction strategies (tautology removal, subsumed clause removal and pure literal removal).",
+    "formulaForms": "The inserted formula must be in Conjunctive Normal Form. Each clause represents a premise. You can use it to figure out the satisfiability of a set of premises, or if a set of premises entail a conclusion.",
+    "basicSteps": "What are the basic steps of the algorithm?",
+    "modeDifference": "What’s the difference between solve and practice?",
+    "solveMode": "Solve mode will generate a step by step guide to applying the algorithm to your formula.",
+    "practiceMode": "In Practice mode you will can try to use the algorithm on your formula by yourself."
   },
   "error": {
     "fatalWorkerCrash": "Engine thread crashed: {{message}}. Please refresh and try again.",

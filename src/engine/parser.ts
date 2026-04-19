@@ -14,7 +14,7 @@ const parseLiteral = (rawLit: string): Literal | null => {
     if (!name) return null;
 
     if (!/^[a-zA-Z]$/.test(name)) {
-        throw new Error(`Syntax Error: Invalid literal "${name}". Literals must be a single letter.`);
+        return null;
     }
 
     return { polarity: !isNegated, name };
@@ -49,7 +49,8 @@ const parseConclusionClause = (rawClause: string): Clause[] => {
     }));
 };
 
-export const parseFormulaToClauses = (input: string): Clause[] => {
+export const parseFormulaToClauses = (rawInput: string): Clause[] => {
+    const input = rawInput.replace(/[()]/g, '');
     if (!input.trim()) return [];
 
     const parts = input.split(/\s*\|\=\s*|\s*⊢\s*|\s*\|-\s*/);

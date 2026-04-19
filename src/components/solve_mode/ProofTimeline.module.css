@@ -92,7 +92,7 @@
     backdrop-filter: blur(4px);
     z-index: 10;
     padding: 24px;
-    overflow-y: auto;
+    /*overflow-y: auto;*/
     /*105% to hide overlay and shadow*/
     transform: translateY(-105%);
     border-bottom: 1px solid #cccccc;
@@ -182,7 +182,7 @@
 
     background: none !important;
     border: none !important;
-    padding: 0.4rem 0 0 0 !important;;
+    padding: 0.4rem 0  0.4rem 0 !important;;
     font-size: 0.85rem;
     font-weight: 600;
     color: #333;
@@ -198,5 +198,13 @@
 .resultRow{
     display: flex;
     justify-content: space-between;
+    width: 100%;
+}
+
+.resultDropdown{
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    align-items: center;
     width: 100%;
 }

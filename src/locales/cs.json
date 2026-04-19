@@ -1,11 +1,12 @@
 {
   "input": {
     "title": "Learn Resolution",
-    "enterFormula": "Vložte formuli:",
+    "enterFormula": "Vložte formuli v KNF:",
     "solve": "Vyřešit",
     "practice": "Procvičit",
     "reset": "Zpět k návodu",
     "step": "Krok {{count}}",
+    "stepResult": "Krok {{count}} (Výsledek)",
     "result": "Výsledek",
     "errInvalidChar": "Neplatný znak: \"{{char}}\". Povoleny: písmena, ~, ¬, v, ∨, +, ,, ^, ∧, &, |, =, ⊢",
     "errMultipleEntailment": "Povolen je pouze jeden symbol vyplývaní (|=, ⊢)",
@@ -18,6 +19,7 @@
     "errMissingConclusion": "Po symbolu vyplývání musí následovat právě jedna klauzule.",
     "errMultiChar": "Literál musí být jedno písmeno. Nalezen: \"{{literal}}\"",
     "errMissingOperator": "Literály musí být odděleny operátorem ('v' nebo ',' nebo '&').",
+    "errTrailingNegation": "Každý symbol negace(~, !, ¬) musí být následován literálem.",
     "errParse": "{{msg}}"
   },
   "results": {
@@ -28,7 +30,11 @@
     "msgEmptySetEntailment": "Všechny klauzule byly zredukovány a množina je prázdná, ale nebyl nalezen spor. Tudíž, původní závěr z předpokladů nevyplývá.",
     "msgEmptySetSatisfiable": "Všechny klauzule byly zredukovány a množina je prázdná. To znamená, že původní množina předpokladů je splnitelná.",
     "counterExamples": "Protipříklady",
-    "satisfyingAssignments": "Splňující pravdivostní ohodnocení"
+    "satisfyingAssignments": "Splňující pravdivostní ohodnocení",
+    "conclusion": "Závěr",
+    "formula": "Formule",
+    "moreAboutResult": "Co výsledek znamená?",
+    "calculating": "Vypočítávám kombinace..."
   },
   "engine": {
     "negateConclusion" : "Důsledek byl negován a přidán do množiny předpokladů",
@@ -71,20 +77,30 @@
     "entailmentPrefix": "Závěr byl negován a přidán do množiny předpokladů."
   },
   "tutorial": {
-    "timelineTitle": "Co dělá tlačítko Vyřešit?",
-    "timelineFrame1": "1. The engine starts with your initial clauses.",
-    "timelineFrame2": "2. It finds complementary literals (P and ~P) and resolves them.",
-    "btnPrev": "Previous",
-    "btnNext": "Next",
-    "sandboxTitle": "Co dělá tlačítko Procvičit?",
-    "sandboxStep1": "Step 1: Click the red 'X' button on the tautology (A v ~A) to remove it.",
-    "sandboxStep2": "Step 2: Now click the first clause (A v B) to select it.",
-    "sandboxStep3": "Step 3: Click the second clause (~A v C) to resolve them.",
-    "sandboxStep4": "Great job! You created a new resolvent.",
-    "btnReset": "Reset Practice"
+    "timelineTitle": "Mód Vyřešit",
+    "solveExplanation": "V tomto módu si můžete krok po kroku proklikat průběh algoritmu",
+    "timelineFrame1": "Krok 1: Začneme s původními klauzulemi.",
+    "timelineFrame2": "Krok 2: Rezolventa vytvořena podle P.",
+    "timelineFrame3": "Krok 3: Odstraněny rodičovské klauzule.",
+    "timelineFrame4": "Krok 4: Odstraněna tautologie. Dosáhli jsme prázdné množiny!",
+    "btnPrev": "Předchozí",
+    "btnNext": "Další",
+    "sandboxTitle": "Mód Procvičit",
+    "practiceExplanation": "V tomto módu můžete rezoluce tvořit sami!",
+    "sandboxStep1": "Krok 1: Kliknětě na křížek abyste odstranily tautologii.",
+    "sandboxStep2": "Krok 2: Klikněte na klauzuli A v B.",
+    "sandboxStep3": "Krok 3: Teď klikněte na klauzuli ~A v C. Tím provedete rezoluci.",
+    "sandboxStep4": "Skvělá práce! Vytvořily jste novou rezolventu.",
+    "btnReset": "Resetovat"
   },
   "guide": {
-    "try": "Stačí kliknout na příklad a vyzkoušet"
+    "try": "Klikněte na příklad!",
+    "welcomeText": "Vítejte! Tato aplikace slouží pro výuku rezoluční metody ve výrokové logice. Algoritmus který aplikace využívá je založen na Davis-Putnam algoritmu s mazáním rodičovských klauzulí a základními strategiemi redukce (odstranění tautologií, subsumovaných klauzulí a čistých literálů).",
+    "formulaForms": "Vložená formule musí být v konjunktivní normální formě. Každá klauzule představuje předpoklad. Můžete jej použít k určení splnitelnosti množiny nebo k zjištění, zda z předpokladů vyplývá závěr.",
+    "basicSteps": "Jak algoritmus probíhá?",
+    "modeDifference": "Jaký je rozdíl mezi 'Vyřešit' a 'Procvičit'?",
+    "solveMode": "Po kliknutí tlačítka 'Vyřešit' se vygenerujou kroky řešení vaší zadané formule.",
+    "practiceMode": "Po kliknutí tlačítka 'Procvičit' si budete moct sami aplikovat algoritmus na vaši zadanou formuli."
   },
   "error": {
     "fatalWorkerCrash": "Vlákno jádra spadlo: {{message}}. Prosím obnovte stránku a zkuste to znovu.",

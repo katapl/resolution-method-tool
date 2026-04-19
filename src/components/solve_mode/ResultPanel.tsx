@@ -74,7 +74,7 @@ export default function ResultPanel({
             {models === null ? (
                 <div className={styles.loadingState}>
                     <Loader2 className={styles.spinner} size={20} />
-                    <span>Calculating combinations...</span>
+                    <span>{t('results.calculating')}</span>
                 </div>
             ) : models.length === 0 ? (
                 <p className={styles.noModelsText}>No assignments found.</p>
@@ -90,7 +90,8 @@ export default function ResultPanel({
                                 <th key={v}>{v}</th>
                             ))}
                             <th className={styles.resultColHeader}>
-                                {hasConclusion ? "Conclusion" : "Formula"}
+                                {/*replace with result string?*/}
+                                {hasConclusion ? t('results.conclusion') : t('results.formula')}
                             </th>
                         </tr>
                         </thead>

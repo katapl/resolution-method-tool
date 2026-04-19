@@ -17,7 +17,7 @@ const TUTORIAL_FRAMES: { textKey: string; nodes: Node[]; edges: Edge[] }[] = [
                 data: {
                     clause: {
                         id: 'c1',
-                        literals: [{ name: 'P', polarity: true }, { name: 'Q', polarity: true }],
+                        literals: [{ name: 'P', polarity: true }, { name: 'Q', polarity: false }],
                         removed: false
                     }
                 }
@@ -29,7 +29,7 @@ const TUTORIAL_FRAMES: { textKey: string; nodes: Node[]; edges: Edge[] }[] = [
                 data: {
                     clause: {
                         id: 'c2',
-                        literals: [{ name: 'P', polarity: false }, { name: 'R', polarity: true }],
+                        literals: [{ name: 'P', polarity: false }, { name: 'Q', polarity: true }],
                         removed: false
                     }
                 }
@@ -43,11 +43,11 @@ const TUTORIAL_FRAMES: { textKey: string; nodes: Node[]; edges: Edge[] }[] = [
             {
                 id: 'c1',
                 type: 'clause',
-                position: { x: 150, y: 50 },
+                position: {x: 150, y: 50},
                 data: {
                     clause: {
                         id: 'c1',
-                        literals: [{ name: 'P', polarity: true }, { name: 'Q', polarity: true }],
+                        literals: [{name: 'P', polarity: true}, {name: 'Q', polarity: false}],
                         removed: false
                     },
                     isSelected: true
@@ -56,11 +56,11 @@ const TUTORIAL_FRAMES: { textKey: string; nodes: Node[]; edges: Edge[] }[] = [
             {
                 id: 'c2',
                 type: 'clause',
-                position: { x: 350, y: 50 },
+                position: {x: 350, y: 50},
                 data: {
                     clause: {
                         id: 'c2',
-                        literals: [{ name: 'P', polarity: false }, { name: 'R', polarity: true }],
+                        literals: [{name: 'P', polarity: false}, {name: 'Q', polarity: true}],
                         removed: false
                     },
                     isSelected: true
@@ -69,11 +69,11 @@ const TUTORIAL_FRAMES: { textKey: string; nodes: Node[]; edges: Edge[] }[] = [
             {
                 id: 'res1',
                 type: 'clause',
-                position: { x: 250, y: 150 },
+                position: {x: 250, y: 150},
                 data: {
                     clause: {
                         id: 'res1',
-                        literals: [{ name: 'Q', polarity: true }, { name: 'R', polarity: true }],
+                        literals: [{name: 'Q', polarity: true}, {name: 'Q', polarity: false}],
                         removed: false
                     },
                     isHighlighted: true
@@ -81,9 +81,99 @@ const TUTORIAL_FRAMES: { textKey: string; nodes: Node[]; edges: Edge[] }[] = [
             }
         ],
         edges: [
-            { id: 'e1', source: 'c1', target: 'res1', animated: true, style: { stroke: '#999', strokeWidth: 2 } },
-            { id: 'e2', source: 'c2', target: 'res1', animated: true, style: { stroke: '#999', strokeWidth: 2 } }
+            {id: 'e1', source: 'c1', target: 'res1', animated: false, style: {stroke: '#999', strokeWidth: 2}},
+            {id: 'e2', source: 'c2', target: 'res1', animated: false, style: {stroke: '#999', strokeWidth: 2}}
         ]
+    },
+    {
+        textKey: "tutorial.timelineFrame3",
+        nodes: [
+            {
+                id: 'c1',
+                type: 'clause',
+                position: {x: 150, y: 50},
+                data: {
+                    clause: {
+                        id: 'c1',
+                        literals: [{name: 'P', polarity: true}, {name: 'Q', polarity: false}],
+                        removed: true
+                    },
+                    isSelected: true
+                }
+            },
+            {
+                id: 'c2',
+                type: 'clause',
+                position: {x: 350, y: 50},
+                data: {
+                    clause: {
+                        id: 'c2',
+                        literals: [{name: 'P', polarity: false}, {name: 'Q', polarity: true}],
+                        removed: true
+                    },
+                    isSelected: true
+                }
+            },
+            {
+                id: 'res1',
+                type: 'clause',
+                position: {x: 250, y: 150},
+                data: {
+                    clause: {
+                        id: 'res1',
+                        literals: [{name: 'Q', polarity: true}, {name: 'Q', polarity: false}],
+                        removed: false
+                    },
+                    isHighlighted: true
+                }
+            }
+        ],
+        edges: []
+    },
+    {
+        textKey: "tutorial.timelineFrame4",
+        nodes: [
+            {
+                id: 'c1',
+                type: 'clause',
+                position: {x: 150, y: 50},
+                data: {
+                    clause: {
+                        id: 'c1',
+                        literals: [{name: 'P', polarity: true}, {name: 'Q', polarity: false}],
+                        removed: true
+                    },
+                    isSelected: true
+                }
+            },
+            {
+                id: 'c2',
+                type: 'clause',
+                position: {x: 350, y: 50},
+                data: {
+                    clause: {
+                        id: 'c2',
+                        literals: [{name: 'P', polarity: false}, {name: 'Q', polarity: true}],
+                        removed: true
+                    },
+                    isSelected: true
+                }
+            },
+            {
+                id: 'res1',
+                type: 'clause',
+                position: {x: 250, y: 150},
+                data: {
+                    clause: {
+                        id: 'res1',
+                        literals: [{name: 'Q', polarity: true}, {name: 'Q', polarity: false}],
+                        removed: true
+                    },
+                    isHighlighted: true
+                }
+            }
+        ],
+        edges: []
     }
 ];
 
@@ -94,7 +184,8 @@ export default function MiniTimeline() {
 
     return (
         <div className={styles.container}>
-            <h4 className={styles.title}>{t('tutorial.timelineTitle')}</h4>
+            <h4 className={styles.text}>{t('tutorial.timelineTitle')}</h4>
+            <p className={styles.instructionText}>{t('tutorial.solveExplanation')}</p>
             <p className={styles.instructionText}>{t(currentFrame.textKey)}</p>
 
             <div className={styles.canvasWrapper}>
@@ -106,21 +197,6 @@ export default function MiniTimeline() {
                     defaultViewport={{ x: 0, y: 0, zoom: 1.5 }}
                     translateExtent={[[-100, -50], [600, 300]]}
                 />
-                {/*<ReactFlow*/}
-                {/*    nodes={currentFrame.nodes}*/}
-                {/*    edges={currentFrame.edges}*/}
-                {/*    nodeTypes={nodeTypes}*/}
-                {/*    defaultViewport={{ x: 0, y: 0, zoom: 1.5 }}*/}
-                {/*    nodesDraggable={false}*/}
-                {/*    zoomOnScroll={false}*/}
-                {/*    panOnDrag={true}*/}
-                {/*    preventScrolling={false}*/}
-                {/*    nodeOrigin={[0.5, 0]}*/}
-                {/*    translateExtent={[[-100, -50], [600, 300]]}*/}
-                {/*    proOptions={proOptions}*/}
-                {/*>*/}
-                {/*    <Background gap={16} size={1} />*/}
-                {/*</ReactFlow>*/}
             </div>
 
             <div className={styles.controls}>

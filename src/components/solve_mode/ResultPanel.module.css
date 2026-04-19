@@ -53,6 +53,7 @@
 }
 
 .tableSection {
+    padding-top: 1rem;
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -66,7 +67,9 @@
 
 .tableWrapper {
     width: 100%;
-    overflow-x: auto; /* Enables horizontal scrolling for many variables! */
+    overflow-x: auto;
+    overflox-y: auto;
+    max-height: 18rem;
     border: 1px solid #e5e7eb;
     border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
@@ -74,6 +77,7 @@
 
 .truthTable {
     width: 100%;
+    margin: 0 auto;
     border-collapse: collapse;
     text-align: center;
     font-family: monospace;
@@ -113,11 +117,17 @@
 .resultColHeader {
     border-left: 2px solid #d1d5db !important;
     background-color: #f3f4f6 !important;
+    width: 100px;
+    min-width: 100px;
+    max-width: 120px;
 }
 
 .resultCell {
     border-left: 2px solid #d1d5db;
     background-color: #fafafa;
+    width: 100px;
+    min-width: 150px;
+    max-width: 200px;
 }
 
 .truthTable.dense th {
@@ -152,4 +162,22 @@
 
 .truthTable.ultraDense .cellContent svg {
     display: none;
+}
+
+.truthTable th {
+    background-color: #f9fafb;
+    padding: 12px 16px;
+    font-weight: 600;
+    color: #374151;
+    border-bottom: 2px solid #e5e7eb;
+
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.truthTable th.resultColHeader {
+    position: sticky;
+    top: 0;
+    z-index: 11;
 }

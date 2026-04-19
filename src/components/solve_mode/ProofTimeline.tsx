@@ -1,14 +1,13 @@
 import { useMemo, useEffect, useState } from 'react';
 import StepCanvas from './StepCanvas';
-import type { Clause, ProofStep, Assignment } from "../../engine/types.ts";
-import type { WorkerMessage } from "../../workers/worker"
-import type { ModelWorkerMessage } from "../../workers/modelWorker"
+import type { Clause } from "../../engine/types.ts";
 import { useTranslation } from 'react-i18next';
 import ResultPanel from './ResultPanel';
 import Button from "../button/Button";
 import { getPaginationRange } from "../../utils/pagination"
 import styles from './ProofTimeline.module.css';
 import { useLocalStorage } from '../../hook/useLocalStorage';
+import { useProofEngine } from '../../hook/useProofEngine';
 import { MoreHorizontal, ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from 'lucide-react';
 
 interface ProofTimelineProps {
@@ -16,100 +15,23 @@ interface ProofTimelineProps {
 }
 
 export default function ProofTimeline({ initialClauses }: ProofTimelineProps) {
-
     const { t } = useTranslation();
 
-    const [fullHistory, setFullHistory] = useState<ProofStep[]>([]);
-    const [finalPool, setFinalPool] = useState<Clause[]>([]);
-    const [isSolving, setIsSolving] = useState<boolean>(true);
-    const [workerError, setWorkerError] = useState<string | null>(null);
-
     const [visibleStepCount, setVisibleStepCount] = useLocalStorage<number>('prover_timeline_step', 1);
-    const totalSteps = fullHistory.length;
-
     const [isResultExpanded, setIsResultExpanded] = useState<boolean>(false);
-
-    const [models, setModels] = useState<Assignment[] | null>(null);
-    const [modelError, setModelError] = useState<string | null>(null);
-
-    useEffect(() => {
-        if (!initialClauses || initialClauses.length === 0) {
-            setIsSolving(false);
-            return;
-        }
-
-        setIsSolving(true);
-        setFullHistory([]);
-        setModels(null);
-        setModelError(null);
-
-        const engineWorker = new Worker(new URL('../../workers/worker.ts', import.meta.url), {
-            type: 'module'
-        });
-
-        engineWorker.onmessage = (e: MessageEvent<WorkerMessage>) => {
-            if (e.data.type === 'SUCCESS') {
-                const newHistory = e.data.payload.history;
-
-                setFullHistory(newHistory);
-                setFinalPool(e.data.payload.finalPool);
-                setIsSolving(false);
-
-                setVisibleStepCount(prev => Math.max(1, Math.min(prev, newHistory.length)));
-            } else {
-                setWorkerError(e.data.payload);
-                setIsSolving(false);
-            }
-        };
-
-        engineWorker.onerror = (errorEvent: ErrorEvent) => {
-            // This catches syntax errors, 404s, and infinite loops that crash the thread
-            // locale tokens???
-            const fallbackMessage = t('error.unknownError');
-            console.error('Fatal Worker Crash:', errorEvent);
-            setWorkerError(t('error.fatalWorkerCrash', {
-                message: errorEvent.message || fallbackMessage
-            }));
-            setIsSolving(false);
-        };
-
-        engineWorker.postMessage(initialClauses);
-
-        const modelWorker = new Worker(new URL('../../workers/modelWorker.ts', import.meta.url), { type: 'module' });
-
-        modelWorker.onmessage = (e: MessageEvent<ModelWorkerMessage>) => {
-            if (e.data.type === 'SUCCESS') {
-                setModels(e.data.payload);
-            } else {
-                setModelError(e.data.payload);
-            }
-        };
-
-        modelWorker.onerror = () => {
-            setModelError("Model thread crashed unexpectedly.");
-        };
-
-        modelWorker.postMessage(initialClauses);
-
-        return () => {
-            engineWorker.terminate();
-            modelWorker.terminate();
-        };
-    }, [initialClauses, setVisibleStepCount]);
-
-    const hasEmptyClause = finalPool?.some(c => c.literals.length === 0) ?? false;
-    const hasConclusion = initialClauses?.some(c => c.isNegatedConclusion) ?? false;
-    const isEmptySet = (finalPool || []).length === 0;
-
-    const handleNext = () => setVisibleStepCount(prev => Math.min(prev + 1, totalSteps));
-    const handlePrev = () => setVisibleStepCount(prev => Math.max(prev - 1, 1));
-    const handleJumpTo = (step: number) => setVisibleStepCount(step);
-
-    const paginationRange = useMemo(() => {
-        return getPaginationRange(visibleStepCount, totalSteps);
-    }, [visibleStepCount, totalSteps]);
-
     const [showLoadingUi, setShowLoadingUi] = useState(false);
+
+    const {
+        isSolving,
+        workerError,
+        fullHistory,
+        totalSteps,
+        hasEmptyClause,
+        hasConclusion,
+        isEmptySet,
+        models,
+        modelError
+    } = useProofEngine(initialClauses, setVisibleStepCount);
 
     useEffect(() => {
         let timer: ReturnType<typeof setTimeout>;
@@ -120,6 +42,14 @@ export default function ProofTimeline({ initialClauses }: ProofTimelineProps) {
         }
         return () => clearTimeout(timer);
     }, [isSolving]);
+
+    const handleNext = () => setVisibleStepCount(prev => Math.min(prev + 1, totalSteps));
+    const handlePrev = () => setVisibleStepCount(prev => Math.max(prev - 1, 1));
+    const handleJumpTo = (step: number) => setVisibleStepCount(step);
+
+    const paginationRange = useMemo(() => {
+        return getPaginationRange(visibleStepCount, totalSteps);
+    }, [visibleStepCount, totalSteps]);
 
     if (isSolving) {
         if (!showLoadingUi) {
@@ -161,31 +91,35 @@ export default function ProofTimeline({ initialClauses }: ProofTimelineProps) {
 
     return (
         <div className={styles.mainContainer}>
-
             <div className={styles.canvasWrapper}>
                 <div className={styles.canvasHeader}>
-                    <h3 className={styles.stepTitle}>
-                        {/*{t('input.step', { count: currentStep.stepNumber })}*/}
-                        {isLastStep
-                            ? t('input.result')
-                            : t('input.step', { count: currentStep.stepNumber })
-                        }
-                    </h3>
+                    <div className={styles.resultDropdown}>
+                        <h3 className={styles.stepTitle}>
+                            {/*{t('input.step', { count: currentStep.stepNumber })}*/}
+                            {isLastStep
+                                ? t('input.stepResult', { count: currentStep.stepNumber })
+                                : t('input.step', { count: currentStep.stepNumber })
+                            }
+                        </h3>
+                        {isLastStep && (
+                        <p><i>{t('results.moreAboutResult')}</i></p>
+                            )}
+                    </div>
                     <div className={styles.resultRow}>
                     <p className={styles.stepMessage}>
                         {baseMessage}
                     </p>
                     {isLastStep && (
-                        <Button
-                            className={styles.resultToggleBtn}
-                            onClick={() => setIsResultExpanded(!isResultExpanded)}
-                        >
-                            {isResultExpanded ? (
-                                <ChevronUp size={28} />
-                            ) : (
-                                <ChevronDown size={28} />
-                            )}
-                        </Button>
+                            <Button
+                                className={styles.resultToggleBtn}
+                                onClick={() => setIsResultExpanded(!isResultExpanded)}
+                            >
+                                {isResultExpanded ? (
+                                    <ChevronUp size={28} />
+                                ) : (
+                                    <ChevronDown size={28} />
+                                )}
+                            </Button>
                     )}
                     </div>
                 </div>
@@ -219,6 +153,7 @@ export default function ProofTimeline({ initialClauses }: ProofTimelineProps) {
                     if (item === '...') {
                         return (
                             <span key={`dots-${index}`} className={styles.dots}>
+                                {/*fix styling*/}
                                 <MoreHorizontal size={18} strokeWidth={2.5} color="#999" />
                             </span>
                         );
