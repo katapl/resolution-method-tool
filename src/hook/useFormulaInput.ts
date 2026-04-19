@@ -2,7 +2,6 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import { parseFormulaToClauses } from '../engine/parser';
 import { validateFormula } from "../engine/validator";
 import type { Clause } from "../engine/types.ts";
-import { useTranslation } from 'react-i18next';
 import { useLocalStorage } from './useLocalStorage';
 
 interface UseFormulaInputProps {
