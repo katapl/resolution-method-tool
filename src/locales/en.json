@@ -27,7 +27,7 @@
     "titleEmptySet": "Empty Set Reached",
     "msgContradictionEntailment": "An empty clause was derived. This proves that the negated conclusion contradicts the premises. Therefore, the original entailment holds true!",
     "msgContradictionSatisfiable": "An empty clause was derived. This means the set of clauses is unsatisfiable.",
-    "msgEmptySetEntailment": "All clauses were reduced and the set is empty, but no contradiction was found. Therefore, the entailment does NOT hold.",
+    "msgEmptySetEntailment": "All clauses were reduced and the set is empty, but no contradiction was found. Therefore, the entailment does not hold.",
     "msgEmptySetSatisfiable": "All clauses were reduced and the set is empty. This means the original set of clauses is satisfiable (consistent).",
     "counterExamples": "Counter-Examples",
     "satisfyingAssignments": "Satisfying Assignments",

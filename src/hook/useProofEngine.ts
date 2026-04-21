@@ -57,6 +57,7 @@ export function useProofEngine(
             setIsSolving(false);
         };
 
+        console.log("Worker called")
         engineWorker.postMessage(initialClauses);
 
         const modelWorker = new Worker(new URL('../workers/modelWorker.ts', import.meta.url), { type: 'module' });
@@ -72,7 +73,7 @@ export function useProofEngine(
         modelWorker.onerror = () => {
             setModelError("Model thread crashed unexpectedly.");
         };
-
+        console.log("Worker called")
         modelWorker.postMessage(initialClauses);
 
         return () => {

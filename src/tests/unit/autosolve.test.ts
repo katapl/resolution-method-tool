@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { autoSolve } from '../engine/resolver.ts';
-import { parseFormulaToClauses } from '../engine/parser.ts';
+import { autoSolve } from '../../engine/resolver.ts';
+import { parseFormulaToClauses } from '../../engine/parser.ts';
 
 describe('The Davis-Putnam Auto-Solver', () => {
 

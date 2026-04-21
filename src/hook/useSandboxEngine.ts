@@ -36,12 +36,10 @@ export function useSandboxEngine(initialClauses: Clause[], savedState: SandboxSt
 
     // const [hasInteracted, setHasInteracted] = useState(!!savedState);
 
-    // 2. Check if the initial pool contains a negated conclusion
     const hasNegatedConclusion = useMemo(() =>
             initialClauses.some(c => c.isNegatedConclusion),
         [initialClauses]);
 
-    // 3. This is true ONLY if it's an entailment AND the user hasn't clicked anything yet
     const isPristineEntailment = hasNegatedConclusion && !engineState.hasInteracted;
 
     const { phase: currentPhase, feedback: dynamicFeedback } = useMemo(

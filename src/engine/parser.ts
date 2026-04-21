@@ -10,7 +10,7 @@ const parseLiteral = (rawLit: string): Literal | null => {
     const negationCount = negationsMatch ? negationsMatch[0].length : 0;
     const isNegated = negationCount % 2 !== 0;
 
-    const name = noSpaceLit.replace(/^[\~!¬]+/, '');
+    const name = noSpaceLit.replace(/^[\~!¬]+/, '').toUpperCase();
     if (!name) return null;
 
     if (!/^[a-zA-Z]$/.test(name)) {

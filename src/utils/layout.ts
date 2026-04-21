@@ -13,7 +13,8 @@ export const generateStepLayout = (step: ProofStep) => {
     let generatedEdges: Edge[] = [];
     let absoluteMaxWidth = 0;
 
-    const maxNodeWidth = Math.max(80, ...step.poolBefore.map((c: Clause) => estimateNodeWidth(c.literals)));
+    // const maxNodeWidth = Math.max(80, ...step.poolBefore.map((c: Clause) => estimateNodeWidth(c.literals)));
+    const maxNodeWidth = Math.max(80, ...(step.poolBefore || []).map((c: Clause) => estimateNodeWidth(c.literals)));
 
     const COLUMN_GAP = 50;
     const CELL_WIDTH = maxNodeWidth + COLUMN_GAP;

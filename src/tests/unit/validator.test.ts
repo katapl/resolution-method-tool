@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { validateFormula } from '../engine/validator';
+import { validateFormula } from '../../engine/validator';
 
 describe('validateFormula', () => {
 

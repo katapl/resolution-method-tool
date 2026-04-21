@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import { resolve } from '../engine/resolver.ts';
-import { checkTautology } from '../engine/reduction.ts';
-import type { Clause, Literal } from '../engine/types.ts';
+import { resolve } from '../../engine/resolver.ts';
+import { checkTautology } from '../../engine/reduction.ts';
+import type { Clause, Literal } from '../../engine/types.ts';
 
 function makeClause(id: string, literals: { name: string, polarity: boolean }[]): Clause {
     return { id, literals };

@@ -25,9 +25,9 @@
   "results": {
     "titleContradiction": "Spor nalezen",
     "titleEmptySet": "Prázdná množina",
-    "msgContradictionEntailment": "Byla nalezena prázdná klauzule. To dokazuje, že negovaný závěr je kontradikcí předpokladů. Tudíž, původní závěr vyplývá z předpokladů.",
+    "msgContradictionEntailment": "Byla nalezena prázdná klauzule. To dokazuje, že negovaný závěr je kontradikcí předpokladů. Tudíž, závěr vyplývá z předpokladů.",
     "msgContradictionSatisfiable": "Byla nalezena prázdná klauzule. To znamená, že množina předpokladů je nesplnitelná.",
-    "msgEmptySetEntailment": "Všechny klauzule byly zredukovány a množina je prázdná, ale nebyl nalezen spor. Tudíž, původní závěr z předpokladů nevyplývá.",
+    "msgEmptySetEntailment": "Všechny klauzule byly zredukovány a množina je prázdná, ale nebyl nalezen spor. Tudíž, závěr z předpokladů nevyplývá.",
     "msgEmptySetSatisfiable": "Všechny klauzule byly zredukovány a množina je prázdná. To znamená, že původní množina předpokladů je splnitelná.",
     "counterExamples": "Protipříklady",
     "satisfyingAssignments": "Splňující pravdivostní ohodnocení",

@@ -236,27 +236,6 @@ export default function SandboxCanvas({ initialClauses }: SandboxCanvasProps) {
                 >
                     <Controls/>
                 </BaseCanvas>
-                {/*<ReactFlow*/}
-                {/*    nodes={nodes}*/}
-                {/*    edges={edges}*/}
-                {/*    onNodeClick={(_, node) => {*/}
-                {/*        if (!node.data.clause.removed) {*/}
-                {/*            handleNodeSelect(node.id);*/}
-                {/*        }*/}
-                {/*    }}*/}
-                {/*    nodeTypes={nodeTypes}*/}
-                {/*    onNodesChange={onNodesChange}*/}
-                {/*    onEdgesChange={onEdgesChange}*/}
-                {/*    elementsSelectable={true}*/}
-                {/*    nodeDragThreshold={10}*/}
-                {/*    fitView*/}
-                {/*    translateExtent={cameraBounds}*/}
-                {/*    nodeOrigin={[0.5, 0]}*/}
-                {/*    proOptions={proOptions}*/}
-                {/*>*/}
-                {/*    <Background gap={16} size={1} />*/}
-                {/*    <Controls />*/}
-                {/*</ReactFlow>*/}
             </div>
         </div>
     );
