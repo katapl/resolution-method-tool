@@ -17,6 +17,7 @@ describe('ResultPanel Component', () => {
                 hasEmptyClause={true}
                 hasConclusion={true}
                 models={null}
+                isEmptySet={false}
             />
         );
 
@@ -32,6 +33,7 @@ describe('ResultPanel Component', () => {
                 hasEmptyClause={false}
                 hasConclusion={false}
                 models={null}
+                isEmptySet={false}
             />
         );
 
@@ -44,6 +46,7 @@ describe('ResultPanel Component', () => {
                 hasEmptyClause={false}
                 hasConclusion={false}
                 models={[]}
+                isEmptySet={false}
             />
         );
 
@@ -62,6 +65,7 @@ describe('ResultPanel Component', () => {
                 hasEmptyClause={false}
                 hasConclusion={true}
                 models={mockModels}
+                isEmptySet={false}
             />
         );
 
