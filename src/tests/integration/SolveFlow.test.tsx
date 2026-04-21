@@ -8,12 +8,6 @@ import ProofTimeline from '../../components/solve_mode/ProofTimeline';
 import { useState } from 'react';
 import type { Clause } from '../../engine/types';
 
-// mock resizeobserver for react flow, moved to config, or have in each canvas test?
-global.ResizeObserver = class ResizeObserver {
-    observe() {}
-    unobserve() {}
-    disconnect() {}
-};
 
 const mockT = (key: string) => key;
 const mockChangeLanguage = vi.fn();
@@ -26,6 +20,13 @@ vi.mock('react-i18next', () => ({
 }));
 
 beforeAll(() => {
+    // mock resizeobserver for react flow, needed for each canvas test
+    vi.stubGlobal('ResizeObserver', class ResizeObserver {
+        observe() {}
+        unobserve() {}
+        disconnect() {}
+    });
+
     vi.stubGlobal('Worker', class MockWorker {
         onmessage: any;
         onerror: any;
@@ -35,7 +36,7 @@ beforeAll(() => {
             this.url = stringUrl.toString();
         }
 
-        postMessage(data: any) {
+        postMessage(_data: any) {
             Promise.resolve().then(() => {
                 if (!this.onmessage) return;
 

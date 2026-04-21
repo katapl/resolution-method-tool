@@ -85,6 +85,7 @@ describe('ResultPanel Component', () => {
                 hasConclusion={false}
                 models={[]}
                 modelError="Engine timeout: Formula too large."
+                isEmptySet={false}
             />
         );
 
