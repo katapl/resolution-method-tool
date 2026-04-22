@@ -34,7 +34,11 @@
     "conclusion": "Conclusion",
     "formula": "Formula",
     "moreAboutResult": "What does the result mean?",
-    "calculating": "Calculating combinations..."
+    "calculating": "Calculating combinations...",
+    "counterExampleStats": "The remaining possible universes do not contradict the premises.",
+    "counterExampleExplanation": "These specific rows represent universes where all of your premises are True, but the conclusion is False. Because these universes exist, the entailment is invalid.",
+    "satisfiableStats": "The remaining possible universes do not satisfy the premises.",
+    "satisfiableExplanation": "These specific rows represent universes where all of your premises are True simultaneously. Because these universes exist, the formula is satisfiable."
   },
   "engine": {
     "negateConclusion" : "Negated the conclusion and added it to the set.",

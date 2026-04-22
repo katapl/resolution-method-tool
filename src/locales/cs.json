@@ -34,7 +34,11 @@
     "conclusion": "Závěr",
     "formula": "Formule",
     "moreAboutResult": "Co výsledek znamená?",
-    "calculating": "Vypočítávám kombinace..."
+    "calculating": "Vypočítávám kombinace...",
+    "counterExampleStats": "Zbývající možné ohodnocení neodporují předpokladům.",
+    "counterExampleExplanation": "Tyto konkrétní řádky představují světy, ve kterých jsou všechny vaše předpoklady pravdivé, ale závěr je nepravdivý. Protože takové světy existují, závěr nevyplývá z předpokladů.",
+    "satisfiableStats": "Zbývající možné světy tyto předpoklady nesplňují.",
+    "satisfiableExplanation": "Tyto konkrétní řádky představují světy, ve kterých jsou všechny vaše předpoklady současně pravdivé. Protože takové světy existují, je formule splnitelná."
   },
   "engine": {
     "negateConclusion" : "Důsledek byl negován a přidán do množiny předpokladů",

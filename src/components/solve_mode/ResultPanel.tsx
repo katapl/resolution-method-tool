@@ -70,6 +70,16 @@ export default function ResultPanel({
                     ? t('results.counterExamples')
                     : t('results.satisfyingAssignments')}
             </h4>
+            {/*<p>*/}
+            {/*    {hasConclusion*/}
+            {/*        ? t('results.counterExampleStats')*/}
+            {/*        : t('results.satisfiableStats')}*/}
+            {/*</p>*/}
+            <p>
+                {hasConclusion
+                    ? t('results.counterExampleExplanation')
+                    : t('results.satisfiableExplanation')}
+            </p>
 
             {models === null ? (
                 <div className={styles.loadingState}>
