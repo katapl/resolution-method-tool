@@ -22,6 +22,7 @@ export function getCurrentPhase(state: SandboxState): {
 
     const logicalPool = activePool.filter(c => !c.removed);
     const hasReductions = checkPendingReductions(activePool);
+    // Detekce, zda existují nevyužité páry pro aktuálně zvolený literál
     const stillHasPairs = targetLiteral
         ? checkUnresolvedPairsForLiteral(targetLiteral, activePool, resolvedPairs)
         : false;
@@ -33,40 +34,62 @@ export function getCurrentPhase(state: SandboxState): {
 
     const hasEmptyClause = logicalPool.some(c => c.literals.length === 0);
     const isPoolEmpty = logicalPool.length === 0;
-
+    // Nalezen spor (Konec důkazu)
     if (hasEmptyClause) {
         return {
             phase: 'DONE',
-            feedback: { type: 'success', msg: { key: 'sandbox.proofContradiction' } }
+            feedback: {
+                type: 'success',
+                msg: {
+                    key: 'sandbox.proofContradiction'
+                }
+            }
         };
     }
-
     if (isPoolEmpty) {
         return {
             phase: 'DONE',
-            feedback: { type: 'success', msg: { key: 'sandbox.proofSatisfiable' } }
+            feedback: {
+                type: 'success',
+                msg: {
+                    key: 'sandbox.proofSatisfiable'
+                }
+            }
         };
     }
 
+    // Aktivní rezoluce nad zvoleným literálem
     if (targetLiteral && stillHasPairs) {
         return {
             phase: 'RESOLUTION',
             feedback: {
                 type: 'info',
-                msg: {key: 'sandbox.phaseResolving', params: {literal: targetLiteral}}
+                msg: {
+                    key: 'sandbox.phaseResolving',
+                    params: {
+                        literal: targetLiteral
+                    }
+                }
             }
         };
     }
 
+    // Úklid rodičovských klauzulí po vyčerpání párů
     if (needsManualSweep) {
         return {
             phase: 'MANUAL_SWEEP',
             feedback: {
                 type: 'info',
-                msg: { key: 'sandbox.phaseSweep', params: { literal: targetLiteral } }
+                msg: {
+                    key: 'sandbox.phaseSweep',
+                    params: {
+                        literal: targetLiteral
+                    }
+                }
             }
         };
     }
+// ... detekce redukcí a výběru nového literálu ...
 
     if (hasReductions) {
         return {

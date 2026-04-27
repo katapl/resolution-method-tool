@@ -42,12 +42,14 @@ export function useSandboxEngine(initialClauses: Clause[], savedState: SandboxSt
 
     const isPristineEntailment = hasNegatedConclusion && !engineState.hasInteracted;
 
+    // Získání stavu automatu a správa uživatelské interakce
     const { phase: currentPhase, feedback: dynamicFeedback } = useMemo(
         () => getCurrentPhase(engineState),
         [engineState]
     );
-
-    const feedback = currentPhase === 'DONE' ? dynamicFeedback : (feedbackOverride ?? dynamicFeedback);
+    // Dočasná chyba (override) má přednost před obecnou hláškou aktuální fáze
+    const feedback
+        = currentPhase === 'DONE' ? dynamicFeedback : (feedbackOverride ?? dynamicFeedback);
 
     const handleRemoveRequest = useCallback((clauseId: string) => {
         if (currentPhase !== 'REDUCTION' && currentPhase !== 'MANUAL_SWEEP') return;
@@ -63,17 +65,18 @@ export function useSandboxEngine(initialClauses: Clause[], savedState: SandboxSt
     }, [engineState, currentPhase]);
 
     const handleResolution = useCallback((id1: string, id2: string) => {
+        // 1. Ochrana před akcí v nesprávné fázi (Guard clause)
         if (currentPhase !== 'RESOLUTION') return null;
-
+        // 2. Předání požadavku čisté funkci logického jádra
         const { newState, resolvent, feedback } = executeResolutionStep(engineState, id1, id2);
-
+        // 3. Vyhodnocení výsledku: zachycení chyby vs. posun stavu
         if (feedback.type === 'error') {
-            setFeedbackOverride(feedback);
+            setFeedbackOverride(feedback); // Zobrazení chyby, logický stav se nemění
             return null;
         }
 
         setEngineState({ ...newState, hasInteracted: true });
-        setFeedbackOverride(feedback);
+        setFeedbackOverride(feedback); // Krok byl platný, automat přechází dál
         return resolvent;
     }, [engineState, currentPhase]);
 

@@ -6,13 +6,17 @@ const parseLiteral = (rawLit: string): Literal | null => {
     const noSpaceLit = rawLit.replace(/\s+/g, '');
     if (!noSpaceLit) return null;
 
+    // Identifikace a spočítání všech symbolů negace (podpora různých notací)
     const negationsMatch = noSpaceLit.match(/^[\~!¬]+/);
     const negationCount = negationsMatch ? negationsMatch[0].length : 0;
+    // Vyhodnocení polarity pomocí modula (redukce dvojité negace ~~A -> A)
     const isNegated = negationCount % 2 !== 0;
 
+    // Normalizace názvu proměnné na velká písmena
     const name = noSpaceLit.replace(/^[\~!¬]+/, '').toUpperCase();
     if (!name) return null;
 
+    // Striktní validace: Povoleny jsou pouze samostatné znaky abecedy
     if (!/^[a-zA-Z]$/.test(name)) {
         return null;
     }

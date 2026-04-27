@@ -2,10 +2,13 @@ import {type Literal, type Clause, type ProofStep } from "./types.ts";
 import { runReductions } from "./reduction.ts"
 
 export function resolve(literal: Literal, c1: Clause, c2: Clause, newId: string): Clause {
+    // 1. Spojení všech literálů z obou rodičovských klauzulí
     const combined = [...c1.literals, ...c2.literals];
 
+    // 2. Odstranění párového literálu, přes který se rezolvuje (např. A a ~A)
     const filtered = combined.filter((lit) => lit.name !== literal.name);
 
+    // 3. Filtrace duplicit pro zachování vlastností množiny
     const uniqueLiterals: Literal[] = [];
     for (const lit of filtered) {
         const exists = uniqueLiterals.some(
@@ -117,7 +120,9 @@ export function autoSolve(initialClauses: Clause[]): { finalPool: Clause[], hist
     let vars = getVariables(pool);
     let emptyClauseFound = false;
 
+    // Hlavní cyklus hledání sporu (ukončen nalezením prázdné klauzule nebo vyčerpáním možností)
     while (vars.length > 0 && !emptyClauseFound) {
+        // ... bezpečnostní limity (ochrana proti zacyklení a překročení času) ...
         if (stepCounter >= MAX_STEPS) {
             throw new Error(`Calculation halted: Surpassed the maximum limit of ${MAX_STEPS} steps.`);
         }
@@ -125,6 +130,7 @@ export function autoSolve(initialClauses: Clause[]): { finalPool: Clause[], hist
             throw new Error(`Calculation halted: Execution timed out after ${MAX_TIME_MS / 1000} seconds.`);
         }
 
+        // 1. Výběr literálu s nejmenším rizikem stavové exploze
         const targetVar = selectNextVariable(pool, vars);
         const posClauses = pool.filter(
             c => c.literals.some(l => l.name === targetVar && l.polarity)
@@ -134,7 +140,7 @@ export function autoSolve(initialClauses: Clause[]): { finalPool: Clause[], hist
         );
 
         if (posClauses.length > 0 && negClauses.length > 0) {
-
+        // 2. Fáze generování: Vytvoření všech možných rezolvent pro daný literál
             const phaseAResult = generateResolventsPhase(pool, posClauses, negClauses, targetVar, stepCounter, history, MAX_STEPS);
             const newResolvents = phaseAResult.newResolvents;
             emptyClauseFound = phaseAResult.emptyClauseFound;
@@ -142,6 +148,7 @@ export function autoSolve(initialClauses: Clause[]): { finalPool: Clause[], hist
 
             pool = [...pool, ...newResolvents];
 
+        // 3. Fáze úklidu a optimalizace (spuštěna pouze, pokud nebyl nalezen cíl)
             if (!emptyClauseFound) {
                 const parentsToRemove = [...posClauses, ...negClauses];
 
@@ -156,15 +163,19 @@ export function autoSolve(initialClauses: Clause[]): { finalPool: Clause[], hist
                     removedClauses: parentsToRemove
                 });
 
+                // 3. Fáze úklidu a optimalizace (spuštěna pouze, pokud nebyl nalezen cíl)
                 pool = pool.filter(c => !parentsToRemove.some(p => p.id === c.id));
 
+                // Redukce celé nově vzniklé množiny (tautologie, subsumpce, čisté literály)
                 reductionResult = runReductions(pool, history, stepCounter);
                 pool = reductionResult.pool;
                 stepCounter = reductionResult.stepCounter;
 
+                // Přepočítání zbývajících proměnných v optimalizované množině
                 vars = getVariables(pool);
             }
         } else {
+            // Proměnná nemá komplementární pár a nemůže tvořit rezolventy, je vyřazena z fronty
             vars = vars.filter(v => v !== targetVar);
         }
     }

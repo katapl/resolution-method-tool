@@ -65,11 +65,13 @@ export function runReductions(
     let stepCounter = initialStepCounter;
     let madeReductions = true;
 
+    // smyčka běží, dokud jakékoliv pravidlo dokáže bázi zjednodušit
     while (madeReductions) {
         madeReductions = false;
 
         const tautologies = pool.filter(c => checkTautology(c));
         if (tautologies.length > 0) {
+            // ... záznam do historie a odstranění z poolu ...
             history.push({
                 stepNumber: stepCounter++,
                 type: 'REDUCTION',
@@ -81,11 +83,12 @@ export function runReductions(
                 removedClauses: tautologies
             });
             pool = pool.filter(c => !tautologies.some(t => t.id === c.id));
-            madeReductions = true;
+            madeReductions = true; // Změna stavu vynutí další iteraci smyčky
         }
         else {
             const subsumed = getSubsumedClausesSafe(pool);
             if (subsumed.length > 0) {
+                // ... záznam do historie a odstranění subsumovaných klauzulí ...
                 history.push({
                     stepNumber: stepCounter++,
                     type: 'REDUCTION',
@@ -100,6 +103,8 @@ export function runReductions(
                 madeReductions = true;
             }
             else {
+                // ... detekce a odstranění čistých literálů (Pure Literals) ...
+                // Pokud je nalezen, madeReductions = true;
                 const pureLiteralsFound = new Set<string>();
 
                 const pureClauses = pool.filter(c => {
@@ -131,5 +136,6 @@ export function runReductions(
             }
         }
     }
+    // Návrat plně optimalizované báze, kterou již nelze dále redukovat
     return { pool, stepCounter };
 }

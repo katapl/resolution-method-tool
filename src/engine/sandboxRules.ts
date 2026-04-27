@@ -55,23 +55,40 @@ activeTargetLiteral: string | null
     }
     if (!activeTargetLiteral) return { status: 'INVALID', message: { key: 'sandbox.errNoTarget' } };
 
+    // 1. Ochrana před pokusem o opakování stejného kroku
     const pairKey = `${id1}-${id2}`;
     if (resolvedPairs.has(pairKey) || resolvedPairs.has(`${id2}-${id1}`)) {
-        return { status: 'DUPLICATE', message: { key: 'sandbox.errDuplicate' } };
+        return {
+            status: 'DUPLICATE',
+            message: {
+                key: 'sandbox.errDuplicate'
+            }
+        };
     }
 
     const l1 = c1.literals.find(l => l.name === activeTargetLiteral);
     const l2 = c2.literals.find(l => l.name === activeTargetLiteral);
 
+    // 2. Striktní logická kontrola polarity a přítomnosti literálu
     if (!l1 || !l2 || l1.polarity === l2.polarity) {
-        return { status: 'INVALID', message: { key: 'sandbox.errInvalidMatch', params: { literal: activeTargetLiteral } } };
+        return {
+            status: 'INVALID',
+            message: {
+                key: 'sandbox.errInvalidMatch',
+                params:{
+                    literal: activeTargetLiteral
+                }
+            }
+        };
     }
 
     const targetLiteral = l1;
     const newId = `sandbox-res-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
+    // 3. Provedení platného kroku a aktualizace historie
     const resolvent = resolve(targetLiteral, c1, c2, newId);
 
     const newResolvedPairs = new Set(resolvedPairs).add(pairKey).add(`${id2}-${id1}`);
+    // ... vyhodnocení, zda krokem nevznikla prázdná klauzule ...
     const tempPool = [...currentPool, resolvent];
 
     if (resolvent.literals.length === 0) {
