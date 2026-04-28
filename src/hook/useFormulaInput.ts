@@ -29,10 +29,14 @@ export function useFormulaInput(
         hasInteractedRef.current = true;
     };
 
+    const lastInjectedTimeRef = useRef<number | null>(null);
+
     useEffect(() => {
-        if (injectedFormula) {
+        if (injectedFormula && injectedFormula.time !== lastInjectedTimeRef.current) {
             setInputValue(injectedFormula.text);
             setErrorMsg(null);
+
+            lastInjectedTimeRef.current = injectedFormula.time;
         }
     }, [injectedFormula, setInputValue]);
 

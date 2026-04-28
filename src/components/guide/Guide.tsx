@@ -4,9 +4,9 @@ import { useTranslation } from 'react-i18next';
 import styles from './Guide.module.css';
 
 const EXAMPLE_FORMULAS = [
-    "P v Q, ~P v R |= Q v R",
+    "P v Q, ¬P v R ⊢ Q v R",
     "(A ∨ ¬B) ∧ (¬A ∨ C) ⊢ B",
-    "~A v B |- ~A v ~B",
+    "¬A v B ⊢ ¬A v ¬B",
     // testing
     // "~p v t, a v z, ~z v ~t, p, ~a",
     // "p v k, ~p v s, ~p v ~r, ~t v r, ~s v t, ~k",

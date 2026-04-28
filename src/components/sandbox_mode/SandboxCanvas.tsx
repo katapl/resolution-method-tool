@@ -3,7 +3,7 @@ import Button from '../button/Button';
 import {
     type Node, type Edge,
     useNodesState, useEdgesState,
-    Controls
+    Controls, type ReactFlowInstance
 } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { useSandboxEngine } from '../../hook/useSandboxEngine';
@@ -12,12 +12,15 @@ import { useTranslation } from 'react-i18next';
 import { generateSandboxLayout } from '../../utils/layout';
 import styles from './SandboxCanvas.module.css';
 import BaseCanvas from "../BaseCanvas";
+import { ChevronLeft } from 'lucide-react';
+import MessageFormatter from '../../utils/MessageFormatter';
 
 interface SandboxCanvasProps {
     initialClauses: Clause[];
+    onBack: () => void;
 }
 
-export default function SandboxCanvas({ initialClauses }: SandboxCanvasProps) {
+export default function SandboxCanvas({ initialClauses, onBack }: SandboxCanvasProps) {
     const { t } = useTranslation();
     const storageKey = initialClauses.length > 0 ? initialClauses[0].id : 'empty';
     const savedEngineState = useMemo(() => {
@@ -44,6 +47,7 @@ export default function SandboxCanvas({ initialClauses }: SandboxCanvasProps) {
     const [edges, setEdges, onEdgesChange] = useEdgesState<Edge[]>(initialEdges || []);
     const [selectedIds, setSelectedIds] = useState<string[]>(initialSelected);
 
+    const [rfInstance, setRfInstance] = useState<ReactFlowInstance | null>(null);
     const [cameraBounds, setCameraBounds] = useState<[[number, number], [number, number]]>()
 
     useEffect(() => {
@@ -76,6 +80,40 @@ export default function SandboxCanvas({ initialClauses }: SandboxCanvasProps) {
             localStorage.setItem(`prover_edges_${storageKey}`, JSON.stringify(edges));
         }
     }, [edges, storageKey]);
+
+    const prevNodeCount = useRef(nodes.length);
+
+    useEffect(() => {
+        if (rfInstance && nodes.length > prevNodeCount.current) {
+            const timer = setTimeout(() => {
+                rfInstance.fitView({
+                    padding: 0.6,
+                    duration: 800
+                });
+            }, 50);
+
+            prevNodeCount.current = nodes.length;
+            return () => clearTimeout(timer);
+        }
+
+        prevNodeCount.current = nodes.length;
+    }, [nodes.length, rfInstance]);
+
+    useEffect(() => {
+        if (nodes.length > 0) {
+            const padding = 600;
+
+            const minX = Math.min(...nodes.map(n => n.position.x));
+            const minY = Math.min(...nodes.map(n => n.position.y));
+            const maxX = Math.max(...nodes.map(n => n.position.x));
+            const maxY = Math.max(...nodes.map(n => n.position.y));
+
+            setCameraBounds([
+                [minX - padding, minY - padding],
+                [maxX + padding, maxY + padding]
+            ]);
+        }
+    }, [nodes]);
 
     const handleNodeSelect = useCallback((clickedId: string) => {
         if (currentPhase !== 'RESOLUTION') return;
@@ -206,13 +244,19 @@ export default function SandboxCanvas({ initialClauses }: SandboxCanvasProps) {
     }, [activePool, currentPhase, targetLiteral, selectedIds, reducibleClauseIds, handleRemoveRequest, /*handleNodeSelect*/, setNodes]);
 
     return (
-        <div className={styles.container}>
-            <div className={styles.header}>
+        <div className={styles.mainContainer}>
+            <Button onClick={onBack} className={styles.floatingBackBtn}>
+                <ChevronLeft size={28} />
+                {t('input.back')}
+            </Button>
 
-                <p className={styles.feedbackText}>
-                    {isPristineEntailment && `${t('sandbox.entailmentPrefix')} `}
-                    {t(feedback.msg.key, feedback.msg.params)}
-                </p>
+                <div className={styles.floatingHeader}>
+                    <p className={styles.feedbackText}>
+                        {isPristineEntailment && `${t('sandbox.entailmentPrefix')} `}
+                        <MessageFormatter
+                            text={t(feedback.msg.key, feedback.msg.params)}
+                        />
+                    </p>
 
                 {currentPhase === 'LITERAL_SELECTION' && (
                     <div className={styles.literalGroup}>
@@ -227,9 +271,9 @@ export default function SandboxCanvas({ initialClauses }: SandboxCanvasProps) {
                         ))}
                     </div>
                 )}
-            </div>
+                </div>
 
-            <div className={styles.flowWrapper}>
+            <div className={styles.canvasBody}>
                 <BaseCanvas
                     nodes={nodes}
                     edges={edges}
@@ -241,7 +285,9 @@ export default function SandboxCanvas({ initialClauses }: SandboxCanvasProps) {
                     elementsSelectable={true}
                     nodeDragThreshold={10}
                     fitView
+                    fitViewOptions={{ padding: 0.8, maxZoom: 1.2 }}
                     translateExtent={cameraBounds}
+                    onInit={setRfInstance}
                 >
                     <Controls/>
                 </BaseCanvas>

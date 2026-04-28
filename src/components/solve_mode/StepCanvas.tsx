@@ -27,7 +27,7 @@ export default function StepCanvas({ step }: StepCanvasProps) {
                 zoomOnPinch={true}
                 zoomOnDoubleClick={false}
                 fitView
-                fitViewOptions={{ padding: 0.2, maxZoom: 1.2 }}
+                fitViewOptions={{ padding: 0.8, maxZoom: 1.2 }}
                 minZoom={dynamicMinZoom}
                 maxZoom={2.0}
                 translateExtent={translateExtent}

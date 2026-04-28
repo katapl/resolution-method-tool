@@ -9,6 +9,7 @@ import { useTranslation } from 'react-i18next';
 import styles from './App.module.css';
 import Guide from "./components/guide/Guide"
 import { ErrorBoundary } from 'react-error-boundary';
+import { ChevronLeft } from 'lucide-react';
 
 type AppMode = 'IDLE' | 'SOLVE' | 'PRACTICE';
 
@@ -37,16 +38,19 @@ function App() {
     const handleSolve = (clauses: Clause[]) => {
         setStartingClauses(clauses);
         setMode('SOLVE');
+        setInjectedFormula(null);
     };
 
     const handlePractice = (clauses: Clause[]) => {
         setStartingClauses(clauses);
         setMode('PRACTICE');
+        setInjectedFormula(null);
     };
 
     const handleResetApp = () => {
         setMode('IDLE');
         setStartingClauses([]);
+        setInjectedFormula(null);
         const keysToDelete: string[] = [];
 
         for (let i = 0; i < localStorage.length; i++) {
@@ -75,41 +79,39 @@ function App() {
                 setStartingClauses([]);
             }}
         >
-        <div className={containerClass}>
-            <div>
-                <FormulaInput
-                    onSolve={handleSolve}
-                    onPractice={handlePractice}
-                    onReset={handleResetApp}
-                    injectedFormula={injectedFormula}
-                />
-
-                <div id="canvas-container" className={styles.canvasContainer}>
-                    {mode === 'IDLE' && (
+            {mode === 'IDLE' ? (
+                <div className={styles.containerClass}>
+                    <FormulaInput
+                        onSolve={handleSolve}
+                        onPractice={handlePractice}
+                        onReset={handleResetApp}
+                        injectedFormula={injectedFormula}
+                    />
+                    <div className={styles.canvasContainer}>
                         <Guide onSelectExample={(text) => setInjectedFormula({ text, time: Date.now() })} />
-                    )}
-                    {mode === 'SOLVE' && (
-                        <ProofTimeline
-                            key={`timeline-${startingClauses.length > 0 ? startingClauses[0].id : 'empty'}`}
-                            initialClauses={startingClauses} />
-                    )}
-
-                    {mode === 'PRACTICE' && (
-                        <SandboxCanvas
-                            key={`sandbox-${startingClauses.length > 0 ? startingClauses[0].id : 'empty'}`}
-                            initialClauses={startingClauses} />
-                    )}
+                    </div>
                 </div>
-            </div>
+            ) : (
+                <div className={styles.fullscreenLayout}>
+                    <div className={styles.canvasWrapper}>
+                        {mode === 'SOLVE' && (
+                            <ProofTimeline
+                                key={`timeline-${startingClauses.length > 0 ? startingClauses[0].id : 'empty'}`}
+                                initialClauses={startingClauses}
+                                onBack={handleResetApp}
+                            />
+                        )}
 
-            {mode !== 'IDLE' && (
-                <div className={styles.resetWrapper}>
-                    <Button onClick={handleResetApp} className={styles.resetBtn}>
-                        {t('input.reset')}
-                    </Button>
+                        {mode === 'PRACTICE' && (
+                            <SandboxCanvas
+                                key={`sandbox-${startingClauses.length > 0 ? startingClauses[0].id : 'empty'}`}
+                                initialClauses={startingClauses}
+                                onBack={handleResetApp}
+                            />
+                        )}
+                    </div>
                 </div>
             )}
-        </div>
         </ErrorBoundary>
     );
 }

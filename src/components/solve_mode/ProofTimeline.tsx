@@ -9,12 +9,14 @@ import styles from './ProofTimeline.module.css';
 import { useLocalStorage } from '../../hook/useLocalStorage';
 import { useProofEngine } from '../../hook/useProofEngine';
 import { MoreHorizontal, ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from 'lucide-react';
+import MessageFormatter from '../../utils/MessageFormatter';
 
 interface ProofTimelineProps {
     initialClauses: Clause[];
+    onBack: () => void;
 }
 
-export default function ProofTimeline({ initialClauses }: ProofTimelineProps) {
+export default function ProofTimeline({ initialClauses, onBack }: ProofTimelineProps) {
     const { t } = useTranslation();
 
     const [visibleStepCount, setVisibleStepCount] = useLocalStorage<number>('prover_timeline_step', 1);
@@ -91,48 +93,18 @@ export default function ProofTimeline({ initialClauses }: ProofTimelineProps) {
 
     return (
         <div className={styles.mainContainer}>
-            <div className={styles.canvasWrapper}>
-                <div className={styles.canvasHeader}>
-                    <div className={styles.resultDropdown}>
-                        <h3 className={styles.stepTitle}>
-                            {/*{t('input.step', { count: currentStep.stepNumber })}*/}
-                            {isLastStep
-                                ? t('input.stepResult', { count: currentStep.stepNumber })
-                                : t('input.step', { count: currentStep.stepNumber })
-                            }
-                        </h3>
-                        {isLastStep && (
-                        <p><i>{t('results.moreAboutResult')}</i></p>
-                            )}
-                    </div>
-                    <div className={styles.resultRow}>
-                    <p className={styles.stepMessage}>
-                        {baseMessage}
-                    </p>
-                    {isLastStep && (
-                            <Button
-                                data-cy="result-expand-btn"
-                                className={styles.resultToggleBtn}
-                                onClick={() => setIsResultExpanded(!isResultExpanded)}
-                            >
-                                {isResultExpanded ? (
-                                    <ChevronUp size={28} />
-                                ) : (
-                                    <ChevronDown size={28} />
-                                )}
-                            </Button>
-                    )}
-                    </div>
-                </div>
-
-                <div className={styles.canvasBody}>
-                    <StepCanvas
-                        step={currentStep}
-                        key={currentStep.stepNumber}
-                    />
-
-                    {isLastStep && (
-                        <div className={`${styles.resultOverlay} ${isResultExpanded ? styles.expanded : ''}`}>
+            <Button onClick={onBack} className={styles.floatingBackBtn}>
+                <ChevronLeft size={28} />
+                {t('input.back')}
+            </Button>
+            <div className={styles.canvasBody}>
+                <StepCanvas
+                    step={currentStep}
+                    key={currentStep.stepNumber}
+                />
+                {isLastStep && (
+                    <div className={`${styles.resultOverlay} ${isResultExpanded ? styles.expanded : ''}`}>
+                        <div className={styles.resultOverlayContent}>
                             <ResultPanel
                                 hasEmptyClause={hasEmptyClause}
                                 isEmptySet={isEmptySet}
@@ -141,11 +113,45 @@ export default function ProofTimeline({ initialClauses }: ProofTimelineProps) {
                                 modelError={modelError}
                             />
                         </div>
+                    </div>
+                )}
+            </div>
+
+            <div className={styles.floatingHeader}>
+                <div className={styles.resultDropdown}>
+                    <h3 className={styles.stepTitle}>
+                        {isLastStep
+                            ? t('input.stepResult', { count: currentStep.stepNumber })
+                            : t('input.step', { count: currentStep.stepNumber })
+                        }
+                    </h3>
+                    {isLastStep && (
+                        <p className={styles.moreAboutResult}><i>{t('results.moreAboutResult')}</i></p>
+                    )}
+                </div>
+                <div className={styles.resultRow}>
+                    <p className={styles.stepMessage}>
+                        <MessageFormatter
+                            text={baseMessage}
+                        />
+                    </p>
+                    {isLastStep && (
+                        <Button
+                            data-cy="result-expand-btn"
+                            className={styles.resultToggleBtn}
+                            onClick={() => setIsResultExpanded(!isResultExpanded)}
+                        >
+                            {isResultExpanded ? (
+                                <ChevronUp size={28} />
+                            ) : (
+                                <ChevronDown size={28} />
+                            )}
+                        </Button>
                     )}
                 </div>
             </div>
 
-            <div className={styles.pagination}>
+            <div className={styles.paginationPanel}>
                 <Button onClick={handlePrev} disabled={visibleStepCount === 1} className={styles.icon}>
                     <ChevronLeft size={28} />
                 </Button>
@@ -154,7 +160,6 @@ export default function ProofTimeline({ initialClauses }: ProofTimelineProps) {
                     if (item === '...') {
                         return (
                             <span key={`dots-${index}`} className={styles.dots}>
-                                {/*fix styling*/}
                                 <MoreHorizontal size={18} strokeWidth={2.5} color="#999" />
                             </span>
                         );

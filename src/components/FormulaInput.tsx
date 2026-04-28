@@ -3,6 +3,7 @@ import type { Clause } from "../engine/types.ts";
 import Button from './button/Button';
 import styles from './FormulaInput.module.css';
 import { useFormulaInput } from '../hook/useFormulaInput';
+import MessageFormatter from '../utils/MessageFormatter';
 
 interface FormulaInputProps {
     onSolve: (clauses: Clause[]) => void;
@@ -105,7 +106,12 @@ export default function FormulaInput(props: FormulaInputProps) {
 
             <div className={styles.errorContainer}>
                 <span className={styles.errorText}>
-                    {errorMsg ? t(errorMsg.key, errorMsg.params) : '\u00A0'}
+                    <MessageFormatter
+                        // @ts-ignore - ignorování TypeScriptu pro dynamické parametry i18n
+                        text={errorMsg ? t(errorMsg.key, errorMsg.params) : '\u00A0'}
+                        highlightClass={styles.errorHighlight}
+                    />
+                    {/*{errorMsg ? t(errorMsg.key, errorMsg.params) : '\u00A0'}*/}
                 </span>
             </div>
         </div>

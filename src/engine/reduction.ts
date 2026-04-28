@@ -125,7 +125,11 @@ export function runReductions(
                         type: 'REDUCTION',
                         message: {
                             key: 'engine.removedPureLiterals',
-                            params: { count: pureClauses.length, names: pureNames },
+                            params: {
+                                count: pureClauses.length,
+                                context: pureLiteralsArray.length > 1 ? 'multiple' : 'single',
+                                names: pureNames
+                            },
                         },
                         poolBefore: [...pool],
                         removedClauses: pureClauses

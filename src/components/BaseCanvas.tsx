@@ -14,6 +14,7 @@ export default function BaseCanvas({children, ...flowProps}: ReactFlowProps &
             nodeOrigin={[0.5, 0]}
             proOptions={proOptions}
             preventScrolling={false}
+            panOnScroll={true}
             panOnDrag={true}
             {...flowProps}
         >
