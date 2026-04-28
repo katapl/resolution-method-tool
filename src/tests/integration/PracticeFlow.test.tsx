@@ -30,7 +30,7 @@ function AppMock() {
     />
 
     {mode === 'SOLVE' && clauses.length > 0 && (
-        <ProofTimeline initialClauses={clauses} />
+        <ProofTimeline initialClauses={clauses} onBack={vi.fn()} />
     )}
 
     {mode === 'PRACTICE' && clauses.length > 0 && (
