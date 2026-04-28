@@ -107,7 +107,7 @@ function AppMock() {
                 onPractice={() => {}}
                 onReset={() => {}}
             />
-    {clauses.length > 0 && <ProofTimeline initialClauses={clauses} />}
+    {clauses.length > 0 && <ProofTimeline initialClauses={clauses} onBack={vi.fn()} />}
     </div>
     );
     }

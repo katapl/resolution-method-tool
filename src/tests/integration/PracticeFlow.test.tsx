@@ -34,7 +34,7 @@ function AppMock() {
     )}
 
     {mode === 'PRACTICE' && clauses.length > 0 && (
-        <SandboxCanvas initialClauses={clauses} />
+        <SandboxCanvas initialClauses={clauses} onBack={vi.fn()} />
     )}
     </div>
 );

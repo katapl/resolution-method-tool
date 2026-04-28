@@ -110,7 +110,7 @@ afterAll(() => {
 it('should navigate between steps when clicking Next and Prev', async () => {
     const user = userEvent.setup();
 
-    render(<ProofTimeline initialClauses={[]} />);
+    render(<ProofTimeline initialClauses={[]} onBack={vi.fn()} />);
 
     expect(screen.getByText('Step 1')).toBeInTheDocument();
 

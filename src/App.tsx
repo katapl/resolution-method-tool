@@ -4,12 +4,10 @@ import FormulaInput from "./components/FormulaInput";
 import { useState } from 'react';
 import { useLocalStorage } from './hook/useLocalStorage';
 import type { Clause } from './engine/types';
-import Button from "./components/button/Button";
-import { useTranslation } from 'react-i18next';
+// import { useTranslation } from 'react-i18next';
 import styles from './App.module.css';
 import Guide from "./components/guide/Guide"
 import { ErrorBoundary } from 'react-error-boundary';
-import { ChevronLeft } from 'lucide-react';
 
 type AppMode = 'IDLE' | 'SOLVE' | 'PRACTICE';
 
@@ -32,7 +30,7 @@ function ErrorFallback({ error, resetErrorBoundary }: any) {
 function App() {
     const [mode, setMode] = useLocalStorage<AppMode>('prover_app_mode', 'IDLE');
     const [startingClauses, setStartingClauses] = useLocalStorage<Clause[]>('prover_starting_clauses', []);
-    const { t } = useTranslation();
+    // const { t } = useTranslation();
     const [injectedFormula, setInjectedFormula] = useState<{ text: string, time: number } | null>(null);
 
     const handleSolve = (clauses: Clause[]) => {
@@ -69,7 +67,7 @@ function App() {
         keysToDelete.forEach(key => localStorage.removeItem(key));
     };
 
-    const containerClass = `${styles.appContainer} ${mode !== 'IDLE' ? styles.appContainerActive : ''}`;
+    // const containerClass = `${styles.appContainer} ${mode !== 'IDLE' ? styles.appContainerActive : ''}`;
 
     return (
         <ErrorBoundary

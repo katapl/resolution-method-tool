@@ -29,7 +29,7 @@ describe('SandboxCanvas Integration', () => {
 
     it('should allow literal selection and node resolution', async () => {
         const user = userEvent.setup();
-        const { container } = render(<SandboxCanvas initialClauses={mockInitialClauses as any} />);
+        const { container } = render(<SandboxCanvas initialClauses={mockInitialClauses as any} onBack={vi.fn()} />);
 
         expect(screen.getByText('sandbox.phaseSelectLiteral')).toBeInTheDocument();
 

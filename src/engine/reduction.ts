@@ -127,7 +127,7 @@ export function runReductions(
                             key: 'engine.removedPureLiterals',
                             params: {
                                 count: pureClauses.length,
-                                context: pureLiteralsArray.length > 1 ? 'multiple' : 'single',
+                                context: pureLiteralsFound.size > 1 ? 'multiple' : 'single',
                                 names: pureNames
                             },
                         },
