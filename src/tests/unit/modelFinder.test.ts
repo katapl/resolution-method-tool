@@ -1,5 +1,6 @@
 import { findAllModels } from '../../engine/modelFinder';
 import type { Clause } from '../../engine/types';
+import { describe, it, expect } from 'vitest';
 
 describe('findAllModels (Backtracking Engine)', () => {
     const makeClause = (
@@ -9,7 +10,6 @@ describe('findAllModels (Backtracking Engine)', () => {
         id,
         literals,
         removed: false,
-        parents: []
     });
 
     it('should find the correct model for a satisfiable formula', () => {

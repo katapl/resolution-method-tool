@@ -1,5 +1,6 @@
-import { checkTautology, checkSubsumption, getPureLiteral, runReductions } from '../../engine/reduction';
+import { checkTautology, checkSubsumption, runReductions } from '../../engine/reduction';
 import type { Clause } from '../../engine/types';
+import { describe, it, expect } from 'vitest';
 
 describe('Reduction Engine', () => {
     const makeClause = (
@@ -9,7 +10,6 @@ describe('Reduction Engine', () => {
         id,
         literals,
         removed: false,
-        parents: []
     });
 
     describe('checkTautology', () => {

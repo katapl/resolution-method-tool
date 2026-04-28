@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { getCurrentPhase, executeSelectLiteral, executeRemoveClause } from '../../engine/sandboxEngine';
+import { getCurrentPhase, executeRemoveClause } from '../../engine/sandboxEngine';
 import type { Clause } from '../../engine/types';
 
 describe('Sandbox Engine (State Machine)', () => {
@@ -8,7 +8,7 @@ describe('Sandbox Engine (State Machine)', () => {
         literals: { name: string; polarity: boolean }[],
         removed = false
     ): Clause => ({
-        id, literals, removed, parents: [], isNegatedConclusion: false
+        id, literals, removed, isNegatedConclusion: false
     });
 
     describe('getCurrentPhase', () => {

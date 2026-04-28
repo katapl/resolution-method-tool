@@ -7,7 +7,7 @@ describe('Sandbox Rules', () => {
         id: string,
         literals: { name: string; polarity: boolean }[]
     ): Clause => ({
-        id, literals, removed: false, parents: [], isNegatedConclusion: false
+        id, literals, removed: false, isNegatedConclusion: false
     });
 
     describe('evaluateRemoval', () => {

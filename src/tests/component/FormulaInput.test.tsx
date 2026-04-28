@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect, vi } from 'vitest';
+import { it, expect, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import FormulaInput from '../../components/FormulaInput';
 

@@ -34,7 +34,7 @@ describe('useFormulaInput State Management', () => {
         });
 
         act(() => {
-            result.current.handleSolve();
+            result.current.handleSolve({ preventDefault: vi.fn() } as any);
         });
 
         expect(result.current.errorMsg).not.toBeNull();
