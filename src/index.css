@@ -48,9 +48,9 @@ p {
   }
 
 .literalHighlight {
-  font-weight: 700; !important;
-  color: #3d8274; !important;
-  background-color: rgba(77, 163, 146, 0.15); !important;
+  font-weight: 700 !important;
+  color: #3d8274 !important;
+  background-color: rgba(77, 163, 146, 0.15) !important;
   padding: 2px 6px;
   border-radius: 4px;
   margin: 0 2px;
