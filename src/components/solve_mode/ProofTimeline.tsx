@@ -111,6 +111,7 @@ export default function ProofTimeline({ initialClauses }: ProofTimelineProps) {
                     </p>
                     {isLastStep && (
                             <Button
+                                data-cy="result-expand-btn"
                                 className={styles.resultToggleBtn}
                                 onClick={() => setIsResultExpanded(!isResultExpanded)}
                             >
@@ -173,7 +174,13 @@ export default function ProofTimeline({ initialClauses }: ProofTimelineProps) {
                     );
                 })}
 
-                <Button onClick={handleNext} disabled={isLastStep} className={styles.icon}>
+                <Button
+                    onClick={handleNext}
+                    disabled={isLastStep}
+                    className={styles.icon}
+                    data-cy="next-step-btn"
+                    data-testid="next-step-btn"
+                >
                     <ChevronRight size={28} />
                 </Button>
             </div>

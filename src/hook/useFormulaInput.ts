@@ -97,7 +97,9 @@ export function useFormulaInput(
     };
 
     const handleSolve = (e: React.FormEvent) => {
-        e.preventDefault();
+        if (e && e.preventDefault) {
+            e.preventDefault();
+        }
         if (!inputValue.trim()) return;
 
         localStorage.setItem('prover_timeline_step', '1');
@@ -113,7 +115,9 @@ export function useFormulaInput(
     };
 
     const handlePractice = (e: React.FormEvent) => {
-        e.preventDefault();
+        if (e && e.preventDefault) {
+            e.preventDefault();
+        }
         if (!inputValue.trim()) return;
 
         localStorage.setItem('prover_timeline_step', '1');
@@ -136,6 +140,7 @@ export function useFormulaInput(
     };
 
     const isActionDisabled = disabled || !inputValue.trim() || !!errorMsg;
+
 
     return {
         inputValue,

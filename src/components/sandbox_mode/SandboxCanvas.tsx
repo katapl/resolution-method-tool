@@ -103,14 +103,21 @@ export default function SandboxCanvas({ initialClauses }: SandboxCanvasProps) {
                         const newY = Math.max(p1.position.y, p2.position.y) + 150;
                         newPositionsRef.current[resolvent.id] = { x: newX, y: newY };
                     }
-                    return nds;
+                    // return nds;
+                    return nds.map(n => ({ ...n, selected: newSelection.includes(n.id) }));
                 });
 
                 setEdges(eds => [
                     ...eds,
                     { id: `e-${id1}-${resolvent.id}`, source: id1, target: resolvent.id, animated: false, style: { stroke: '#999', strokeWidth: 2 } },
                     { id: `e-${id2}-${resolvent.id}`, source: id2, target: resolvent.id, animated: false, style: { stroke: '#999', strokeWidth: 2 } }
+
                 ]);
+                if (resolvent.literals.length === 0) {
+                    setSelectedIds([id1, id2]);
+                } else {
+                    setSelectedIds([]);
+                }
             }
             setSelectedIds([]);
         } else {
@@ -150,6 +157,7 @@ export default function SandboxCanvas({ initialClauses }: SandboxCanvasProps) {
                 if (poolClause) {
                     nextNodes.push({
                         ...node,
+                        selected: selectedIds.includes(node.id),
                         data: {
                             ...node.data,
                             clause: poolClause,
@@ -176,6 +184,7 @@ export default function SandboxCanvas({ initialClauses }: SandboxCanvasProps) {
                     id: clause.id,
                     type: 'clause',
                     position: pos,
+                    selected: selectedIds.includes(clause.id),
                     data: {
                         clause: clause,
                         currentPhase,

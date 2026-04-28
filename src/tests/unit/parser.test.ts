@@ -17,7 +17,6 @@ describe('Parser: parseFormulaToClauses', () => {
     });
 
     it('should negate the conclusion and apply De Morgan’s Law', () => {
-        // A |- B v C  -> Premises: [A], Conclusion becomes: [~B], [~C]
         const clauses = parseFormulaToClauses('A |- B v C');
 
         expect(clauses).toHaveLength(3);
@@ -33,7 +32,6 @@ describe('Parser: parseFormulaToClauses', () => {
     });
 
     it('should quietly drop invalid literals returning null (Our safety net!)', () => {
-        // We type "A v @", the "@" should be dropped safely
         const clauses = parseFormulaToClauses('A v @');
         expect(clauses[0].literals).toHaveLength(1);
         expect(clauses[0].literals[0].name).toBe('A');
