@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useNodesState, useEdgesState, type ReactFlowInstance, type Edge, type Clause } from 'reactflow';
+import { useNodesState, useEdgesState, type ReactFlowInstance, type Edge, type Node } from 'reactflow';
 import { generateSandboxLayout } from '../utils/layout';
 
 export function useSandboxGraph(
