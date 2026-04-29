@@ -93,7 +93,7 @@
     "timelineFrame4": "Krok 4: Odstraněna tautologie. Dosáhli jsme prázdné množiny!",
     "btnPrev": "Předchozí",
     "btnNext": "Další",
-    "sandboxTitle": "Režim procvičení",
+    "sandboxTitle": "Režim procvičování",
     "practiceExplanation": "V tomto režimu můžete rezoluce tvořit sami.",
     "sandboxStep1": "Krok 1: Kliknutím na křížek odstraníte tautologii.",
     "sandboxStep2": "Krok 2: Klikněte na klauzuli A v B.",
@@ -107,7 +107,7 @@
     "formulaForms": "Vložená formule musí být v konjunktivní normální formě. Pro zadání logických symbolů použijte tlačítka pod textovým polem, případně zadejte ~ nebo ! pro negaci, & nebo ^ nebo čárku pro konjunkci, v pro disjunkci a |= pro vyplývání.",
     "basicSteps": "Jak algoritmus probíhá?",
     "modeDifference": "Jaký je rozdíl mezi režimy 'Krok po kroku' a 'Procvičit'?",
-    "modeDifferenceExplanation": "Režim krokování vygeneruje kroky řešení vaší zadané formule. V režim procvičení si můžete sami zkusit aplikovat algoritmus na zadanou formuli. Oba režimy si můžete vyzkoušet v ukázkách níže.",
+    "modeDifferenceExplanation": "Režim krokování vygeneruje postupné řešení vaší zadané formule. V režimu procvičení si můžete sami zkusit aplikovat algoritmus na zadanou formuli. Oba režimy si můžete vyzkoušet v ukázkách níže.",
     "solveMode": "Po kliknutí tlačítka 'Vyřešit' se vygenerujou kroky řešení vaší zadané formule.",
     "practiceMode": "Po kliknutí tlačítka 'Procvičit' si budete moct sami aplikovat algoritmus na vaši zadanou formuli."
   },

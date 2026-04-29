@@ -78,7 +78,7 @@
     "entailmentPrefix": "The conclusion was negated and added to set of premises."
   },
   "tutorial": {
-    "timelineTitle": "Solve mode",
+    "timelineTitle": "Step-by-step mode",
     "solveExplanation": "In this mode, you can click through the course of the entire algorithm step by step.",
     "timelineFrame1": "Step 1: Started with the initial clauses.",
     "timelineFrame2": "Step 2: Resolved on P.",
@@ -99,8 +99,8 @@
     "welcomeText": "Welcome! This app is for learning the resolution method in propositional logic.",
     "formulaForms": "The inserted formula must be in Conjunctive Normal Form. To enter logic symbols, use buttons below text field, or type ~ or ! for negation, & or ^ or a comma for conjunction, v for disjunction and |= for entailment.",
     "basicSteps": "What are the basic steps of the algorithm?",
-    "modeDifference": "What’s the difference between Step by step and Practice?",
-    "modeDifferenceExplanation": "Solve mode will generate a step by step guide to applying the algorithm to your formula. Practice mode you will can try to use the algorithm on your formula by yourself. You can try out the two modes in these mini-guides below.",
+    "modeDifference": "What’s the difference between 'Step-by-step' and 'Practice'?",
+    "modeDifferenceExplanation": "Step-by-step mode will generate a step by step guide to applying the algorithm to your formula. Practice mode you will can try to use the algorithm on your formula by yourself. You can try out the two modes in these mini-guides below.",
     "solveMode": "Solve mode will generate a step by step guide to applying the algorithm to your formula.",
     "practiceMode": "In Practice mode you will can try to use the algorithm on your formula by yourself."
   },
