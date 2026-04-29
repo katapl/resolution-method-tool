@@ -1,8 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { useNodesState, useEdgesState, type ReactFlowInstance } from 'reactflow';
-import Button from "../components/button/Button";
-import MessageFormatter from "../utils/MessageFormatter";
-import BaseCanvas from "../components/BaseCanvas";
+import { useNodesState, useEdgesState, type ReactFlowInstance, type Edge, type Clause } from 'reactflow';
 import { generateSandboxLayout } from '../utils/layout';
 
 export function useSandboxGraph(
