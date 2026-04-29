@@ -47,9 +47,17 @@ export default function Guide({ onSelectExample }: GuideProps) {
                 </ul>
             </div>
 
-            <div className={styles.tutorialSection}>
-                <MiniTimeline />
-                <MiniSandbox />
+            <div className={styles.tutorialContainer}>
+                <div className={styles.tutorialSection}>
+                    <h4 className={styles.boldText}>{t('guide.modeDifference')}</h4>
+                    <p className={styles.text}>{t('guide.modeDifferenceExplanation')}</p>
+                        <h4 className={styles.boldText}>{t('tutorial.timelineTitle')}</h4>
+                    <MiniTimeline />
+                </div>
+                <div className={styles.tutorialSection}>
+                    <h4 className={styles.boldText}>{t('tutorial.sandboxTitle')}</h4>
+                    <MiniSandbox />
+                </div>
             </div>
         </div>
     );

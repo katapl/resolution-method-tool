@@ -2,7 +2,7 @@
   "input": {
     "title": "Learn Resolution",
     "enterFormula": "Enter formula in CNF:",
-    "solve": "Solve",
+    "solve": "Step by step",
     "practice": "Practice",
     "reset": "Back to Guide",
     "step": "Step {{count}}",
@@ -99,7 +99,8 @@
     "welcomeText": "Welcome! This app is for learning the resolution method in propositional logic.",
     "formulaForms": "The inserted formula must be in Conjunctive Normal Form. To enter logic symbols, use buttons below text field, or type ~ or ! for negation, & or ^ or a comma for conjunction, v for disjunction and |= for entailment.",
     "basicSteps": "What are the basic steps of the algorithm?",
-    "modeDifference": "What’s the difference between solve and practice?",
+    "modeDifference": "What’s the difference between Step by step and Practice?",
+    "modeDifferenceExplanation": "Solve mode will generate a step by step guide to applying the algorithm to your formula. Practice mode you will can try to use the algorithm on your formula by yourself. You can try out the two modes in these mini-guides below.",
     "solveMode": "Solve mode will generate a step by step guide to applying the algorithm to your formula.",
     "practiceMode": "In Practice mode you will can try to use the algorithm on your formula by yourself."
   },

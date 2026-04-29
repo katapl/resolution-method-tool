@@ -5,6 +5,7 @@ import Button from '../button/Button';
 import styles from './Guide.module.css';
 import { useTranslation } from 'react-i18next';
 import BaseCanvas from "../BaseCanvas";
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const TUTORIAL_FRAMES: { textKey: string; nodes: Node[]; edges: Edge[] }[] = [
     {
@@ -183,9 +184,9 @@ export default function MiniTimeline() {
     const currentFrame = TUTORIAL_FRAMES[frameIndex];
 
     return (
-        <div className={styles.container}>
-            <h4 className={styles.boldText}>{t('tutorial.timelineTitle')}</h4>
-            <p className={styles.text}>{t('tutorial.solveExplanation')}</p>
+        <div>
+            {/*<h4 className={styles.boldText}>{t('tutorial.timelineTitle')}</h4>*/}
+            {/*<p className={styles.text}>{t('tutorial.solveExplanation')}</p>*/}
             <p className={styles.text}>{t(currentFrame.textKey)}</p>
 
             <div className={styles.canvasWrapper}>
@@ -205,12 +206,14 @@ export default function MiniTimeline() {
                     disabled={frameIndex === 0}
                 >
                     {t('tutorial.btnPrev')}
+                    {/*<ChevronLeft size={28} className={styles.icon} />*/}
                 </Button>
                 <Button
                     onClick={() => setFrameIndex(p => Math.min(p + 1, TUTORIAL_FRAMES.length - 1))}
                     disabled={frameIndex === TUTORIAL_FRAMES.length - 1}
                 >
                     {t('tutorial.btnNext')}
+                    {/*<ChevronRight size={28} className={styles.icon} />*/}
                 </Button>
             </div>
         </div>

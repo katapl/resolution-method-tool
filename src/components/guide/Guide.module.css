@@ -10,13 +10,13 @@
 
 .text {
     margin-top: 0;
-    margin-bottom: 8px;
+    margin-bottom: 1rem;
     color: #333333;
 }
 
 .boldText {
     margin-top: 0;
-    margin-bottom: 8px;
+    margin-bottom: 0.5rem;
     color: #333333;
     font-weight: 500;
 }
@@ -55,4 +55,36 @@
 .exampleItem:hover {
     text-decoration: underline;
     cursor: pointer;
+}
+
+.icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding-top: O.5rem;
+    color: #666666;
+    /*line-height: 0;*/
+}
+
+.tutorialHeader{
+    padding: 1rem;
+}
+
+.tutorialSection{
+    width: 100%;
+    max-width: 800px;
+    /*margin: 0 auto 24px auto;*/
+}
+
+.tutorialContainer {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto 24px auto;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 24px;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
 }
