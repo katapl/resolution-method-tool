@@ -103,8 +103,8 @@
   },
   "guide": {
     "try": "Klikněte na příklad!",
-    "welcomeText": "Vítejte! Tato aplikace slouží pro výuku rezoluční metody ve výrokové logice. Algoritmus který aplikace využívá je založen na Davis-Putnam algoritmu s mazáním rodičovských klauzulí a základními strategiemi redukce (odstranění tautologií, subsumovaných klauzulí a čistých literálů).",
-    "formulaForms": "Vložená formule musí být v konjunktivní normální formě. Každá klauzule představuje předpoklad. Můžete jej použít k určení splnitelnosti množiny nebo k zjištění, zda z předpokladů vyplývá závěr.",
+    "welcomeText": "Vítejte! Tato aplikace slouží pro výuku rezoluční metody ve výrokové logice.",
+    "formulaForms": "Vložená formule musí být v konjunktivní normální formě. Pro zadání logických symbolů použijte tlačítka pod textovým polem, případně zadejte ~ nebo ! pro negaci, & nebo ^ nebo čárku pro konjunkci, v pro disjunkci a |= pro vyplývání.",
     "basicSteps": "Jak algoritmus probíhá?",
     "modeDifference": "Jaký je rozdíl mezi 'Vyřešit' a 'Procvičit'?",
     "solveMode": "Po kliknutí tlačítka 'Vyřešit' se vygenerujou kroky řešení vaší zadané formule.",

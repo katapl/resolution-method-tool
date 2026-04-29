@@ -23,12 +23,12 @@
 .resolvable:not(.removed):hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-    border-color: #5952b3;
+    border-color: #423d4a;
 }
 
 .selected {
-    background-color: #dad7f5;
-    border-color: #5952b3;
+    /*background-color: #c7d4ed;*/
+    border-color: #423d4a;
     opacity: 1;
 }
 

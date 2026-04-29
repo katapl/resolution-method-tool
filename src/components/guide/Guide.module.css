@@ -14,6 +14,13 @@
     color: #333333;
 }
 
+.boldText {
+    margin-top: 0;
+    margin-bottom: 8px;
+    color: #333333;
+    font-weight: 500;
+}
+
 .instructionText {
     height: 40px;
     color: #555555;
@@ -43,4 +50,9 @@
     display: flex;
     flex-direction: column;
     gap: 6px;
+}
+
+.exampleItem:hover {
+    text-decoration: underline;
+    cursor: pointer;
 }

@@ -184,9 +184,9 @@ export default function MiniTimeline() {
 
     return (
         <div className={styles.container}>
-            <h4 className={styles.text}>{t('tutorial.timelineTitle')}</h4>
-            <p className={styles.instructionText}>{t('tutorial.solveExplanation')}</p>
-            <p className={styles.instructionText}>{t(currentFrame.textKey)}</p>
+            <h4 className={styles.boldText}>{t('tutorial.timelineTitle')}</h4>
+            <p className={styles.text}>{t('tutorial.solveExplanation')}</p>
+            <p className={styles.text}>{t(currentFrame.textKey)}</p>
 
             <div className={styles.canvasWrapper}>
                 <BaseCanvas

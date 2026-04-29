@@ -33,7 +33,7 @@ export default function Guide({ onSelectExample }: GuideProps) {
             <div className={styles.container}>
                 <p className={styles.text}> {t('guide.welcomeText')}</p>
                 <p className={styles.text}> {t('guide.formulaForms')}</p>
-                <span className={styles.text}> {t('guide.try')}</span>
+                <span className={styles.boldText}> {t('guide.try')}</span>
                 <ul className={styles.examplesList}>
                     {EXAMPLE_FORMULAS.map((formula, index) => (
                         <li

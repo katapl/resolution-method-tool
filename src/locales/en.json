@@ -96,8 +96,8 @@
   },
   "guide": {
     "try": "Click on an example to try!",
-    "welcomeText": "Welcome! This app is for learning the resolution method in propositional logic. The algorithm presented by this app is based on Davis-Putnam with parent clause deletion and basic reduction strategies (tautology removal, subsumed clause removal and pure literal removal).",
-    "formulaForms": "The inserted formula must be in Conjunctive Normal Form. Each clause represents a premise. You can use it to figure out the satisfiability of a set of premises, or if a set of premises entail a conclusion.",
+    "welcomeText": "Welcome! This app is for learning the resolution method in propositional logic.",
+    "formulaForms": "The inserted formula must be in Conjunctive Normal Form. To enter logic symbols, use buttons below text field, or type ~ or ! for negation, & or ^ or a comma for conjunction, v for disjunction and |= for entailment.",
     "basicSteps": "What are the basic steps of the algorithm?",
     "modeDifference": "What’s the difference between solve and practice?",
     "solveMode": "Solve mode will generate a step by step guide to applying the algorithm to your formula.",

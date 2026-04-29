@@ -120,9 +120,9 @@ export default function MiniSandbox() {
 
     return (
         <div className={styles.container}>
-            <h4 className={styles.text}>{t('tutorial.sandboxTitle')}</h4>
-            <p className={styles.instructionText}>{t('tutorial.practiceExplanation')}</p>
-            <div className={styles.instructionText}>
+            <h4 className={styles.boldText}>{t('tutorial.sandboxTitle')}</h4>
+            <p className={styles.text}>{t('tutorial.practiceExplanation')}</p>
+            <div className={styles.text}>
                 {step === 0 && t('tutorial.sandboxStep1')}
                 {step === 1 && t('tutorial.sandboxStep2')}
                 {step === 2 && t('tutorial.sandboxStep3')}
