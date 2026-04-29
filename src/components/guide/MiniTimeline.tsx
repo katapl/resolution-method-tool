@@ -205,15 +205,15 @@ export default function MiniTimeline() {
                     onClick={() => setFrameIndex(p => Math.max(p - 1, 0))}
                     disabled={frameIndex === 0}
                 >
-                    {t('tutorial.btnPrev')}
-                    {/*<ChevronLeft size={28} className={styles.icon} />*/}
+                    {/*{t('tutorial.btnPrev')}*/}
+                    <ChevronLeft size={28} className={styles.icon} />
                 </Button>
                 <Button
                     onClick={() => setFrameIndex(p => Math.min(p + 1, TUTORIAL_FRAMES.length - 1))}
                     disabled={frameIndex === TUTORIAL_FRAMES.length - 1}
                 >
-                    {t('tutorial.btnNext')}
-                    {/*<ChevronRight size={28} className={styles.icon} />*/}
+                    {/*{t('tutorial.btnNext')}*/}
+                    <ChevronRight size={28} className={styles.icon} />
                 </Button>
             </div>
         </div>

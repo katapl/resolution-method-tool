@@ -61,7 +61,7 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    padding-top: O.5rem;
+    padding-top: 0.2rem;
     color: #666666;
     /*line-height: 0;*/
 }
